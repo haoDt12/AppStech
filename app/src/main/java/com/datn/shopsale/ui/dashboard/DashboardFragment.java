@@ -43,7 +43,7 @@ public class DashboardFragment extends Fragment {
         btnLogOut.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
-//            dialog.getWindow().setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.bg_huy_booking));
+//            dialog.getWindow().setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.));
             Window window = dialog.getWindow();
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
