@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "300820864058",
+    "project_id": "datn-789e4",
+    "storage_bucket": "datn-789e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300820864058:android:d35c5a028664e07a8e2903",
+        "android_client_info": {
+          "package_name": "com.datn.shopsale"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT53VpKe3iZW5ptAzyVZdYkpJncesRkHQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
