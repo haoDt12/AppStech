@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseUser currentUser;
 
     private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInAccount acct;
     private final int RC_SIGN_IN = 2;
 
     @Override
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(this);
+        acct = GoogleSignIn.getLastSignedInAccount(this);
 
         SignInButton signInButton = findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
@@ -146,7 +147,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    private void logout() {
+    private void logoutEmailFirebase() {
         if (currentUser != null) {
             firebaseAuth.signOut();
             showToast("Đăng xuất thành công");
@@ -186,6 +187,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // push data user to db
 
             Log.d(TAG, "updateUI: " + personGivenName + " - " + personFamilyName + " - " + personEmail + " - " + personId + " - " + personPhoto);
+            updateUI();
         }
 
     }
@@ -225,7 +227,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        showToast(Objects.requireNonNull(task.getException()).getMessage());
+                        if (task.isSuccessful() && acct != null){
+                            showToast("Đăng xuất thành công");
+                        }
                     }
                 });
     }
