@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.SignUpActivity;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.utils.HashPassword;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText edEmail, edPass;
     private Button btnLogin;
     private ImageView imgLoginGoogle;
+    private TextView tvSignUp;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
@@ -73,6 +76,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.btn_login).setOnClickListener(this);
+        tvSignUp.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+            finish();
+        });
+
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -88,6 +96,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initView() {
         edEmail = findViewById(R.id.ed_email);
         edPass = findViewById(R.id.ed_pass);
+        tvSignUp = findViewById(R.id.tv_sign_up);
 
         // auto fill
         edEmail.setText("accounttest@gmail.com");
