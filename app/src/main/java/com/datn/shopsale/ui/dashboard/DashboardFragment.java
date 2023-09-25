@@ -1,5 +1,6 @@
 package com.datn.shopsale.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +26,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.Objects;
 
 public class DashboardFragment extends Fragment {
 
@@ -49,6 +54,7 @@ public class DashboardFragment extends Fragment {
 
     private Button btnLogOut;
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -60,15 +66,16 @@ public class DashboardFragment extends Fragment {
         btnLogOut.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
-//            dialog.getWindow().setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.));
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             Window window = dialog.getWindow();
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
             window.setAttributes(windowAttributes);
             windowAttributes.gravity = Gravity.BOTTOM;
 
-            Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
-            Button btnConfirm = (Button) dialog.findViewById(R.id.btn_confirm);
+            ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+            Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
             btnCancel.setOnClickListener(view2 -> {
                 dialog.cancel();
             });
