@@ -19,6 +19,7 @@
             android:layout_gravity="center_horizontal"
             />
         <EditText
+            android:id="@+id/ed_email"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_width="match_parent"
@@ -29,6 +30,7 @@
             android:textColorHint="#BBAFAF"
             />
         <EditText
+            android:id="@+id/ed_passwd"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -41,6 +43,7 @@
             android:textColorHint="#BBAFAF"
             />
         <EditText
+            android:id="@+id/ed_confirmPasswd"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -64,6 +67,7 @@
                 android:layout_gravity="center"
                 />
             <Button
+                android:id="@+id/btn_dangky"
                 android:layout_marginTop="50dp"
                 android:layout_marginStart="50dp"
                 android:layout_marginEnd="50dp"
