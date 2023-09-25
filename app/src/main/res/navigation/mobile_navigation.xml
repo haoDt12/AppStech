@@ -22,4 +22,14 @@
         android:name="com.datn.shopsale.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_category"
+        android:name="com.datn.shopsale.ui.category.CategoryFragment"
+        android:label="@string/title_category"
+        tools:layout="@layout/fragment_category" />
+    <fragment
+        android:id="@+id/navigation_cart"
+        android:name="com.datn.shopsale.ui.cart.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" />
 </navigation>
