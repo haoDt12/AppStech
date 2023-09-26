@@ -8,10 +8,14 @@
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
 <<<<<<< HEAD
+<<<<<<< HEAD
             <value value="C:\Users\Vung\.android\avd\Pixel_6_API_30.avd" />
 =======
             <value value="C:\Users\minh0\.android\avd\Pixel_7_Pro.avd" />
 >>>>>>> master
+=======
+            <value value="C:\Users\minh0\.android\avd\Pixel_7_Pro.avd" />
+>>>>>>> 56a20a45ed7d8343ec2c715662139dc2b85676f5
           </Key>
         </deviceKey>
       </Target>
