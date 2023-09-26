@@ -76,14 +76,36 @@ public class DashboardFragment extends Fragment {
         if (accessToken != null && !accessToken.isExpired()) {
             btnLogOut.setVisibility(View.GONE);
             btnLoginWithFacebook.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             btnLogOut.setVisibility(View.VISIBLE);
             btnLoginWithFacebook.setVisibility(View.GONE);
         }
 
         btnLoginWithFacebook.setOnClickListener(v -> {
-            updateUI();
-            LoginManager.getInstance().logOut();
+//            updateUI();
+//            LoginManager.getInstance().logOut();
+
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            String result = btnLoginWithFacebook.getText().toString();
+                            if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
+                                updateUI();
+                                break;
+                            }
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+
+            thread.start();
         });
 
         btnLogOut.setOnClickListener(view1 -> {

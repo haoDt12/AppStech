@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                     while (true) {
                         try {
                             String result = btnLoginWithFacebook.getText().toString();
-                            if (result.equals("Đăng xuất")) {
+                            if (result.equals("Đăng xuất") || result.equals("Log out")) {
                                 updateUI();
                                 break;
                             }
@@ -198,7 +198,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginWithEmail() {
-        showToast("test");
         String email = edEmail.getText().toString().trim();
         String pass = edPass.getText().toString().trim();
         if (validForm(email, pass)) {
