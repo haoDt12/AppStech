@@ -51,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvSignUp;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
+    private TextView tv_dangky;
 
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
@@ -67,7 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initView();
-
+        tv_dangky.setOnClickListener(view -> {
+            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -159,6 +162,19 @@ public class LoginActivity extends AppCompatActivity {
         edEmail.setText("accounttest@gmail.com");
         edPass.setText("123456");
     }
+
+    @Override
+    public void onClick(View v) {
+        int idView = v.getId();
+        if (idView == R.id.sign_in_button) {
+            signOut();
+            signInWithGoogle();
+        } else if (idView == R.id.btn_login) {
+            loginWithEmail();
+        }
+//        else if (idView == R.id.tv_dangky) {
+//            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+//        }
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
