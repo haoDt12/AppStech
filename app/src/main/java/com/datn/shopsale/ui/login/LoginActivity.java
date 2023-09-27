@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.SignUpActivity;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.utils.HashPassword;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -39,6 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView imgLoginGoogle;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
+    private TextView tv_dangky;
 
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
@@ -50,7 +53,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         initView();
-
+        tv_dangky.setOnClickListener(view -> {
+            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -88,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initView() {
         edEmail = findViewById(R.id.ed_email);
         edPass = findViewById(R.id.ed_pass);
-
+        tv_dangky = findViewById(R.id.tv_dangky);
         // auto fill
         edEmail.setText("accounttest@gmail.com");
         edPass.setText("123456");
@@ -103,6 +108,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } else if (idView == R.id.btn_login) {
             loginWithEmail();
         }
+//        else if (idView == R.id.tv_dangky) {
+//            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+//        }
     }
 
 
@@ -157,7 +165,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void updateUI(){
+    private void updateUI() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
     }
 
@@ -227,7 +235,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful() && acct != null){
+                        if (task.isSuccessful() && acct != null) {
                             showToast("Đăng xuất thành công");
                         }
                     }
