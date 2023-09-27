@@ -112,7 +112,6 @@ public class LoginActivity extends AppCompatActivity {
             updateUI();
         }
 
-
         eventClick();
     }
 
@@ -126,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Thread thread = new Thread(new Runnable() {
                 int i = 0;
+
                 @Override
                 public void run() {
                     while (true) {
@@ -162,19 +162,6 @@ public class LoginActivity extends AppCompatActivity {
         edEmail.setText("accounttest@gmail.com");
         edPass.setText("123456");
     }
-
-    @Override
-    public void onClick(View v) {
-        int idView = v.getId();
-        if (idView == R.id.sign_in_button) {
-            signOut();
-            signInWithGoogle();
-        } else if (idView == R.id.btn_login) {
-            loginWithEmail();
-        }
-//        else if (idView == R.id.tv_dangky) {
-//            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
-//        }
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -349,5 +336,4 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
-
 }
