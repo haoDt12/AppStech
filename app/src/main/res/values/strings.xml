@@ -16,4 +16,10 @@
     <string name="no_account">Chưa có tài khoản?</string>
     <string name="signup">Đăng ký.</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
+
+
+    <string name="facebook_app_id">1029801428156168</string>
+    <string name="fb_login_protocol_scheme">fb1029801428156168</string>
+    <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
+
 </resources>

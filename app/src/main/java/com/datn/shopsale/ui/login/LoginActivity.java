@@ -19,6 +19,13 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.activities.SignUpActivity;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.utils.HashPassword;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -31,14 +38,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Arrays;
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private EditText edEmail, edPass;
-    private Button btnLogin;
-    private ImageView imgLoginGoogle;
+    private Button btnLoginWithEmail;
+    private SignInButton btnLoginWithGoogle;
+    private LoginButton btnLoginWithFacebook;
+    private TextView tvSignUp;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
     private TextView tv_dangky;
@@ -46,6 +56,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
     private final int RC_SIGN_IN = 2;
+
+    private CallbackManager callbackManager;
+    private static final String EMAIL = "vanvung03az@gmail.com";
+
+    private AccessToken accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,24 +91,73 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             updateUI();
         }
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.btn_login).setOnClickListener(this);
+        tvSignUp.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+            finish();
+        });
 
 
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
 
-//        if (currentUser != null) {
-//            showToast("Đang trong phiên đăng nhập email firebase");
-//            firebaseAuth.signOut();
-//        }
+        if (currentUser != null) {
+            showToast("Đang trong phiên đăng nhập email firebase");
+            updateUI();
+        }
 
+        callbackManager = CallbackManager.Factory.create();
+        accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null && !accessToken.isExpired()) {
+            showToast("Đang trong phiên đăng nhập facebook with ID: " + accessToken.getUserId());
+            updateUI();
+        }
+
+
+        eventClick();
+    }
+
+    private void eventClick() {
+        btnLoginWithEmail.setOnClickListener(v -> loginWithEmail());
+        btnLoginWithGoogle.setOnClickListener(v -> {
+            signOut();
+            signInWithGoogle();
+        });
+        btnLoginWithFacebook.setOnClickListener(v -> {
+
+            Thread thread = new Thread(new Runnable() {
+                int i = 0;
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            String result = btnLoginWithFacebook.getText().toString();
+                            if (result.equals("Đăng xuất") || result.equals("Log out")) {
+                                updateUI();
+                                break;
+                            }
+                            i++;
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+
+            thread.start();
+        });
+        loginWithFacebook();
     }
 
     private void initView() {
         edEmail = findViewById(R.id.ed_email);
         edPass = findViewById(R.id.ed_pass);
-        tv_dangky = findViewById(R.id.tv_dangky);
+        tvSignUp = findViewById(R.id.tv_sign_up);
+        btnLoginWithEmail = findViewById(R.id.btn_login);
+        btnLoginWithGoogle = findViewById(R.id.sign_in_button);
+        btnLoginWithFacebook = findViewById(R.id.login_button);
+
         // auto fill
         edEmail.setText("accounttest@gmail.com");
         edPass.setText("123456");
@@ -111,11 +175,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        else if (idView == R.id.tv_dangky) {
 //            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
 //        }
-    }
-
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void loginWithFacebook() {
+//        btnLoginWithFacebook.setReadPermissions(Arrays.asList(EMAIL));
+        // Callback registration
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        accessToken = loginResult.getAccessToken();
+                        String userID = accessToken.getUserId();
+                        String applicationID = accessToken.getApplicationId();
+                        String token = accessToken.getToken();
+                        String expires = String.valueOf(accessToken.getExpires());
+                        Log.d(TAG, "onSuccess FB: " + "ID: " + userID + " - ApplicationID: " + applicationID + " - token: " + token + " -expires: " + expires);
+
+                        updateUI();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                        showToast("facebook:onCancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        showToast(exception.getMessage());
+                    }
+                });
     }
 
     private void loginWithEmail() {
@@ -167,6 +262,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void updateUI() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        finish();
     }
 
     private void getInformationUser(GoogleSignInAccount acct) {
@@ -217,6 +313,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {

@@ -21,17 +21,24 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
 public class DashboardFragment extends Fragment {
 
     private GoogleSignInClient mGoogleSignInClient;
+    private AccessToken accessToken;
+    private LoginButton btnLoginWithFacebook;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -62,7 +69,45 @@ public class DashboardFragment extends Fragment {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
 
+
         btnLogOut = (Button) view.findViewById(R.id.btn_log_out);
+        btnLoginWithFacebook = view.findViewById(R.id.login_button);
+        accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null && !accessToken.isExpired()) {
+            btnLogOut.setVisibility(View.GONE);
+            btnLoginWithFacebook.setVisibility(View.VISIBLE);
+        } else {
+            btnLogOut.setVisibility(View.VISIBLE);
+            btnLoginWithFacebook.setVisibility(View.GONE);
+        }
+
+        btnLoginWithFacebook.setOnClickListener(v -> {
+//            updateUI();
+//            LoginManager.getInstance().logOut();
+
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            String result = btnLoginWithFacebook.getText().toString();
+                            if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
+                                updateUI();
+                                break;
+                            }
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            });
+
+            thread.start();
+        });
+
         btnLogOut.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
@@ -86,18 +131,31 @@ public class DashboardFragment extends Fragment {
         });
     }
 
+    private void updateUI() {
+        startActivity(new Intent(getContext(), LoginActivity.class));
+        onDestroy();
+    }
+
     private void signOut() {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(requireActivity(), new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            showToast("Đăng xuất thành công");
-                            startActivity(new Intent(getContext(), LoginActivity.class));
-                            onDestroy();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            showToast("Đăng xuất thành công");
+            firebaseAuth.signOut();
+            updateUI();
+        } else {
+            mGoogleSignInClient.signOut()
+                    .addOnCompleteListener(requireActivity(), new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                showToast("Đăng xuất thành công");
+                                updateUI();
+                            }
                         }
-                    }
-                });
+                    });
+        }
+
     }
 
     private void showToast(String message) {
