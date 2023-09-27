@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_gravity="center"
         >
         <ImageView
             android:id="@+id/img_logo"
@@ -58,13 +57,16 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:layout_marginTop="50dp"
+            >
             <ProgressBar
                 android:id="@+id/progressbar"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
                 android:visibility="invisible"
                 android:layout_gravity="center"
+
                 />
             <Button
                 android:id="@+id/btn_sign_up"
