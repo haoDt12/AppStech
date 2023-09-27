@@ -51,7 +51,6 @@ public class LoginActivity extends AppCompatActivity {
     private TextView tvSignUp;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
-    private TextView tv_dangky;
 
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
@@ -68,8 +67,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initView();
-        tv_dangky.setOnClickListener(view -> {
-            startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+        tvSignUp.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
         });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
