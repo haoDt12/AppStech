@@ -42,8 +42,8 @@ public class SignUpActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         btnSignUp.setOnClickListener(view -> {
-          if(validateSignUp())
-            onClickSignUp();
+            if (validateSignUp())
+                onClickSignUp();
         });
         tvLogin.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -65,20 +65,20 @@ public class SignUpActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(SignUpActivity.this, "Đã gửi xác nhận đến Email", Toast.LENGTH_SHORT).show();
                                         progressbar.setVisibility(View.INVISIBLE);
-                                        btnDangky.setVisibility(View.VISIBLE);
+                                        btnSignUp.setVisibility(View.VISIBLE);
                                     } else {
                                         progressbar.setVisibility(View.INVISIBLE);
-                                        btnDangky.setVisibility(View.VISIBLE);
+                                        btnSignUp.setVisibility(View.VISIBLE);
                                         Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        Log.e("errr",task.getException().getMessage());
+                                        Log.e("errr", task.getException().getMessage());
                                     }
                                 }
                             });
                         } else {
-                            Log.e("errr",task.getException().getMessage());
+                            Log.e("errr", task.getException().getMessage());
                             Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressbar.setVisibility(View.INVISIBLE);
-                            btnDangky.setVisibility(View.VISIBLE);
+                            btnSignUp.setVisibility(View.VISIBLE);
 
                         }
                     }
@@ -86,23 +86,23 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private Boolean validateSignUp(){
-        if(edEmail.getText().toString().isEmpty()){
+    private Boolean validateSignUp() {
+        if (edEmail.getText().toString().isEmpty()) {
             Toast.makeText(this, "Email không được để trống", Toast.LENGTH_SHORT).show();
             return false;
-        } else if(!Patterns.EMAIL_ADDRESS.matcher(edEmail.getText().toString()).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(edEmail.getText().toString()).matches()) {
             Toast.makeText(this, "Định dạng email không chính xác", Toast.LENGTH_SHORT).show();
             return false;
-        }else if(edPasswd.getText().toString().isEmpty()){
+        } else if (edPassword.getText().toString().isEmpty()) {
             Toast.makeText(this, "Mật khẩu không được để trống", Toast.LENGTH_SHORT).show();
             return false;
-        } else if(edConfirmPasswd.getText().toString().isEmpty()){
+        } else if (edConfirmPassword.getText().toString().isEmpty()) {
             Toast.makeText(this, "Xác nhận mật khẩu không được để trống", Toast.LENGTH_SHORT).show();
             return false;
-        }else if(!edConfirmPasswd.getText().toString().trim().equals(edPasswd.getText().toString().trim())){
+        } else if (!edConfirmPassword.getText().toString().trim().equals(edPassword.getText().toString().trim())) {
             Toast.makeText(this, "Xác nhận mật khẩu không trùng khớp", Toast.LENGTH_SHORT).show();
             return false;
-        }else {
+        } else {
             return true;
         }
     }
