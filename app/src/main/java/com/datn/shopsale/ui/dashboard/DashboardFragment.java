@@ -61,7 +61,6 @@ public class DashboardFragment extends Fragment {
 
     private Button btnLogOut;
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -70,7 +69,7 @@ public class DashboardFragment extends Fragment {
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
 
 
-        btnLogOut = (Button) view.findViewById(R.id.btn_log_out);
+        btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
@@ -84,7 +83,6 @@ public class DashboardFragment extends Fragment {
         btnLoginWithFacebook.setOnClickListener(v -> {
 //            updateUI();
 //            LoginManager.getInstance().logOut();
-
             Thread thread = new Thread(new Runnable() {
 
                 @Override
@@ -111,10 +109,10 @@ public class DashboardFragment extends Fragment {
         btnLogOut.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             Window window = dialog.getWindow();
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
+            window.getAttributes().windowAnimations = R.style.DialogAnimation;
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
             window.setAttributes(windowAttributes);
             windowAttributes.gravity = Gravity.BOTTOM;

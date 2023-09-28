@@ -22,4 +22,11 @@
     <string name="fb_login_protocol_scheme">fb1029801428156168</string>
     <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
 
+    <string name="cart">Giỏ hàng</string>
+    <string name="location">Địa chỉ giao hàng</string>
+    <string name="shop">Cửa hàng</string>
+    <string name="setting">Cài đặt</string>
+    <string name="your_order">Đơn hàng của tôi</string>
+    <string name="log_out">Đăng xuất</string>
+
 </resources>

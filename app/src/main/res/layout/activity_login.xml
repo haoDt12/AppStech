@@ -131,7 +131,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_toStartOf="@+id/tv_option"
                 android:scaleType="fitXY"
-                android:src="@drawable/horizontal_line_24"
+                android:src="@drawable/horizontal_line"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -151,7 +151,7 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_toEndOf="@+id/tv_option"
                 android:scaleType="fitXY"
-                android:src="@drawable/horizontal_line_24"
+                android:src="@drawable/horizontal_line"
                 tools:ignore="ContentDescription" />
         </RelativeLayout>
 
