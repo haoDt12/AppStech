@@ -22,14 +22,14 @@
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/addUser"/>
+            android:src="@drawable/user_add"/>
         <SearchView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
             android:queryHint="Enter username"
             android:queryBackground="@android:color/transparent"
-            android:background="@drawable/searchview_background"
+            android:background="@drawable/bg_search_view"
             android:layout_marginHorizontal="16dp"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView

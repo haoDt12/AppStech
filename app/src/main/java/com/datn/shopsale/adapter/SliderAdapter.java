@@ -1,4 +1,4 @@
-package com.datn.shopsale.adpater;
+package com.datn.shopsale.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
