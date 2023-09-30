@@ -57,8 +57,6 @@
         android:id="@+id/rcv_listitem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20sp"
-        android:layout_marginEnd="20sp"
         android:layout_marginTop="15sp"/>
 
 </LinearLayout>

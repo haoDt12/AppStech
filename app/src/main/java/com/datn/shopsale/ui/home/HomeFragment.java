@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    private ArrayList<Product> dataList;
+    private ArrayList<Product> dataList = new ArrayList<>();
     private ProductAdapter productAdapter;
     private Timer timer;
 
@@ -85,5 +85,6 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        timer.cancel();
     }
 }
