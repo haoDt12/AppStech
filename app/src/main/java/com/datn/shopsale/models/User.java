@@ -9,6 +9,19 @@ public class User {
     private String phone_number;
     private String role;
 
+    public User() {
+    }
+
+    public User(String _id, String avatar, String email, String full_name, String password, String phone_number, String role) {
+        this._id = _id;
+        this.avatar = avatar;
+        this.email = email;
+        this.full_name = full_name;
+        this.password = password;
+        this.phone_number = phone_number;
+        this.role = role;
+    }
+
     public String get_id() {
         return _id;
     }

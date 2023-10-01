@@ -12,7 +12,24 @@
           "package_name": "com.datn.shopsale"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "300820864058-6b1llva1g8n5htvbj2cl495s5fjtn6nu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "99d15809b933814b39b55236b631ae3f61b33762"
+          }
+        },
+        {
+          "client_id": "300820864058-ef68v9i52ln86qa3tdbrh47g8i6uuhhc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "a9c7f81688a3db8ac0cd8ef0306b1d7ca67ca77b"
+          }
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBT53VpKe3iZW5ptAzyVZdYkpJncesRkHQ"
@@ -20,7 +37,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300820864058-iok8dto6j27l3258iiimpms86i5rtcj3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
