@@ -1,4 +1,4 @@
-package com.datn.shopsale.ui.listUser;
+package com.datn.shopsale.ui.user;
 
 import android.os.Bundle;
 
