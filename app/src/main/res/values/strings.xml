@@ -35,5 +35,7 @@
     <string name="setting">Cài đặt</string>
     <string name="your_order">Đơn hàng của tôi</string>
     <string name="log_out">Đăng xuất</string>
+    <string name="so_dien_thoai">Số điện thoại</string>
+    <string name="ho_va_ten">Họ và tên</string>
 
 </resources>
