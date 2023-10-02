@@ -15,8 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.datn.shopsale.Interface.UserService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.models.User;
+import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,21 +28,32 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SignUpActivity extends AppCompatActivity {
     private ImageView imgLogo;
-    private EditText edEmail;
+    private EditText edEmail,edFullname,edPhoneNumber;
     private EditText edPassword;
     private EditText edConfirmPassword;
     private ProgressBar progressbar;
     private TextView tvLogin;
     private Button btnSignUp;
     private FirebaseAuth mAuth;
+    UserService userService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         inutUI();
+        userService = RetrofitConnection.getUserService();
+
         mAuth = FirebaseAuth.getInstance();
 
         btnSignUp.setOnClickListener(view -> {
@@ -63,9 +78,37 @@ public class SignUpActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, "Đã gửi xác nhận đến Email", Toast.LENGTH_SHORT).show();
-                                        progressbar.setVisibility(View.INVISIBLE);
-                                        btnSignUp.setVisibility(View.VISIBLE);
+                                        RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), edEmail.getText().toString().trim());
+                                        RequestBody requestBodyPasswd = RequestBody.create(MediaType.parse("text/plain"), edPassword.getText().toString().trim());
+                                        RequestBody requestBodyFullname = RequestBody.create(MediaType.parse("text/plain"), edFullname.getText().toString());
+                                        RequestBody requestBodyphoneNumber= RequestBody.create(MediaType.parse("text/plain"),edPhoneNumber.getText().toString());
+                                        RequestBody requestBodyrole= RequestBody.create(MediaType.parse("text/plain"), "user");
+                                        Call<ResApi> call = userService.register(requestBodyEmail,requestBodyFullname,requestBodyPasswd,requestBodyphoneNumber,requestBodyrole);
+                                        call.enqueue(new Callback<ResApi>() {
+                                            @Override
+                                            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                                                if(response.body().code==1){
+                                                    progressbar.setVisibility(View.INVISIBLE);
+                                                    btnSignUp.setVisibility(View.VISIBLE);
+                                                    Toast.makeText(SignUpActivity.this, "Đã gửi xác nhận đến Email", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                                                    finish();
+                                                }else {
+                                                    Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                                    progressbar.setVisibility(View.INVISIBLE);
+                                                    btnSignUp.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResApi> call, Throwable t) {
+                                                progressbar.setVisibility(View.INVISIBLE);
+                                                btnSignUp.setVisibility(View.VISIBLE);
+                                                Log.e("Err", "onFailure: " + t);
+                                                Toast.makeText(SignUpActivity.this, "onFailure: " + t, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
                                     } else {
                                         progressbar.setVisibility(View.INVISIBLE);
                                         btnSignUp.setVisibility(View.VISIBLE);
@@ -83,6 +126,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     }
                 });
+
 
     }
 
@@ -110,10 +154,12 @@ public class SignUpActivity extends AppCompatActivity {
     private void inutUI() {
         imgLogo = findViewById(R.id.img_logo);
         edEmail = findViewById(R.id.ed_email);
+        edFullname = findViewById(R.id.ed_fullname);
         edPassword = findViewById(R.id.ed_password);
         edConfirmPassword = findViewById(R.id.ed_confirm_password);
         tvLogin = findViewById(R.id.tv_login);
         progressbar = findViewById(R.id.progressbar);
         btnSignUp = findViewById(R.id.btn_sign_up);
+        edPhoneNumber = findViewById(R.id.ed_phoneNumber);
     }
 }
