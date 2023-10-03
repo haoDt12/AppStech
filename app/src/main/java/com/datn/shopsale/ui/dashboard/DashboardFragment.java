@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.ui.setting.SettingActivity;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
@@ -39,6 +41,12 @@ public class DashboardFragment extends Fragment {
     private GoogleSignInClient mGoogleSignInClient;
     private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
+    private Button btnLogOut;
+    private LinearLayout lnCart;
+    private LinearLayout lnLocation;
+    private LinearLayout lnSetting;
+    private LinearLayout lnOrder;
+    private LinearLayout lnStore;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -59,8 +67,6 @@ public class DashboardFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
-    private Button btnLogOut;
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -71,6 +77,29 @@ public class DashboardFragment extends Fragment {
 
         btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
+
+        lnCart = view.findViewById(R.id.ln_cart);
+        lnLocation = view.findViewById(R.id.ln_location);
+        lnSetting = view.findViewById(R.id.ln_setting);
+        lnOrder = view.findViewById(R.id.ln_order);
+        lnStore = view.findViewById(R.id.ln_store);
+
+        lnCart.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnLocation.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnSetting.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), SettingActivity.class));
+        });
+        lnOrder.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnStore.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
             btnLogOut.setVisibility(View.GONE);

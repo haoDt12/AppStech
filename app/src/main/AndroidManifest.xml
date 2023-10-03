@@ -18,6 +18,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.dashboard.AddressActivity"
             android:name=".activities.ChangePasswordActivity"
             android:exported="false" />
         <activity

@@ -48,4 +48,12 @@
     <string name="so_dien_thoai">Số điện thoại</string>
     <string name="ho_va_ten">Họ và tên</string>
 
+    <string name="add_new_address">Thêm địa chỉ</string>
+
+
+
+    <string name="update">Update</string>
+    <string name="delete">delete</string>
+    <string name="create">create</string>
+
 </resources>
