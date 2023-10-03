@@ -58,6 +58,15 @@
     <string name="log_out">Đăng xuất</string>
     <string name="so_dien_thoai">Số điện thoại</string>
     <string name="ho_va_ten">Họ và tên</string>
+    <string name="ten_nguoi_dung">tên người dùng</string>
+
+
+    <string name="nhan_dan">Nhãn dán</string>
+    <string name="add_file">Thêm file</string>
+    <string name="camera">Máy ảnh</string>
+    <string name="message_content">Nội dung tin nhắn</string>
+    <string name="chat">Chat's</string>
+
 
     <string name="add_new_address">Thêm địa chỉ</string>
 
