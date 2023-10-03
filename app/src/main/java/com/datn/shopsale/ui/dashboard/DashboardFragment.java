@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
-import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;

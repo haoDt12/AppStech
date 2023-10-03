@@ -20,6 +20,15 @@
     <string name="email">Email</string>
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
+    <string name="login_google">Đăng nhập với Google</string>
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="logout_success">Đăng xuất thành công</string>
+    <string name="requireForm">Điền đủ thông tin</string>
+    <string name="requirePass"><![CDATA[Password > 6]]></string>
+    <string name="google_login_session">Đang trong phiên đăng nhập google</string>
+    <string name="fb_auth_login_session">Đang trong phiên đăng nhập email firebase auth</string>
+    <string name="facebook_login_session">Đang trong phiên đăng nhập facebook</string>
+    <string name="verify_email_msg">Vui lòng xác thực email trước khi đăng nhập</string>
     <string name="remember_me">Remember me</string>
     <string name="or">OR</string>
     <string name="no_account">Chưa có tài khoản?</string>
@@ -37,6 +46,9 @@
     <string name="facebook_app_id">1029801428156168</string>
     <string name="fb_login_protocol_scheme">fb1029801428156168</string>
     <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
+    <string name="agree">Đồng ý</string>
+    <string name="send_verify_email">Gửi email xác nhận</string>
+    <string name="check_email_verify">Đã gửi thành công \nVui lòng kiểm tra email xác thực</string>
 
     <string name="cart">Giỏ hàng</string>
     <string name="location">Địa chỉ giao hàng</string>
@@ -57,5 +69,6 @@
     <string name="address">Địa chỉ</string>
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
+    <string name="email_not_authenticated">Email has not been authenticated</string>
 
 </resources>
