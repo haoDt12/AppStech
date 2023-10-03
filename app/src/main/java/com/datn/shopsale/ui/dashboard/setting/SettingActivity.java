@@ -1,4 +1,4 @@
-package com.datn.shopsale.ui.setting;
+package com.datn.shopsale.ui.dashboard.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -61,6 +61,9 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             }
+        });
+        imgBack.setOnClickListener(view -> {
+            super.onBackPressed();
         });
     }
 }

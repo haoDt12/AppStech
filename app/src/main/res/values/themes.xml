@@ -24,4 +24,8 @@
         <item name="colorPrimary">#ED4E4E</item>
         <item name="colorPrimaryVariant">#FF6464</item>
     </style>
+    <style name="theme_blue">
+        <item name="colorPrimary">#0b5ed7</item>
+        <item name="colorPrimaryVariant">#0b5ed7</item>
+    </style>
 </resources>
