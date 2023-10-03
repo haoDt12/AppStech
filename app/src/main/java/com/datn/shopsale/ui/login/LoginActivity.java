@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
-import com.datn.shopsale.activities.SignUpActivity;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.utils.HashPassword;
 import com.facebook.AccessToken;
@@ -38,7 +35,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
@@ -48,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLoginWithEmail;
     private SignInButton btnLoginWithGoogle;
     private LoginButton btnLoginWithFacebook;
-    private TextView tvSignUp;
+    private TextView tvSignUp , tvForgetPassword;;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
@@ -69,6 +65,9 @@ public class LoginActivity extends AppCompatActivity {
         initView();
         tvSignUp.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+        });
+        tvForgetPassword.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), ForgotPassActivity.class));
         });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -156,6 +155,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLoginWithEmail = findViewById(R.id.btn_login);
         btnLoginWithGoogle = findViewById(R.id.sign_in_button);
         btnLoginWithFacebook = findViewById(R.id.login_button);
+        tvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
+
 
         // auto fill
         edEmail.setText("accounttest@gmail.com");

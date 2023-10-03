@@ -1,12 +1,21 @@
 <resources>
     <string name="app_name">ShopSale</string>
-    <string name="title_home">Home</string>
-    <string name="title_category">Category</string>
-    <string name="title_cart">Cart</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_category">Danh mục</string>
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_dashboard">Danh sách người dùng</string>
+    <string name="title_chart">Thông kê, doanh thu</string>
+    <string name="title_notifications">Thông báo</string>
+    <string name="title_home_eng">Home</string>
+    <string name="title_category_eng">Category</string>
+    <string name="title_cart_eng">Cart</string>
+    <string name="title_dashboard_eng">Dashboard</string>
+    <string name="title_notifications_eng">Notifications</string>
+    <string name="title_modes">Chế độ tối</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_notification">No notification\n</string>
+
     <string name="web_client_id">300820864058-itm66caj4h69gr2ej0eh6i2d95f979ga.apps.googleusercontent.com</string>
     <string name="email">Email</string>
     <string name="pass">Mật khẩu</string>
@@ -16,10 +25,33 @@
     <string name="no_account">Chưa có tài khoản?</string>
     <string name="signup">Đăng ký.</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
+    <string name="tv_forgot_pass">Quên mật khẩu</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="change_pass">Đổi mật khẩu</string>
+    <string name="send">Gửi</string>
+    <string name="current_pass">Mật khẩu hiện tại</string>
+    <string name="new_pass">Mật khẩu mới</string>
+    <string name="reNew_pass">Nhập lại mật khẩu mới</string>
 
 
     <string name="facebook_app_id">1029801428156168</string>
     <string name="fb_login_protocol_scheme">fb1029801428156168</string>
     <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
+
+    <string name="cart">Giỏ hàng</string>
+    <string name="location">Địa chỉ giao hàng</string>
+    <string name="shop">Cửa hàng</string>
+    <string name="setting">Cài đặt</string>
+    <string name="your_order">Đơn hàng của tôi</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="so_dien_thoai">Số điện thoại</string>
+    <string name="ho_va_ten">Họ và tên</string>
+
+    <string name="add_new_address">Thêm địa chỉ</string>
+
+
+    <string name="update">Update</string>
+    <string name="delete">delete</string>
+    <string name="create">create</string>
 
 </resources>

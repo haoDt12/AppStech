@@ -1,6 +1,5 @@
 package com.datn.shopsale.ui.dashboard;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,18 +10,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.facebook.AccessToken;
-import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,13 +32,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
-
 public class DashboardFragment extends Fragment {
 
     private GoogleSignInClient mGoogleSignInClient;
     private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
+    private Button btnLogOut;
+    private LinearLayout lnCart;
+    private LinearLayout lnLocation;
+    private LinearLayout lnSetting;
+    private LinearLayout lnOrder;
+    private LinearLayout lnStore;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -59,9 +63,6 @@ public class DashboardFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
-    private Button btnLogOut;
-
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -70,8 +71,31 @@ public class DashboardFragment extends Fragment {
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
 
 
-        btnLogOut = (Button) view.findViewById(R.id.btn_log_out);
+        btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
+
+        lnCart = view.findViewById(R.id.ln_cart);
+        lnLocation = view.findViewById(R.id.ln_location);
+        lnSetting = view.findViewById(R.id.ln_setting);
+        lnOrder = view.findViewById(R.id.ln_order);
+        lnStore = view.findViewById(R.id.ln_store);
+
+        lnCart.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnLocation.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnSetting.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), SettingActivity.class));
+        });
+        lnOrder.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+        lnStore.setOnClickListener(view1 -> {
+//            startActivity(new Intent(getContext(), AddressActivity.class));
+        });
+
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
             btnLogOut.setVisibility(View.GONE);
@@ -84,7 +108,6 @@ public class DashboardFragment extends Fragment {
         btnLoginWithFacebook.setOnClickListener(v -> {
 //            updateUI();
 //            LoginManager.getInstance().logOut();
-
             Thread thread = new Thread(new Runnable() {
 
                 @Override
@@ -111,10 +134,10 @@ public class DashboardFragment extends Fragment {
         btnLogOut.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
-            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             Window window = dialog.getWindow();
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
+            window.getAttributes().windowAnimations = R.style.DialogAnimation;
             WindowManager.LayoutParams windowAttributes = window.getAttributes();
             window.setAttributes(windowAttributes);
             windowAttributes.gravity = Gravity.BOTTOM;

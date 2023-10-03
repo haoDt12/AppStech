@@ -1,4 +1,4 @@
-package com.datn.shopsale.adpater;
+package com.datn.shopsale.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.Product;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
 
