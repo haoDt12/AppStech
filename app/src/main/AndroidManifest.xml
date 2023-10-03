@@ -12,17 +12,15 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShopSale"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".ui.dashboard.AddressActivity"
-            android:name=".activities.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ForgetPassActivity"
             android:name=".ui.store.StoreActivity"
             android:exported="false" />
         <activity
@@ -63,11 +61,10 @@
         </activity>
         <activity
             android:name=".activities.SignUpActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false"
-            android:label="@string/app_name"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>
