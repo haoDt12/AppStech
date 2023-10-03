@@ -18,6 +18,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ForgetPassActivity"
             android:name=".ui.store.StoreActivity"
             android:exported="false" />
         <activity
