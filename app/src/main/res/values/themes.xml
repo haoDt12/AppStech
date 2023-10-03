@@ -16,6 +16,10 @@
         <item name="android:windowEnterAnimation">@anim/dialog_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_out</item>
     </style>
+    <style name="DialogAnimationOption">
+        <item name="android:windowExitAnimation">@anim/dialog_out</item>
+        <item name="android:windowEnterAnimation">@anim/dialog_in</item>
+    </style>
     <style name="theme_red">
         <item name="colorPrimary">#ED4E4E</item>
         <item name="colorPrimaryVariant">#FF6464</item>

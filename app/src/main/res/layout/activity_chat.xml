@@ -19,11 +19,22 @@
             android:id="@+id/id_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
+            <ImageButton
+                android:id="@+id/btn_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/menu_dots_24"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:background="#FFFFFF"
+                />
             <EditText
                 android:id="@+id/ed_chat"
-                android:layout_width="360dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:hint="Enter messagge"/>
             <ImageButton
                 android:id="@+id/imgbtn_send"
