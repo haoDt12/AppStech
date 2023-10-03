@@ -62,5 +62,8 @@ public class SettingActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             }
         });
+        imgBack.setOnClickListener(view -> {
+            super.onBackPressed();
+        });
     }
 }
