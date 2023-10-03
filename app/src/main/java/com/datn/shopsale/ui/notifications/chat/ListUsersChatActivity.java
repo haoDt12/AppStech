@@ -1,4 +1,4 @@
-package com.datn.shopsale.ui.chat;
+package com.datn.shopsale.ui.notifications.chat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
