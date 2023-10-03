@@ -3,7 +3,8 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_category">Danh mục</string>
     <string name="title_cart">Giỏ hàng</string>
-    <string name="title_dashboard">Người dùng</string>
+    <string name="title_dashboard">Danh sách người dùng</string>
+    <string name="title_chart">Thông kê, doanh thu</string>
     <string name="title_notifications">Thông báo</string>
     <string name="title_home_eng">Home</string>
     <string name="title_category_eng">Category</string>
