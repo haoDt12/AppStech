@@ -1,4 +1,4 @@
-package com.datn.shopsale.ui.setting;
+package com.datn.shopsale.ui.dashboard.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;

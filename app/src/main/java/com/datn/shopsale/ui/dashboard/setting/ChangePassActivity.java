@@ -1,4 +1,4 @@
-package com.datn.shopsale.activities;
+package com.datn.shopsale.ui.dashboard.setting;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,23 +14,22 @@ import com.datn.shopsale.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePassActivity extends AppCompatActivity {
     private TextInputEditText edPass,edPassNew,edRepassNew;
     private TextView tvError;
-
+    private ImageButton imgBack;
 
     private Button btnSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        setContentView(R.layout.activity_change_pass);
         init();
     }
     private void changePassword() {
@@ -56,26 +56,27 @@ public class ChangePasswordActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if (task.isSuccessful()) {
-                                                        Toast.makeText(ChangePasswordActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(ChangePassActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
                                                         finish();
                                                     } else {
-                                                        Toast.makeText(ChangePasswordActivity.this, "Mật khẩu phải có ký tự >= 6", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(ChangePassActivity.this, "Mật khẩu phải có ký tự >= 6", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             });
                                 } else {
                                     // Mật khẩu hiện tại xác minh thất bại
-                                    Toast.makeText(ChangePasswordActivity.this, "Xác minh mật khẩu hiện tại thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ChangePassActivity.this, "Xác minh mật khẩu hiện tại thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
             }
         } else {
             // mật khẩu mới và nhập lại
-            Toast.makeText(ChangePasswordActivity.this, "Mật khẩu mới không khớp", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChangePassActivity.this, "Mật khẩu mới không khớp", Toast.LENGTH_SHORT).show();
         }
     }
     private void init(){
+        imgBack = (ImageButton) findViewById(R.id.img_back);
         edPass = (TextInputEditText) findViewById(R.id.ed_pass);
         edPassNew = (TextInputEditText) findViewById(R.id.ed_passNew);
         edRepassNew = (TextInputEditText) findViewById(R.id.ed_RepassNew);
@@ -86,6 +87,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }else{
                 changePassword();
             }
+        });
+        imgBack.setOnClickListener(view -> {
+            super.onBackPressed();
         });
     }
     // check rỗng

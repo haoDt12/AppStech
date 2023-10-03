@@ -1,4 +1,4 @@
-package com.datn.shopsale.ui.store;
+package com.datn.shopsale.ui.dashboard.store;
 
 import androidx.appcompat.app.AppCompatActivity;
 

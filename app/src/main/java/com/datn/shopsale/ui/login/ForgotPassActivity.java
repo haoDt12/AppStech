@@ -1,13 +1,13 @@
-package com.datn.shopsale.activities;
+package com.datn.shopsale.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,15 +18,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ForgetPassActivity extends AppCompatActivity {
+public class ForgotPassActivity extends AppCompatActivity {
     private TextInputEditText edEmail;
     private Button btnSend;
+    private ImageButton imgBack;
     private ProgressBar progressBar;
     private static final int PROGRESS_DELAY = 5000; // Thời gian đặt trước 5 giây
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forget_pass);
+        setContentView(R.layout.activity_forgot_pass);
         init();
     }
     public void resetUserPassword(String email) {
@@ -61,6 +62,7 @@ public class ForgetPassActivity extends AppCompatActivity {
                 });
     }
     private void init(){
+        imgBack = (ImageButton) findViewById(R.id.img_back);
         edEmail = (TextInputEditText) findViewById(R.id.ed_email);
         btnSend = (Button) findViewById(R.id.btn_send);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -72,6 +74,9 @@ public class ForgetPassActivity extends AppCompatActivity {
             }else{
                 resetUserPassword(email);
             }
+        });
+        imgBack.setOnClickListener(view -> {
+            super.onBackPressed();
         });
     }
 }
