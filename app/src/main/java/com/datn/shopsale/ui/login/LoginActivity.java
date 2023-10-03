@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.ForgetPassActivity;
 import com.datn.shopsale.activities.SignUpActivity;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.utils.HashPassword;
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLoginWithEmail;
     private SignInButton btnLoginWithGoogle;
     private LoginButton btnLoginWithFacebook;
-    private TextView tvSignUp;
+    private TextView tvSignUp , tvForgetPassword;;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
 
@@ -69,6 +70,9 @@ public class LoginActivity extends AppCompatActivity {
         initView();
         tvSignUp.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+        });
+        tvForgetPassword.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), ForgetPassActivity.class));
         });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -156,6 +160,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLoginWithEmail = findViewById(R.id.btn_login);
         btnLoginWithGoogle = findViewById(R.id.sign_in_button);
         btnLoginWithFacebook = findViewById(R.id.login_button);
+        tvForgetPassword = (TextView) findViewById(R.id.tv_forget_password);
+
 
         // auto fill
         edEmail.setText("accounttest@gmail.com");

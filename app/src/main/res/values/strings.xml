@@ -3,7 +3,8 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_category">Danh mục</string>
     <string name="title_cart">Giỏ hàng</string>
-    <string name="title_dashboard">Người dùng</string>
+    <string name="title_dashboard">Danh sách người dùng</string>
+    <string name="title_chart">Thông kê, doanh thu</string>
     <string name="title_notifications">Thông báo</string>
     <string name="title_home_eng">Home</string>
     <string name="title_category_eng">Category</string>
@@ -25,6 +26,13 @@
     <string name="no_account">Chưa có tài khoản?</string>
     <string name="signup">Đăng ký.</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
+    <string name="tv_forgot_pass">Quên mật khẩu</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="change_pass">Đổi mật khẩu</string>
+    <string name="send">Gửi</string>
+    <string name="current_pass">Mật khẩu hiện tại</string>
+    <string name="new_pass">Mật khẩu mới</string>
+    <string name="reNew_pass">Nhập lại mật khẩu mới</string>
 
 
     <string name="facebook_app_id">1029801428156168</string>
