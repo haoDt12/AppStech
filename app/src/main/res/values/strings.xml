@@ -53,5 +53,9 @@
     <string name="update">Update</string>
     <string name="delete">delete</string>
     <string name="create">create</string>
+    <string name="phone">Số điện thoại</string>
+    <string name="address">Địa chỉ</string>
+    <string name="find_product">Tìm kiếm</string>
+    <string name="save">Save</string>
 
 </resources>
