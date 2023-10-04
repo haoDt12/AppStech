@@ -1,4 +1,4 @@
-package com.datn.shopsale.activities;
+package com.datn.shopsale.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,19 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.datn.shopsale.Interface.UserService;
-import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.io.File;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
