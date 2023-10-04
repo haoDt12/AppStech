@@ -74,10 +74,12 @@
     <string name="update">Update</string>
     <string name="delete">delete</string>
     <string name="create">create</string>
-    <string name="phone">Số điện thoại</string>
     <string name="address">Địa chỉ</string>
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
     <string name="email_not_authenticated">Email has not been authenticated</string>
-
+    <string name="contact">Liên hệ</string>
+    <string name="taglocation">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
+    <string name="tagstreet">Đường/ Tòa nhà</string>
+    <string name="taghome">Số nhà/ Tầng</string>
 </resources>
