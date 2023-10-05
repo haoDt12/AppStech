@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="15dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_doctor"
+            android:layout_centerVertical="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_user" />
+        <LinearLayout
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Em Túng"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:rating="4"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:numStars="5"
+                android:transformPivotX="0dp"
+                android:transformPivotY="0dp" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="2 ngày trước"
+            android:textSize="15sp"
+            android:layout_gravity="center_vertical"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:padding="10dp"
+        android:layout_marginLeft="80dp"
+        android:textAlignment="center"
+        android:text="Đánh giá rất tốt. Ứng dụng hoạt động mượt mà và hữu ích. Tôi rất hài lòng với nó. Qúa là tuyệt vời, khi mình gặp nhau"
+        android:background="@drawable/bg_tv"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+</LinearLayout>
