@@ -70,5 +70,11 @@
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
     <string name="email_not_authenticated">Email has not been authenticated</string>
+    <string name="payment">Thanh toán</string>
+    <string name="submit">Submit</string>
+    <string name="leave_a_comment">Leave a comment</string>
+    <string name="comment_product">Bình luận cho sản phẩm</string>
+    <string name="comment_title">Comment</string>
+    <string name="feedback_product">Đánh giá sản phẩm</string>
 
 </resources>
