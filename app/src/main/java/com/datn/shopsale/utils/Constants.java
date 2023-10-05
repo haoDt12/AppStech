@@ -1,6 +1,20 @@
 package com.datn.shopsale.utils;
 
 public class Constants {
+    public enum STATUS_CART {
+        DEFAULT(1),
+        DELETE(0),
+        DONE(2);
+        private final int value;
+
+        STATUS_CART(final int newValue) {
+            value = newValue;
+        }
+
+        public int getValue() {
+            return value;
+        }
+        }
 
     public static final String URL_DUCTUNG = "http://192.168.250.85:3000";
     public static final String URL_VUNG = "http://192.168.0.105:3000";
