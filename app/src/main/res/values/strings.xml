@@ -3,13 +3,15 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_category">Danh mục</string>
     <string name="title_cart">Giỏ hàng</string>
-    <string name="title_dashboard">Người dùng</string>
+    <string name="title_dashboard">Danh sách người dùng</string>
+    <string name="title_chart">Thông kê, doanh thu</string>
     <string name="title_notifications">Thông báo</string>
     <string name="title_home_eng">Home</string>
     <string name="title_category_eng">Category</string>
     <string name="title_cart_eng">Cart</string>
     <string name="title_dashboard_eng">Dashboard</string>
     <string name="title_notifications_eng">Notifications</string>
+    <string name="title_modes">Chế độ tối</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_notification">No notification\n</string>
@@ -17,6 +19,7 @@
     <string name="web_client_id">300820864058-itm66caj4h69gr2ej0eh6i2d95f979ga.apps.googleusercontent.com</string>
     <string name="email">Email</string>
     <string name="pass">Mật khẩu</string>
+    <string name="change_pass">Thay đổi mật khẩu</string>
     <string name="login">Đăng nhập</string>
     <string name="remember_me">Remember me</string>
     <string name="or">OR</string>
@@ -42,5 +45,7 @@
     <string name="setting">Cài đặt</string>
     <string name="your_order">Đơn hàng của tôi</string>
     <string name="log_out">Đăng xuất</string>
+    <string name="so_dien_thoai">Số điện thoại</string>
+    <string name="ho_va_ten">Họ và tên</string>
 
 </resources>

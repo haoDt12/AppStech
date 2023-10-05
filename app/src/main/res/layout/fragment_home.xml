@@ -33,8 +33,7 @@
         app:cardCornerRadius="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginStart="25sp"
-        android:layout_marginEnd="25sp"
-        android:background="@drawable/bg_search_view">
+        android:layout_marginEnd="25sp">
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vpg_slide_image"
             android:layout_width="match_parent"
