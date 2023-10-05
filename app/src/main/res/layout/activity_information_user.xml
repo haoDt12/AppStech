@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.user.InfomationUserActivity"
+    tools:context=".ui.dashboard.InformationUserActivity"
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/phone"
+                    android:text="@string/so_dien_thoai"
                     android:textSize="18sp"
                     android:textColor="#818181"
                     android:layout_alignParentLeft="true"/>
@@ -188,7 +188,7 @@
                 android:layout_height="60dp"
                 android:background="@drawable/bg_input_signup"
                 android:padding="20dp"
-                android:hint="@string/phone"
+                android:hint="@string/so_dien_thoai"
                 android:textColorHint="#BBAFAF"
                 android:layout_marginTop="20dp"/>
             <EditText

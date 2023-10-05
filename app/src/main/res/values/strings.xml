@@ -58,6 +58,15 @@
     <string name="log_out">Đăng xuất</string>
     <string name="so_dien_thoai">Số điện thoại</string>
     <string name="ho_va_ten">Họ và tên</string>
+    <string name="ten_nguoi_dung">tên người dùng</string>
+
+
+    <string name="nhan_dan">Nhãn dán</string>
+    <string name="add_file">Thêm file</string>
+    <string name="camera">Máy ảnh</string>
+    <string name="message_content">Nội dung tin nhắn</string>
+    <string name="chat">Chat's</string>
+
 
     <string name="add_new_address">Thêm địa chỉ</string>
 
@@ -65,7 +74,6 @@
     <string name="update">Update</string>
     <string name="delete">delete</string>
     <string name="create">create</string>
-    <string name="phone">Số điện thoại</string>
     <string name="address">Địa chỉ</string>
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
@@ -76,5 +84,8 @@
     <string name="comment_product">Bình luận cho sản phẩm</string>
     <string name="comment_title">Comment</string>
     <string name="feedback_product">Đánh giá sản phẩm</string>
-
+    <string name="contact">Liên hệ</string>
+    <string name="taglocation">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
+    <string name="tagstreet">Đường/ Tòa nhà</string>
+    <string name="taghome">Số nhà/ Tầng</string>
 </resources>
