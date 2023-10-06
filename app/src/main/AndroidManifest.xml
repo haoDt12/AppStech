@@ -18,6 +18,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.DetailProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.address.AddAddressActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.dashboard.address.AddressActivity"
             android:exported="false" />
         <activity
@@ -80,4 +89,5 @@
             android:name=".MainActivity"
             android:exported="false" />
     </application>
+
 </manifest>
