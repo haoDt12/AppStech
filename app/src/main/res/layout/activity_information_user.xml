@@ -10,18 +10,21 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:background="#F2F0F0">
-        <ImageView
+        <ImageButton
+            android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="45dp"
             android:layout_marginLeft="30dp"
-            android:src="@drawable/angle_left"/>
+            android:src="@drawable/angle_left"
+            android:background="#F2F0F0" />
         <ImageView
+            android:id="@+id/img_update"
             android:layout_width="35dp"
             android:layout_height="30dp"
             android:layout_marginTop="45dp"
             android:layout_marginRight="30dp"
-            android:src="@drawable/pencil"
+            android:src="@drawable/pencil_24"
             android:layout_alignParentRight="true"/>
 
         <ImageView
@@ -45,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/lnl_layout_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -158,6 +162,7 @@
 
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/lnl_layout_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"

@@ -42,7 +42,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentEnd="true"
                 android:background="#FFFFFF"
-                android:src="@drawable/baseline_send_24"/>
+                android:src="@drawable/send"/>
         </LinearLayout>
     </LinearLayout>
 

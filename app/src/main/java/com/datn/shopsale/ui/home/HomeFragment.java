@@ -66,9 +66,9 @@ public class HomeFragment extends Fragment {
         }, 2000, 2000);
 
         dataList.add(new Product("1", "Iphone 12", "23.000.000"));
-        dataList.add(new Product("1", "Iphone 6", "3.000.000"));
-        dataList.add(new Product("1", "Iphone 8", "10.000.000"));
-        dataList.add(new Product("1", "Iphone 10", "14.000.000"));
+        dataList.add(new Product("2", "Iphone 6", "3.000.000"));
+        dataList.add(new Product("3", "Iphone 8", "10.000.000"));
+        dataList.add(new Product("4", "Iphone 10", "14.000.000"));
 
         productAdapter = new ProductAdapter(dataList);
         binding.rcvListitem.setLayoutManager(new GridLayoutManager(getActivity(), 2));

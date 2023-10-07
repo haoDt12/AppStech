@@ -34,7 +34,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         holder.tvName.setText(product.getName());
         holder.tvPrice.setText(product.getPrice());
-
     }
 
     @Override

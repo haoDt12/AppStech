@@ -12,7 +12,7 @@
         android:layout_margin="15dp"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/button_bg"
+        android:background="@drawable/bg_button"
         android:backgroundTint="#FFFFFF"
         android:outlineAmbientShadowColor="#8E8E8E"
         app:srcCompat="@drawable/cross" />
@@ -44,7 +44,7 @@
                 android:layout_marginBottom="20dp"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:background="@drawable/button_bg"
+                android:background="@drawable/bg_button"
                 android:theme="@style/theme_red"
                 android:layout_width="280dp"
                 android:layout_height="35dp"

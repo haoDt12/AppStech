@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.datn.shopsale.R;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
+import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
@@ -43,6 +44,7 @@ public class DashboardFragment extends Fragment {
     private LinearLayout lnSetting;
     private LinearLayout lnOrder;
     private LinearLayout lnStore;
+    private LinearLayout lnlProfile;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -74,12 +76,16 @@ public class DashboardFragment extends Fragment {
         btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
 
+        lnlProfile = view.findViewById(R.id.lnl_profile);
         lnCart = view.findViewById(R.id.ln_cart);
         lnLocation = view.findViewById(R.id.ln_location);
         lnSetting = view.findViewById(R.id.ln_setting);
         lnOrder = view.findViewById(R.id.ln_order);
         lnStore = view.findViewById(R.id.ln_store);
 
+        lnlProfile.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), InformationUserActivity.class));
+        });
         lnCart.setOnClickListener(view1 -> {
 //            startActivity(new Intent(getContext(), AddressActivity.class));
         });
@@ -93,7 +99,7 @@ public class DashboardFragment extends Fragment {
 //            startActivity(new Intent(getContext(), AddressActivity.class));
         });
         lnStore.setOnClickListener(view1 -> {
-//            startActivity(new Intent(getContext(), AddressActivity.class));
+            startActivity(new Intent(getContext(), StoreActivity.class));
         });
 
         accessToken = AccessToken.getCurrentAccessToken();
