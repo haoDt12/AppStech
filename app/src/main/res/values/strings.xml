@@ -89,4 +89,5 @@
     <string name="taglocation">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
     <string name="tagstreet">Đường/ Tòa nhà</string>
     <string name="taghome">Số nhà/ Tầng</string>
+    <string name="notification">Notification</string>
 </resources>
