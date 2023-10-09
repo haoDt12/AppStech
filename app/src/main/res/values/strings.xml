@@ -12,6 +12,7 @@
     <string name="title_dashboard_eng">Dashboard</string>
     <string name="title_notifications_eng">Notifications</string>
     <string name="title_modes">Chế độ tối</string>
+    <string name="title_language">Ngôn ngữ</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_notification">No notification\n</string>
@@ -90,4 +91,6 @@
     <string name="tagstreet">Đường/ Tòa nhà</string>
     <string name="taghome">Số nhà/ Tầng</string>
     <string name="notification">Notification</string>
+    <string name="content_nofication">Nội dung thông báo</string>
+    <string name="topic_nofication">Tên thông báo</string>
 </resources>
