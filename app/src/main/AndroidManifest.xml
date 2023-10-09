@@ -18,7 +18,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activities.AddProductActivity"
+            android:name=".ui.login.ForgotPassActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.DetailProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.InformationUserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReviewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.dashboard.address.AddAddressActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.address.AddressActivity"

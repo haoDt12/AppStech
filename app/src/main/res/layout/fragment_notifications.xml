@@ -6,24 +6,58 @@
     android:layout_height="match_parent"
     tools:context=".ui.notifications.NotificationsFragment">
 
+    <RelativeLayout
+        android:id="@+id/rlt_direction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:src="@drawable/angle_left"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/notification"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_notification"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:id="@+id/rcv_notification"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/rlt_direction"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:gravity="center"
-        android:textSize="20dp"
         android:id="@+id/tv_no_notification"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:gravity="center"
         android:text="@string/no_notification"
+        android:textSize="20dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -55,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
     private SignInButton btnLoginWithGoogle;
     private LoginButton btnLoginWithFacebook;
     private TextView tvSignUp;
+    private TextView tvForgotPass;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
-
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
     private final int RC_SIGN_IN = 2;
@@ -73,7 +73,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initView();
-
+        tvForgotPass.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
+        });
         // Share preference
         preferenceManager = new PreferenceManager(this);
 
@@ -157,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLoginWithEmail = findViewById(R.id.btn_login_email);
         btnLoginWithGoogle = findViewById(R.id.btn_login_google);
         btnLoginWithFacebook = findViewById(R.id.btn_login_facebook);
-
+        tvForgotPass = (TextView) findViewById(R.id.tv_forgot_pass);
         // custom btn google
         //btnLoginWithGoogle.setSize(SignInButton.SIZE_WIDE);
         btnLoginWithGoogle.setColorScheme(SignInButton.COLOR_AUTO);
