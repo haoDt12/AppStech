@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
+import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
@@ -96,7 +97,7 @@ public class DashboardFragment extends Fragment {
             startActivity(new Intent(getContext(), SettingActivity.class));
         });
         lnOrder.setOnClickListener(view1 -> {
-//            startActivity(new Intent(getContext(), AddressActivity.class));
+            startActivity(new Intent(getContext(), MyOrderActivity.class));
         });
         lnStore.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), StoreActivity.class));
