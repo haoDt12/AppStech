@@ -53,6 +53,7 @@
     <string name="cart">Giỏ hàng</string>
     <string name="location">Địa chỉ giao hàng</string>
     <string name="shop">Cửa hàng</string>
+    <string name="addproduct">Thêm sản phẩm</string>
     <string name="setting">Cài đặt</string>
     <string name="your_order">Đơn hàng của tôi</string>
     <string name="log_out">Đăng xuất</string>
@@ -74,10 +75,18 @@
     <string name="update">Update</string>
     <string name="delete">delete</string>
     <string name="create">create</string>
+    <string name="create_product">Thêm sản phẩm</string>
     <string name="phone">Số điện thoại</string>
     <string name="address">Địa chỉ</string>
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
     <string name="email_not_authenticated">Email has not been authenticated</string>
+
+
+    <string name="color1">Trắng</string>
+    <string name="color2">Đỏ</string>
+    <string name="color3">Tím</string>
+    <string name="color4">Hồng</string>
+    <string name="color5">Đen</string>
 
 </resources>

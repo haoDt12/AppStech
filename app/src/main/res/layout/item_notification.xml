@@ -1,51 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginTop="10dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="10dp">
     <ImageView
         android:id="@+id/img_notification"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/image_icon_message"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:id="@+id/tv_title_notification"
-        android:layout_width="wrap_content"
+        android:src="@drawable/baseline_push_pin_24"
+        android:layout_gravity="center"/>
+    <LinearLayout
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Chào một ngày mới"
-        app:layout_constraintStart_toEndOf="@+id/img_notification"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_message_notification"
-        android:textColor="@color/black"
+        android:orientation="vertical"
         android:layout_marginLeft="10dp"
-        android:text="Chúc một ngày mới tốt lành"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/img_notification"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_notification"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_gravity="center">
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/tv_title_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chào một ngày mới"
+            app:layout_constraintStart_toEndOf="@+id/img_notification"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_message_notification"
+            android:textColor="@color/gray"
+            android:layout_marginLeft="10dp"
+            android:text="Chúc một ngày mới tốt lành"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <TextView
-        android:textColor="@color/black"
-        android:layout_marginRight="20dp"
+        android:layout_gravity="center"
         android:id="@+id/tv_month_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:text="6th"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textColor="@color/gray"/>
+</LinearLayout>
