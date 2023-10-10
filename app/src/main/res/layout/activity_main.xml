@@ -21,7 +21,12 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
-        android:background="?android:attr/windowBackground"
-        app:menu="@menu/bottom_nav_menu" />
+        android:padding="15dp"
+        android:background="@drawable/bg_bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
+        app:itemIconSize="18dp"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:itemBackground="@drawable/navigation_bar_selector"/>
 
 </RelativeLayout>

@@ -210,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                     currentUser = FirebaseAuth.getInstance().getCurrentUser();
                     if (currentUser != null) {
                         boolean isEmailVerified = currentUser.isEmailVerified();
-                        if (isEmailVerified) {
+                        if (!isEmailVerified) {
                             if (isRemember) {
                                 preferenceManager.putString(Constants.KEY_EMAIL, email);
                                 preferenceManager.putString(Constants.KEY_PASS, pass);
@@ -249,7 +249,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 

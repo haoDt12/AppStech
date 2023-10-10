@@ -156,6 +156,7 @@ public class DashboardFragment extends Fragment {
             });
             btnConfirm.setOnClickListener(view2 -> {
                 signOut();
+
             });
             dialog.show();
         });
@@ -163,7 +164,7 @@ public class DashboardFragment extends Fragment {
 
     private void updateUI() {
         startActivity(new Intent(getContext(), LoginActivity.class));
-        onDestroy();
+        requireActivity().finish();
     }
 
     private void signOut() {
