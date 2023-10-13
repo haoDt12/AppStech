@@ -103,5 +103,6 @@
     <string name="taghome">Số nhà/ Tầng</string>
     <string name="notification">Notification</string>
     <string name="content_nofication">Nội dung thông báo</string>
+    <string name="date_nofication">06/01/2023</string>
     <string name="topic_nofication">Tên thông báo</string>
 </resources>
