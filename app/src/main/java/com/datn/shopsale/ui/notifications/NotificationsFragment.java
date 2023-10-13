@@ -65,44 +65,56 @@ public class NotificationsFragment extends Fragment {
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 1"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 2"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 3"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 4"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 5"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 6"));
         notificationList.add(new Notification("0",
                 "0",
                 "Thông báo",
                 "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "6th",
+                "06/01/2023",
                 "Đây là thông báo 7"));
+        notificationList.add(new Notification("0",
+                "0",
+                "Thông báo",
+                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
+                "06/01/2023",
+                "Đây là thông báo 8"));
+        notificationList.add(new Notification("0",
+                "0",
+                "Thông báo",
+                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
+                "06/01/2023",
+                "Đây là thông báo 9"));
         notificationAdapter = new NotificationAdapter(notificationList,getActivity());
         binding.rcvNotification.setAdapter(notificationAdapter);
     }
