@@ -3,6 +3,7 @@ package com.datn.shopsale.ui.cart;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.OrderActivity;
 import com.datn.shopsale.adapter.CartAdapter;
 import com.datn.shopsale.models.Cart;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -62,7 +64,7 @@ public class CartFragment extends Fragment implements ICartView, IOnTouchHelperL
         cartPresenter = new CartPresenter(this);
         cartPresenter.getDataCart(getContext());
 
-        btnCheckout.setOnClickListener(v -> showFeedbackDialog());
+        btnCheckout.setOnClickListener(v -> {startActivity(new Intent(getContext(), OrderActivity.class));});
         return root;
     }
 
