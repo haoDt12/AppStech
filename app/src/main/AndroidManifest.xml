@@ -18,6 +18,15 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".pay.OTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pay.InfomationBankActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pay.ChooseBankActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.OrderActivity"
             android:exported="false" />
         <activity
@@ -100,7 +109,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="false">
-
         </activity>
     </application>
 
