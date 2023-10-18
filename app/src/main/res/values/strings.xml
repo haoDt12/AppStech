@@ -82,6 +82,23 @@
 
 
     <string name="add_new_address">Thêm địa chỉ</string>
+    <string name="choose_bank">Chọn ngân hàng</string>
+    <string name="pay_bank">Thanh toán ngân hàng</string>
+    <string name="check_otp">Xác thực OTP</string>
+    <string name="info_order">Thông tin đơn hàng</string>
+    <string name="price_pay">20.000VNĐ</string>
+    <string name="price_product">10.000VNĐ</string>
+    <string name="code_orders">123456</string>
+    <string name="supplier">Công ty TNHH 1 thành viên</string>
+    <string name="code_bank">Nhập số thẻ</string>
+    <string name="name_users_bank">Tên chủ thẻ</string>
+    <string name="day_of_release">Ngày phát hành</string>
+    <string name="continue_">Tiếp tục</string>
+    <string name="cancle_">Huỷ thanh toán</string>
+    <string name="pay">Thanh toán</string>
+    <string name="otp">Nhập mã OTP</string>
+    <string name="text_otp">OTP đã được gửi đến số điện thoại đăng ký. Quý khách vui lòng nhập mã OTP để tiếp tục thực hiện giao dịch.</string>
+    <string name="time_check_otp">Giao dịch hết hạn sau: </string>
 
 
     <string name="update">Update</string>
@@ -90,6 +107,8 @@
     <string name="address">Địa chỉ</string>
     <string name="find_product">Tìm kiếm</string>
     <string name="save">Save</string>
+    <string name="ok">Ok</string>
+    <string name="cancle">Cancle</string>
     <string name="email_not_authenticated">Email has not been authenticated</string>
     <string name="payment">Thanh toán</string>
     <string name="submit">Submit</string>
@@ -105,4 +124,17 @@
     <string name="content_nofication">Nội dung thông báo</string>
     <string name="date_nofication">06/01/2023</string>
     <string name="topic_nofication">Tên thông báo</string>
+    <string name="pay_title">Số tiền thanh toán</string>
+    <string name="product_value">Giá trị đơn hàng</string>
+    <string name="fees">Phí giao dịch</string>
+    <string name="ship_code">Mã đơn hàng</string>
+    <string name="provider">Nhà cung cấp</string>
+    <string name="card_number">Số thẻ</string>
+    <string name="name_users_card">Tên chủ thẻ</string>
+    <string name="date_start">Ngày phát hành</string>
+
+
+    <string name="minuter">10</string>
+    <string name="m_s">:</string>
+    <string name="secons">59</string>
 </resources>
