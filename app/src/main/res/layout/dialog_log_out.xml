@@ -13,7 +13,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/bg_button"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="@color/mauve"
         android:outlineAmbientShadowColor="#8E8E8E"
         app:srcCompat="@drawable/cross" />
 
@@ -21,7 +21,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp">
+        app:cardCornerRadius="20dp"
+        android:backgroundTint="@color/mauve">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,10 +45,10 @@
                 android:layout_marginBottom="20dp"
                 android:textAllCaps="false"
                 android:textSize="12sp"
-                android:background="@drawable/bg_button"
-                android:theme="@style/theme_red"
+                app:cornerRadius="20dp"
+                android:backgroundTint="@color/red"
                 android:layout_width="280dp"
-                android:layout_height="35dp"
+                android:layout_height="45dp"
                 android:gravity="center"
                 android:layout_gravity="center_horizontal"
                 android:text="Đăng xuất" />

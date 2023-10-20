@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/coner_chat"
         android:padding="10dp"
-        android:text="@string/message_content_vie"
+        android:text="@string/message_content"
         android:textColor="@color/white"
         android:textSize="20sp" />
 </LinearLayout>

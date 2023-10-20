@@ -15,35 +15,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom">
-        <LinearLayout
+
+        <RelativeLayout
             android:id="@+id/id_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:padding="10dp">
+
             <ImageButton
                 android:id="@+id/btn_option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/menu_dots_24"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:background="#FFFFFF"
-                />
+                android:src="@drawable/menu_dots_24" />
+
             <EditText
                 android:id="@+id/ed_chat"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
                 android:layout_marginLeft="10dp"
-                android:hint="Enter messagge"/>
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/imgbtn_send"
+                android:layout_toEndOf="@+id/btn_option"
+                android:hint="Enter messagge" />
+
             <ImageButton
                 android:id="@+id/imgbtn_send"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+
+                android:layout_marginTop="10dp"
                 android:background="#FFFFFF"
-                android:src="@drawable/send"/>
-        </LinearLayout>
+                android:src="@drawable/send" />
+        </RelativeLayout>
     </LinearLayout>
 
 </RelativeLayout>

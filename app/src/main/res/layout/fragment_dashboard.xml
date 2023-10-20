@@ -90,7 +90,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/my_order_vie"
+                   android:text="@string/your_order"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -174,7 +174,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/chat_vie"
+                   android:text="@string/chat"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -215,7 +215,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/setting_vie"
+                   android:text="@string/setting"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -257,7 +257,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/shop_vie"
+                   android:text="@string/shop"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -283,7 +283,7 @@
            android:id="@+id/btn_log_out"
            android:layout_width="250dp"
            android:layout_height="wrap_content"
-           android:text="@string/log_out_vie"
+           android:text="@string/log_out"
            android:textAllCaps="false"
            android:textSize="16dp"
            android:background="@drawable/bg_button"

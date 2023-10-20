@@ -18,6 +18,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pay.ChooseBankActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pay.OTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".pay.InformationBankActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.OrderActivity"
             android:exported="false" />
         <activity
@@ -54,13 +66,13 @@
             android:name=".ui.dashboard.store.user.ListUsersActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.notifications.chat.ListUsersChatActivity"
+            android:name=".ui.dashboard.chat.ChatActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.setting.ChangePassActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.notifications.chat.ChatActivity"
+            android:name=".ui.dashboard.chat.ListUsersChatActivity"
             android:exported="false" />
 
         <meta-data

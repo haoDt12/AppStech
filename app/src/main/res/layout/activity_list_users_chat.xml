@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="30dp"
-            android:text="@string/chat_vie"
+            android:text="@string/chat"
             android:textColor="@color/black"
             android:textSize="30dp"
             android:textStyle="bold" />

@@ -3,22 +3,16 @@ package com.datn.shopsale.pay;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class InfomationBankActivity extends AppCompatActivity {
+public class InformationBankActivity extends AppCompatActivity {
     private EditText edDayOfRelease;
 
 
@@ -26,7 +20,8 @@ public class InfomationBankActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_infomation_bank);
-        edDayOfRelease = (EditText) findViewById(R.id.ed_day_of_release);
+        edDayOfRelease = findViewById(R.id.ed_date);
+        edDayOfRelease.setKeepScreenOn(false);
         edDayOfRelease.setOnClickListener(v -> {
             chooseDate();
         });

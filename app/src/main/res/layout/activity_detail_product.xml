@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_danhgia"
-            android:text="@string/review_vie"
+            android:text="@string/review"
             android:backgroundTint="#EAEAEA"
             android:shadowColor="#0000"
             android:textColor="@color/black"

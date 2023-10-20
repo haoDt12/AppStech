@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pay.InfomationBankActivity">
+    tools:context=".pay.InformationBankActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="@string/price_pay"
+                    android:text="1000000"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="@string/price_product"
+                    android:text="20000"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="@string/price_product"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="@string/code_orders"
+                    android:text="12312398127"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -170,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="5dp"
-                    android:text="@string/supplier"
+                    android:text="CTTNHH"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -217,7 +217,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/bg_input_signup"
-                android:hint="@string/code_bank">
+                android:hint="@string/ten_nguoi_dung">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_user_name"
@@ -234,7 +234,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:hint="@string/code_bank">
+                android:hint="@string/date_vie">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_date"
@@ -261,7 +261,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:backgroundTint="#ccc"
-                android:text="@string/cancle_"
+                android:text="@string/cancel"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 android:textStyle="bold" />

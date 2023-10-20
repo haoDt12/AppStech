@@ -1,37 +1,17 @@
 <resources>
     <string name="app_name">ShopSale</string>
+    //VIE Language
     <string name="title_home">Trang chủ</string>
     <string name="title_category">Danh mục</string>
     <string name="title_cart">Giỏ hàng</string>
     <string name="title_dashboard">Người dùng</string>
     <string name="title_chart">Thông kê, doanh thu</string>
     <string name="title_notifications">Thông báo</string>
-    <string name="title_home_eng">Home</string>
-    <string name="title_category_eng">Category</string>
-    <string name="title_cart_eng">Cart</string>
-    <string name="title_dashboard_eng">Dashboard</string>
-    <string name="title_notifications_eng">Notifications</string>
-    <string name="title_modes">Chế độ tối</string>
-    <string name="title_language">Ngôn ngữ</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="no_notification">No notification\n</string>
-
-    <string name="web_client_id">300820864058-itm66caj4h69gr2ej0eh6i2d95f979ga.apps.googleusercontent.com</string>
+    <string name="modes">Chế độ tối</string>
+    <string name="language">Ngôn ngữ</string>
     <string name="email">Email</string>
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
-    <string name="login_google">Đăng nhập với Google</string>
-    <string name="login_success">Đăng nhập thành công</string>
-    <string name="logout_success">Đăng xuất thành công</string>
-    <string name="requireForm">Điền đủ thông tin</string>
-    <string name="requirePass"><![CDATA[Password > 6]]></string>
-    <string name="google_login_session">Đang trong phiên đăng nhập google</string>
-    <string name="fb_auth_login_session">Đang trong phiên đăng nhập email firebase auth</string>
-    <string name="facebook_login_session">Đang trong phiên đăng nhập facebook</string>
-    <string name="verify_email_msg">Vui lòng xác thực email trước khi đăng nhập</string>
-    <string name="remember_me">Remember me</string>
-    <string name="or">OR</string>
     <string name="no_account">Chưa có tài khoản?</string>
     <string name="signup">Đăng ký.</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
@@ -42,12 +22,35 @@
     <string name="current_pass">Mật khẩu hiện tại</string>
     <string name="new_pass">Mật khẩu mới</string>
     <string name="reNew_pass">Nhập lại mật khẩu mới</string>
+    <string name="agree">Đồng ý</string>
 
 
+
+    //ENG Language
+    <string name="title_home_eng">Home</string>
+    <string name="title_category_eng">Category</string>
+    <string name="title_cart_eng">Cart</string>
+    <string name="title_dashboard_eng">Dashboard</string>
+    <string name="title_notifications_eng">Notifications</string>
+    <string name="no_notification_eng">No notification\n</string>
+    <string name="remember_me_eng">Remember me</string>
+    <string name="or_eng">Or</string>
+
+
+    //Collection
+    <string name="web_client_id">300820864058-itm66caj4h69gr2ej0eh6i2d95f979ga.apps.googleusercontent.com</string>
+    <string name="login_google">Đăng nhập với Google</string>
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="logout_success">Đăng xuất thành công</string>
+    <string name="requireForm">Điền đủ thông tin</string>
+    <string name="requirePass"><![CDATA[Password > 6]]></string>
+    <string name="google_login_session">Đang trong phiên đăng nhập google</string>
+    <string name="fb_auth_login_session">Đang trong phiên đăng nhập email firebase auth</string>
+    <string name="facebook_login_session">Đang trong phiên đăng nhập facebook</string>
+    <string name="verify_email_msg">Vui lòng xác thực email trước khi đăng nhập</string>
     <string name="facebook_app_id">1029801428156168</string>
     <string name="fb_login_protocol_scheme">fb1029801428156168</string>
     <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
-    <string name="agree">Đồng ý</string>
     <string name="send_verify_email">Gửi email xác nhận</string>
     <string name="check_email_verify">Đã gửi thành công \nVui lòng kiểm tra email xác thực</string>
 
@@ -79,8 +82,6 @@
     <string name="camera">Máy ảnh</string>
     <string name="message_content">Nội dung tin nhắn</string>
     <string name="chat">Chat</string>
-
-
     <string name="add_new_address">Thêm địa chỉ</string>
 
 
@@ -105,4 +106,22 @@
     <string name="content_nofication">Nội dung thông báo</string>
     <string name="date_nofication">06/01/2023</string>
     <string name="topic_nofication">Tên thông báo</string>
+    <string name="choose_bank">Lựa chọn ngân hàng</string>
+    <string name="pay_bank">Ngân hàng</string>
+    <string name="info_order">Thông tin đơn hàng</string>
+    <string name="pay_title">Số tiền thanh toán</string>
+    <string name="product_value">Giá trị đơn hàng</string>
+    <string name="fees">Phí giao dịch</string>
+    <string name="ship_code">Mã đơn hàng</string>
+    <string name="provider">Nhà cung cấp</string>
+    <string name="code_bank">Số thẻ</string>
+    <string name="cancel">Thoát</string>
+    <string name="continue_">Tiếp tục</string>
+    <string name="date_vie">Ngày</string>
+    <string name="check_otp">Xác thực OTP</string>
+    <string name="m_s">Giây</string>
+    <string name="time_check_otp">Thời gian</string>
+    <string name="otp">Nhập mã OTP</string>
+    <string name="text_otp">OTP đã gủi về điện thoại</string>
+    <string name="pay">Thanh toán</string>
 </resources>

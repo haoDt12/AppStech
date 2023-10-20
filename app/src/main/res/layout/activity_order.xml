@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/your_address_vie"
+            android:text="@string/your_address"
             android:textAlignment="center"
             android:textColor="#F0000000"
             android:textSize="20sp"
@@ -115,7 +115,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/payment_method_vie"
+            android:text="@string/payment_method"
             android:textAlignment="center"
             android:textColor="#F0000000"
             android:textSize="20sp"
@@ -131,7 +131,7 @@
                 android:textSize="8sp"
                 android:layout_marginRight="10dp"
                 app:cornerRadius="10dp"
-                android:text="@string/cod_vie"/>
+                android:text="@string/cod"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:padding="1dp"
-                android:text="@string/total_money_product_vie"
+                android:text="@string/total_money_product"
                 android:textColor="#373b54"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -220,7 +220,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:padding="1dp"
-                android:text="@string/shipping_vie"
+                android:text="@string/shipping"
                 android:textColor="#373b54"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -250,7 +250,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="1dp"
-                    android:text="@string/total_vie"
+                    android:text="@string/total"
                     android:layout_marginRight="15dp"
                     android:textColor="#373b54"
                     android:textSize="15sp"
@@ -268,7 +268,7 @@
                     android:textSize="8sp"
                     android:layout_marginLeft="20dp"
                     app:cornerRadius="10dp"
-                    android:text="@string/place_order_vie"/>
+                    android:text="@string/place_order"/>
             </LinearLayout>
         </RelativeLayout>
 
