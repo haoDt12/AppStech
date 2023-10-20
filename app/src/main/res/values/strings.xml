@@ -1,97 +1,26 @@
 <resources>
     <string name="app_name">ShopSale</string>
-
-    //VIE Language
-    <string name="title_home_vie">Trang chủ</string>
-    <string name="title_category_vie">Danh mục</string>
-    <string name="title_cart_vie">Giỏ hàng</string>
-    <string name="title_dashboard_vie">Người dùng</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_category">Danh mục</string>
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_dashboard">Người dùng</string>
     <string name="title_chart">Thông kê, doanh thu</string>
-    <string name="title_notifications_vie">Thông báo</string>
-    <string name="modes_vie">Chế độ tối</string>
-    <string name="language_vie">Ngôn ngữ</string>
-    <string name="email_vie">Email</string>
-    <string name="pass_vie">Mật khẩu</string>
-    <string name="login_vie">Đăng nhập</string>
-
-    <string name="remember_me">Remember me</string>
-    <string name="or">OR</string>
-
-    <string name="no_account_vie">Chưa có tài khoản?</string>
-    <string name="signup_vie">Đăng ký.</string>
-    <string name="forgot_pass_vie">Quên mật khẩu?</string>
-    //??
-    <string name="tv_forgot_pass">Quên mật khẩu</string>
-    <string name="enter_email_vie">Nhập email</string>
-    <string name="change_pass_vie">Đổi mật khẩu</string>
-    <string name="send_vie">Gửi</string>
-    <string name="current_pass_vie">Mật khẩu hiện tại</string>
-    <string name="new_pass_vie">Mật khẩu mới</string>
-    <string name="reNew_pass_vie">Nhập lại mật khẩu mới</string>
-    <string name="agree_vie">Đồng ý</string>
-    //??
-    <string name="cart">Giỏ hàng</string>
-    <string name="order">Đặt hàng</string>
-    <string name="your_address_vie">Địa chỉ nhận hàng</string>
-    <string name="payment_method_vie">Phương thức thanh toán</string>
-    <string name="cod_vie">Thanh toán khi nhận</string>
-    <string name="quantity_vie">Số lượng</string>
-    <string name="total_money_product_vie">Tổng tiền hàng:</string>
-    <string name="shipping_vie">Phí vận chuyển:</string>
-    <string name="total_vie">Tổng:</string>\
-    <string name="place_order_vie">Đặt hàng</string>
-
-    //??
-    <string name="location">Địa chỉ giao hàng</string>
-    <string name="shop_vie">Cửa hàng</string>
-    <string name="setting_vie">Cài đặt</string>
-    <string name="my_order_vie">Đơn hàng của tôi</string>
-    <string name="log_out_vie">Đăng xuất</string>
-    <string name="phone_number_vie">Số điện thoại</string>
-    <string name="full_name_vie">Họ và tên</string>
-    <string name="review_vie">Đánh giá</string>
-    <string name="username_vie">Tên người dùng</string>
-
-
-    <string name="sticker_vie">Nhãn dán</string>
-    <string name="add_file_vie">Thêm file</string>
-    <string name="camera_vie">Máy ảnh</string>
-    <string name="message_content_vie">Nội dung tin nhắn</string>
-    <string name="chat_vie">Chat</string>
-    <string name="add_new_address_vie">Thêm địa chỉ</string>
-    <string name="update">Update</string>
-    <string name="delete">Delete</string>
-    <string name="create">Create</string>
-    <string name="address_vie">Địa chỉ</string>
-    <string name="search_vie">Tìm kiếm</string>
-    <string name="save">Save</string>
-
-    <string name="payment">Thanh toán</string>
-    <string name="submit">Submit</string>
-    <string name="leave_a_comment">Leave a comment</string>
-    <string name="comment_product">Bình luận cho sản phẩm</string>
-    <string name="comment_title">Comment</string>
-    <string name="feedback_product">Đánh giá sản phẩm</string>
-    <string name="contact">Liên hệ</string>
-    <string name="tagetlocation">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
-    <string name="tagstreet">Đường/ Tòa nhà</string>
-    <string name="taghome">Số nhà/ Tầng</string>
-    <string name="notification">Notification</string>
-
-    //ENG Language
-
+    <string name="title_notifications">Thông báo</string>
     <string name="title_home_eng">Home</string>
     <string name="title_category_eng">Category</string>
     <string name="title_cart_eng">Cart</string>
     <string name="title_dashboard_eng">Dashboard</string>
     <string name="title_notifications_eng">Notifications</string>
+    <string name="title_modes">Chế độ tối</string>
+    <string name="title_language">Ngôn ngữ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_notification">No notification\n</string>
 
-    //Collection
     <string name="web_client_id">300820864058-itm66caj4h69gr2ej0eh6i2d95f979ga.apps.googleusercontent.com</string>
-    <string name="email_not_authenticated">Email has not been authenticated</string>
-    <string name="send_verify_email">Gửi email xác nhận</string>
-    <string name="check_email_verify">Đã gửi thành công \nVui lòng kiểm tra email xác thực</string>
+    <string name="email">Email</string>
+    <string name="pass">Mật khẩu</string>
+    <string name="login">Đăng nhập</string>
     <string name="login_google">Đăng nhập với Google</string>
     <string name="login_success">Đăng nhập thành công</string>
     <string name="logout_success">Đăng xuất thành công</string>
@@ -101,7 +30,79 @@
     <string name="fb_auth_login_session">Đang trong phiên đăng nhập email firebase auth</string>
     <string name="facebook_login_session">Đang trong phiên đăng nhập facebook</string>
     <string name="verify_email_msg">Vui lòng xác thực email trước khi đăng nhập</string>
+    <string name="remember_me">Remember me</string>
+    <string name="or">OR</string>
+    <string name="no_account">Chưa có tài khoản?</string>
+    <string name="signup">Đăng ký.</string>
+    <string name="forgot_pass">Quên mật khẩu?</string>
+    <string name="tv_forgot_pass">Quên mật khẩu</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="change_pass">Đổi mật khẩu</string>
+    <string name="send">Gửi</string>
+    <string name="current_pass">Mật khẩu hiện tại</string>
+    <string name="new_pass">Mật khẩu mới</string>
+    <string name="reNew_pass">Nhập lại mật khẩu mới</string>
+
+
     <string name="facebook_app_id">1029801428156168</string>
     <string name="fb_login_protocol_scheme">fb1029801428156168</string>
     <string name="facebook_client_token">78c50786445bf6a56de3aa87c43d5a30</string>
+    <string name="agree">Đồng ý</string>
+    <string name="send_verify_email">Gửi email xác nhận</string>
+    <string name="check_email_verify">Đã gửi thành công \nVui lòng kiểm tra email xác thực</string>
+
+    <string name="cart">Giỏ hàng</string>
+    <string name="order">Đặt hàng</string>
+    <string name="your_address">Địa chỉ nhận hàng</string>
+    <string name="payment_method">Phương thức thanh toán</string>
+    <string name="cod">Thanh toán khi nhận</string>
+    <string name="quantity">Số lượng</string>
+    <string name="total_money_product">Tổng tiền hàng:</string>
+    <string name="shipping">Phí vận chuyển:</string>
+    <string name="total">Tổng:</string>\
+    <string name="place_order">Đặt hàng</string>
+
+
+    <string name="location">Địa chỉ giao hàng</string>
+    <string name="shop">Cửa hàng</string>
+    <string name="setting">Cài đặt</string>
+    <string name="your_order">Đơn hàng của tôi</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="so_dien_thoai">Số điện thoại</string>
+    <string name="ho_va_ten">Họ và tên</string>
+    <string name="review">Đánh giá</string>
+    <string name="ten_nguoi_dung">tên người dùng</string>
+
+
+    <string name="nhan_dan">Nhãn dán</string>
+    <string name="add_file">Thêm file</string>
+    <string name="camera">Máy ảnh</string>
+    <string name="message_content">Nội dung tin nhắn</string>
+    <string name="chat">Chat</string>
+
+
+    <string name="add_new_address">Thêm địa chỉ</string>
+
+
+    <string name="update">Update</string>
+    <string name="delete">delete</string>
+    <string name="create">create</string>
+    <string name="address">Địa chỉ</string>
+    <string name="find_product">Tìm kiếm</string>
+    <string name="save">Save</string>
+    <string name="email_not_authenticated">Email has not been authenticated</string>
+    <string name="payment">Thanh toán</string>
+    <string name="submit">Submit</string>
+    <string name="leave_a_comment">Leave a comment</string>
+    <string name="comment_product">Bình luận cho sản phẩm</string>
+    <string name="comment_title">Comment</string>
+    <string name="feedback_product">Đánh giá sản phẩm</string>
+    <string name="contact">Liên hệ</string>
+    <string name="taglocation">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
+    <string name="tagstreet">Đường/ Tòa nhà</string>
+    <string name="taghome">Số nhà/ Tầng</string>
+    <string name="notification">Notification</string>
+    <string name="content_nofication">Nội dung thông báo</string>
+    <string name="date_nofication">06/01/2023</string>
+    <string name="topic_nofication">Tên thông báo</string>
 </resources>
