@@ -210,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
                     currentUser = FirebaseAuth.getInstance().getCurrentUser();
                     if (currentUser != null) {
                         boolean isEmailVerified = currentUser.isEmailVerified();
-                        if (!isEmailVerified) {
+                        if (isEmailVerified) {
                             if (isRemember) {
                                 preferenceManager.putString(Constants.KEY_EMAIL, email);
                                 preferenceManager.putString(Constants.KEY_PASS, pass);
@@ -306,7 +306,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityIfNeeded(signInIntent, RC_SIGN_IN);
     }
 
     private void signOut() {
@@ -353,6 +353,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         btnConfirm.setOnClickListener(view2 -> {
             sendVerifyEmail();
+            dialog.dismiss();
         });
         dialog.show();
     }

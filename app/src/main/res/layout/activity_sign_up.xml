@@ -37,7 +37,7 @@
             android:layout_height="60dp"
             android:background="@drawable/bg_input_signup"
             android:padding="20dp"
-            android:hint="@string/ho_va_ten"
+            android:hint="@string/full_name_vie"
             android:textColorHint="#BBAFAF"
             />
         <EditText
@@ -49,7 +49,7 @@
             android:layout_height="60dp"
             android:background="@drawable/bg_input_signup"
             android:padding="20dp"
-            android:hint="@string/so_dien_thoai"
+            android:hint="@string/phone_number_vie"
             android:textColorHint="#BBAFAF"
             />
         <EditText

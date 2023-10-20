@@ -26,7 +26,7 @@
             android:background="@drawable/bg_search_view"
             android:iconifiedByDefault="false"
             android:queryBackground="@android:color/transparent"
-            android:queryHint="@string/find_product" />
+            android:queryHint="@string/search_vie" />
         <ImageView
             android:id="@+id/img_cart"
             android:layout_width="wrap_content"

@@ -45,7 +45,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="@string/enter_email"/>
+            android:text="@string/enter_email_vie"/>
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
@@ -78,7 +78,7 @@
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/send"
+        android:text="@string/send_vie"
         app:cornerRadius="30dp" />
 
 </RelativeLayout>

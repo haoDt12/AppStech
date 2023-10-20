@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.notifications.chat.ListUsersChatActivity"
+    tools:context=".ui.dashboard.chat.ListUsersChatActivity"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="30dp"
-            android:text="@string/chat"
+            android:text="@string/chat_vie"
             android:textColor="@color/black"
             android:textSize="30dp"
             android:textStyle="bold" />

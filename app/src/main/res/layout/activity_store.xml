@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="@string/shop"
+            android:text="@string/shop_vie"
             android:textColor="@color/black"
             android:textSize="30dp"
             android:textStyle="bold" />
@@ -58,7 +58,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_dashboard"
+                android:text="@string/title_dashboard_vie"
                 android:textSize="20dp"
                 android:textColor="@color/black"/>
 

@@ -62,7 +62,7 @@
        </LinearLayout>
 
        <LinearLayout
-           android:id="@+id/ln_cart"
+           android:id="@+id/ln_order"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:orientation="horizontal"
@@ -71,12 +71,12 @@
                android:layout_width="50dp"
                android:layout_height="50dp"
                app:cardCornerRadius="30dp"
-               android:layout_margin="5dp"
-               app:cardBackgroundColor="#E8E8E8">
+               app:cardBackgroundColor="#E8E8E8"
+               android:layout_margin="5dp">
                <ImageView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:src="@drawable/cart"
+                   android:src="@drawable/shopping"
                    android:layout_gravity="center"/>
            </androidx.cardview.widget.CardView>
 
@@ -90,7 +90,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/cart"
+                   android:text="@string/my_order_vie"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -99,6 +99,7 @@
                    android:layout_height="20dp"
                    android:layout_marginLeft="50dp"
                    android:src="@drawable/angle_right"/>
+
            </LinearLayout>
        </LinearLayout>
 
@@ -145,6 +146,47 @@
        </LinearLayout>
 
        <LinearLayout
+           android:id="@+id/ln_chat"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:layout_margin="15dp">
+           <androidx.cardview.widget.CardView
+               android:layout_width="50dp"
+               android:layout_height="50dp"
+               app:cardCornerRadius="30dp"
+               android:layout_margin="5dp"
+               app:cardBackgroundColor="#E8E8E8">
+               <ImageView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/chat"
+                   android:layout_gravity="center"/>
+           </androidx.cardview.widget.CardView>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="horizontal"
+               android:layout_marginLeft="20dp"
+               android:layout_gravity="center">
+               <TextView
+                   android:layout_gravity="center"
+                   android:layout_width="200dp"
+                   android:layout_height="wrap_content"
+                   android:text="@string/chat_vie"
+                   android:textSize="20dp"
+                   android:textColor="@color/black"/>
+               <ImageView
+                   android:layout_gravity="center_vertical"
+                   android:layout_width="20dp"
+                   android:layout_height="20dp"
+                   android:layout_marginLeft="50dp"
+                   android:src="@drawable/angle_right"/>
+           </LinearLayout>
+       </LinearLayout>
+
+       <LinearLayout
            android:id="@+id/ln_setting"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
@@ -173,48 +215,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/setting"
-                   android:textSize="20dp"
-                   android:textColor="@color/black"/>
-               <ImageView
-                   android:layout_gravity="center_vertical"
-                   android:layout_width="20dp"
-                   android:layout_height="20dp"
-                   android:layout_marginLeft="50dp"
-                   android:src="@drawable/angle_right"/>
-
-           </LinearLayout>
-       </LinearLayout>
-       <LinearLayout
-           android:id="@+id/ln_order"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal"
-           android:layout_margin="15dp">
-           <androidx.cardview.widget.CardView
-               android:layout_width="50dp"
-               android:layout_height="50dp"
-               app:cardCornerRadius="30dp"
-               app:cardBackgroundColor="#E8E8E8"
-               android:layout_margin="5dp">
-               <ImageView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@drawable/shopping"
-                   android:layout_gravity="center"/>
-           </androidx.cardview.widget.CardView>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="horizontal"
-               android:layout_marginLeft="20dp"
-               android:layout_gravity="center">
-               <TextView
-                   android:layout_gravity="center"
-                   android:layout_width="200dp"
-                   android:layout_height="wrap_content"
-                   android:text="@string/your_order"
+                   android:text="@string/setting_vie"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -256,7 +257,7 @@
                    android:layout_gravity="center"
                    android:layout_width="200dp"
                    android:layout_height="wrap_content"
-                   android:text="@string/shop"
+                   android:text="@string/shop_vie"
                    android:textSize="20dp"
                    android:textColor="@color/black"/>
                <ImageView
@@ -282,7 +283,7 @@
            android:id="@+id/btn_log_out"
            android:layout_width="250dp"
            android:layout_height="wrap_content"
-           android:text="@string/log_out"
+           android:text="@string/log_out_vie"
            android:textAllCaps="false"
            android:textSize="16dp"
            android:background="@drawable/bg_button"

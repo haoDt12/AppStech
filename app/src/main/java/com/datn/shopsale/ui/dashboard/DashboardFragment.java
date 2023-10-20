@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.ui.dashboard.chat.ListUsersChatActivity;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,12 +42,14 @@ public class DashboardFragment extends Fragment {
     private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
     private Button btnLogOut;
-    private LinearLayout lnCart;
+    private LinearLayout lnChat;
     private LinearLayout lnLocation;
     private LinearLayout lnSetting;
     private LinearLayout lnOrder;
     private LinearLayout lnStore;
     private LinearLayout lnlProfile;
+    private TextView tvName;
+    private TextView tvEmail;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -78,17 +82,21 @@ public class DashboardFragment extends Fragment {
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
 
         lnlProfile = view.findViewById(R.id.lnl_profile);
-        lnCart = view.findViewById(R.id.ln_cart);
+        lnChat = view.findViewById(R.id.ln_chat);
         lnLocation = view.findViewById(R.id.ln_location);
         lnSetting = view.findViewById(R.id.ln_setting);
         lnOrder = view.findViewById(R.id.ln_order);
         lnStore = view.findViewById(R.id.ln_store);
+        tvName = view.findViewById(R.id.tv_name);
+        tvEmail = view.findViewById(R.id.tv_email);
+        tvEmail.setText("");
+        tvName.setText("");
 
         lnlProfile.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), InformationUserActivity.class));
         });
-        lnCart.setOnClickListener(view1 -> {
-//            startActivity(new Intent(getContext(), AddressActivity.class));
+        lnChat.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), ListUsersChatActivity.class));
         });
         lnLocation.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), AddressActivity.class));
@@ -163,6 +171,8 @@ public class DashboardFragment extends Fragment {
     }
 
     private void updateUI() {
+        tvEmail.setText("");
+        tvName.setText("");
         startActivity(new Intent(getContext(), LoginActivity.class));
         requireActivity().finish();
     }

@@ -1,5 +1,6 @@
 package com.datn.shopsale.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.SearchActivity;
 import com.datn.shopsale.adapter.CategoriesAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.SliderAdapter;
@@ -44,6 +46,10 @@ public class HomeFragment extends Fragment implements IActionCate {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        binding.lnlSearch.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(),SearchActivity.class));
+        });
 
         displayCategory();
 

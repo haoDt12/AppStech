@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.notifications.chat.ChatActivity"
+    tools:context=".ui.dashboard.chat.ChatActivity"
     android:layout_marginTop="10dp"
     android:gravity="end">
 
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/coner_chat"
         android:padding="10dp"
-        android:text="@string/message_content"
+        android:text="@string/message_content_vie"
         android:textColor="@color/white"
         android:textSize="20sp" />
 </LinearLayout>

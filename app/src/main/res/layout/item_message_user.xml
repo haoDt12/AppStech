@@ -36,7 +36,7 @@
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/ten_nguoi_dung"
+                    android:hint=""
                     android:textSize="15sp"
                     android:textStyle="bold" />
                 <TextView

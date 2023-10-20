@@ -63,58 +63,16 @@ public class NotificationsFragment extends Fragment {
         notificationList = new ArrayList<>();
         notificationList.add(new Notification("0",
                 "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 1"));
-        notificationList.add(new Notification("0",
+                "Sale",
+                "https://cdn.icon-icons.com/icons2/943/PNG/512/shoppaymentorderbuy-29_icon-icons.com_73875.png",
+                "06/01",
+                "Giảm giá sốc"));
+        notificationList.add(new Notification("1",
                 "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 2"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 3"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 4"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 5"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 6"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 7"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 8"));
-        notificationList.add(new Notification("0",
-                "0",
-                "Thông báo",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "06/01/2023",
-                "Đây là thông báo 9"));
+                "Sản phẩm mới",
+                "https://www.apple.com/vn/iphone-15/images/overview/closer-look/all_colors__d4w03v51nwcy_large.jpg",
+                "16/01",
+                "Iphone 15 ra mắt"));
         notificationAdapter = new NotificationAdapter(notificationList,getActivity());
         binding.rcvNotification.setAdapter(notificationAdapter);
     }

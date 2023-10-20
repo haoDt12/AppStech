@@ -24,9 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="@string/topic_nofication"
+            android:text=""
             android:textColor="@color/black"
-            android:textSize="20dp"
+            android:textSize="16sp"
             android:textStyle="bold"/>
 
         <TextView
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:text="@string/content_nofication"
+            android:text=""
             android:textColor="@color/gray" />
     </LinearLayout>
 
@@ -43,8 +43,8 @@
         android:id="@+id/tv_month_notification"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/date_nofication"
+        android:text=""
         android:textColor="#A59F9F"
-        android:gravity="center"
+        android:gravity="center_vertical|end"
        />
 </LinearLayout>
