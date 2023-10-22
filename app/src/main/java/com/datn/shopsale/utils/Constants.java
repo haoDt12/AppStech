@@ -16,7 +16,7 @@ public class Constants {
         }
         }
 
-    public static final String URL_DUCTUNG = "http://192.168.250.85:3000";
+    public static final String URL_DUCTUNG = "http://192.168.0.101:3000";
     public static final String URL_VUNG = "http://192.168.0.105:3000";
     public static final String HEX_CHAR = "0123456789ABCDEF";
     public static final String KEY_PREFERENCE_ACC = "logged_acc";

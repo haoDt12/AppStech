@@ -32,13 +32,12 @@ import retrofit2.Response;
 
 public class SignUpActivity extends AppCompatActivity {
     private ImageView imgLogo;
-    private EditText edEmail,edFullname,edPhoneNumber;
+    private EditText edEmail, edFullname, edPhoneNumber;
     private EditText edPassword;
     private EditText edConfirmPassword;
     private ProgressBar progressbar;
     private TextView tvLogin;
     private Button btnSignUp;
-    private FirebaseAuth mAuth;
     UserService userService;
 
     @Override
@@ -48,7 +47,6 @@ public class SignUpActivity extends AppCompatActivity {
         inutUI();
         userService = RetrofitConnection.getUserService();
 
-        mAuth = FirebaseAuth.getInstance();
 
         btnSignUp.setOnClickListener(view -> {
             if (validateSignUp())
@@ -63,64 +61,43 @@ public class SignUpActivity extends AppCompatActivity {
     private void onClickSignUp() {
         progressbar.setVisibility(View.VISIBLE);
         btnSignUp.setVisibility(View.INVISIBLE);
-        mAuth.createUserWithEmailAndPassword(edEmail.getText().toString().trim(), edPassword.getText().toString().trim())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            mAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), edEmail.getText().toString().trim());
-                                        RequestBody requestBodyPasswd = RequestBody.create(MediaType.parse("text/plain"), edPassword.getText().toString().trim());
-                                        RequestBody requestBodyFullname = RequestBody.create(MediaType.parse("text/plain"), edFullname.getText().toString());
-                                        RequestBody requestBodyphoneNumber= RequestBody.create(MediaType.parse("text/plain"),edPhoneNumber.getText().toString());
-                                        RequestBody requestBodyrole= RequestBody.create(MediaType.parse("text/plain"), "user");
-                                        Call<ResApi> call = userService.register(requestBodyEmail,requestBodyFullname,requestBodyPasswd,requestBodyphoneNumber,requestBodyrole);
-                                        call.enqueue(new Callback<ResApi>() {
-                                            @Override
-                                            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                                                if(response.body().code==1){
-                                                    progressbar.setVisibility(View.INVISIBLE);
-                                                    btnSignUp.setVisibility(View.VISIBLE);
-                                                    Toast.makeText(SignUpActivity.this, "Đã gửi xác nhận đến Email", Toast.LENGTH_SHORT).show();
-                                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
-                                                    finish();
-                                                }else {
-                                                    Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                                    progressbar.setVisibility(View.INVISIBLE);
-                                                    btnSignUp.setVisibility(View.VISIBLE);
-                                                }
-                                            }
+        try {
+            RequestBody emailRequestBody = RequestBody.create(MediaType.parse("text/plain"),edEmail.getText().toString().trim());
+            RequestBody nameRequestBody = RequestBody.create(MediaType.parse("text/plain"),edFullname.getText().toString().trim());
+            RequestBody phoneRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPhoneNumber.getText().toString().trim());
+            RequestBody passwdRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPassword.getText().toString().trim());
+            Call<ResApi>call = userService.register(emailRequestBody,nameRequestBody,passwdRequestBody,phoneRequestBody);
+            call.enqueue(new Callback<ResApi>() {
+                @Override
+                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                    if (response.body().code ==1){
+                        progressbar.setVisibility(View.INVISIBLE);
+                        btnSignUp.setVisibility(View.VISIBLE);
+                        Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        String idUserTemp = response.body().id;
+                        Intent i  = new Intent(SignUpActivity.this, VerifyOTPActivity.class);
+                        i.putExtra("idUserTemp",idUserTemp);
+                        startActivity(i);
 
-                                            @Override
-                                            public void onFailure(Call<ResApi> call, Throwable t) {
-                                                progressbar.setVisibility(View.INVISIBLE);
-                                                btnSignUp.setVisibility(View.VISIBLE);
-                                                Log.e("Err", "onFailure: " + t);
-                                                Toast.makeText(SignUpActivity.this, "onFailure: " + t, Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-
-                                    } else {
-                                        progressbar.setVisibility(View.INVISIBLE);
-                                        btnSignUp.setVisibility(View.VISIBLE);
-                                        Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                        Log.e("errr", task.getException().getMessage());
-                                    }
-                                }
-                            });
-                        } else {
-                            Log.e("errr", task.getException().getMessage());
-                            Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            progressbar.setVisibility(View.INVISIBLE);
-                            btnSignUp.setVisibility(View.VISIBLE);
-
-                        }
+                    }else {
+                        progressbar.setVisibility(View.INVISIBLE);
+                        btnSignUp.setVisibility(View.VISIBLE);
+                        Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     }
-                });
+                }
 
+                @Override
+                public void onFailure(Call<ResApi> call, Throwable t) {
+                    Log.e("Error", "onFailure: " + t);
+                    Toast.makeText(SignUpActivity.this, "error: "+t, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        }catch (Exception e){
+            Log.e("Error", "onFailure: " + e);
+            Toast.makeText(SignUpActivity.this, "error: "+e, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -130,6 +107,12 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(edEmail.getText().toString()).matches()) {
             Toast.makeText(this, "Định dạng email không chính xác", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (edFullname.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Họ tên không được để trống", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (edPhoneNumber.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Số điện thoại không được để trống", Toast.LENGTH_SHORT).show();
             return false;
         } else if (edPassword.getText().toString().isEmpty()) {
             Toast.makeText(this, "Mật khẩu không được để trống", Toast.LENGTH_SHORT).show();

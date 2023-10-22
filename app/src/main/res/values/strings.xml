@@ -23,7 +23,8 @@
     <string name="new_pass">Mật khẩu mới</string>
     <string name="reNew_pass">Nhập lại mật khẩu mới</string>
     <string name="agree">Đồng ý</string>
-
+    <string name="verify">Xác nhận</string>
+    <string name="title_veriOTP">Vui lòng nhập mã xác nhận để hoàn thành đăng ký</string>
 
 
     //ENG Language
