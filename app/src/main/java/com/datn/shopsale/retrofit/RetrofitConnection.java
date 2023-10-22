@@ -1,15 +1,15 @@
 package com.datn.shopsale.retrofit;
 
 import com.datn.shopsale.Interface.UserService;
+import com.datn.shopsale.utils.Constants;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitConnection {
-    private static final String URL = "http://192.168.250.85:3000";
 
     public static UserService getUserService() {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(URL)
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(Constants.URL_DUCTUNG)
                 .addConverterFactory(GsonConverterFactory.create()).build();
         return retrofit.create(UserService.class);
     }
