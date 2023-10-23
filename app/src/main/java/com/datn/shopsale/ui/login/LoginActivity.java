@@ -20,9 +20,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
+import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.HashPassword;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -45,6 +48,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
     private PreferenceManager preferenceManager;
@@ -66,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
 
     private AccessToken accessToken;
+    private ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initView();
+        apiService = RetrofitConnection.getApiService();
         tvForgotPass.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(),ForgotPassActivity.class));
+            startActivity(new Intent(getApplicationContext(), ForgotPassActivity.class));
         });
         // Share preference
         preferenceManager = new PreferenceManager(this);
@@ -82,12 +91,12 @@ public class LoginActivity extends AppCompatActivity {
         if (preferenceManager.isRemember()) {
             isRemember = preferenceManager.getBoolean(Constants.KEY_REMEMBER);
             if (isRemember) {
-                String email = preferenceManager.getString(Constants.KEY_EMAIL);
-                String pass = preferenceManager.getString(Constants.KEY_PASS);
-                edEmail.setText(email);
-                edPass.setText(pass);
-                cbRemember.setChecked(isRemember);
+//
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
             }
+        }else {
+            edEmail.setText(preferenceManager.getString(Constants.KEY_EMAIL));
         }
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -124,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
         cbRemember.setOnClickListener(v -> isRemember = cbRemember.isChecked());
         tvSignUp.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
-            finish();
         });
         btnLoginWithEmail.setOnClickListener(v -> loginWithEmail());
         btnLoginWithGoogle.setOnClickListener(v -> {
@@ -205,35 +213,68 @@ public class LoginActivity extends AppCompatActivity {
         String email = edEmail.getText().toString().trim();
         String pass = edPass.getText().toString().trim();
         if (validForm(email, pass)) {
-            firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser != null) {
-                        boolean isEmailVerified = currentUser.isEmailVerified();
-                        if (isEmailVerified) {
-                            if (isRemember) {
-                                preferenceManager.putString(Constants.KEY_EMAIL, email);
-                                preferenceManager.putString(Constants.KEY_PASS, pass);
-                            }
-                            preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
-                            showToast(getString(R.string.login_success));
-                            User user = new User();
-                            String newPass = HashPassword.hashPassword(pass);
-                            user.setEmail(email);
-                            user.setPassword(newPass);
-
-                            // push data user to db
-                            updateUI();
+            if (isRemember) {
+                preferenceManager.putString(Constants.KEY_EMAIL, email);
+                preferenceManager.putString(Constants.KEY_PASS, pass);
+                preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
+            }else {
+                preferenceManager.putString(Constants.KEY_EMAIL, email);
+            }
+            try {
+                Call<ResApi> call = apiService.signin(email, pass);
+                call.enqueue(new Callback<ResApi>() {
+                    @Override
+                    public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                        if (response.body().code == 1) {
+                            Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                            String idUser = response.body().id;
+                            Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
+                            i.putExtra("idUser", idUser);
+                            startActivity(i);
                         } else {
-                            //showToast(getString(R.string.verify_email_msg));
-                            showConfirmVerifyEmail();
+                            Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                         }
                     }
-                } else {
-                    String message = Objects.requireNonNull(task.getException()).getMessage();
-                    showToast(message);
-                }
-            });
+
+                    @Override
+                    public void onFailure(Call<ResApi> call, Throwable t) {
+                        Log.e("Error", "onFailure: " + t);
+                        Toast.makeText(LoginActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("Error", "onFailure: " + e);
+                Toast.makeText(LoginActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
+            }
+//            firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
+//                if (task.isSuccessful()) {
+//                    currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//                    if (currentUser != null) {
+//                        boolean isEmailVerified = currentUser.isEmailVerified();
+//                        if (isEmailVerified) {
+//                            if (isRemember) {
+//                                preferenceManager.putString(Constants.KEY_EMAIL, email);
+//                                preferenceManager.putString(Constants.KEY_PASS, pass);
+//                            }
+//                            preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
+//                            showToast(getString(R.string.login_success));
+//                            User user = new User();
+//                            String newPass = HashPassword.hashPassword(pass);
+//                            user.setEmail(email);
+//                            user.setPassword(newPass);
+//
+//                            // push data user to db
+//                            updateUI();
+//                        } else {
+//                            //showToast(getString(R.string.verify_email_msg));
+//                            showConfirmVerifyEmail();
+//                        }
+//                    }
+//                } else {
+//                    String message = Objects.requireNonNull(task.getException()).getMessage();
+//                    showToast(message);
+//                }
+//            });
         }
     }
 

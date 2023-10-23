@@ -26,6 +26,7 @@ import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.ui.dashboard.chat.ListUsersChatActivity;
+import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -50,6 +51,7 @@ public class DashboardFragment extends Fragment {
     private LinearLayout lnlProfile;
     private TextView tvName;
     private TextView tvEmail;
+    private PreferenceManager preferenceManager;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -76,7 +78,7 @@ public class DashboardFragment extends Fragment {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
-
+        preferenceManager = new PreferenceManager(getContext());
 
         btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
@@ -178,25 +180,9 @@ public class DashboardFragment extends Fragment {
     }
 
     private void signOut() {
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            showToast("Đăng xuất thành công");
-            firebaseAuth.signOut();
-            updateUI();
-        } else {
-            mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(requireActivity(), new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                showToast("Đăng xuất thành công");
-                                updateUI();
-                            }
-                        }
-                    });
-        }
-
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+        preferenceManager.clear();
+        getActivity().finish();
     }
 
     private void showToast(String message) {

@@ -14,41 +14,104 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.datn.shopsale.Interface.ApiService;
+import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class VerifyOTPActivity extends AppCompatActivity {
-    private String idUserTemp;
+public class VerifyOTPSignInActivity extends AppCompatActivity {
     private EditText edNumber1;
     private EditText edNumber2;
     private EditText edNumber3;
     private EditText edNumber4;
     private EditText edNumber5;
     private EditText edNumber6;
+    private ProgressBar idProgress;
     private Button btnVerify;
-    private ProgressBar progressBar;
-    private ApiService apiService;
+    private String idUser;
     private String OTP;
-
+    private ApiService apiService;
+    private PreferenceManager preferenceManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify_otpactivity);
+        setContentView(R.layout.activity_verify_otpsign_in);
         initUI();
         apiService = RetrofitConnection.getApiService();
+        preferenceManager = new PreferenceManager(this);
         fillInputOTP();
+        Intent intent = getIntent();
+        idUser = intent.getStringExtra("idUser");
         btnVerify.setOnClickListener(view -> {
-            if (validateOTP()) {
-                onCLickVerifyOTP();
+            if(validateOTP()){
+                onClickVerify();
             }
         });
     }
+    private  void onClickVerify(){
+        btnVerify.setVisibility(View.INVISIBLE);
+        idProgress.setVisibility(View.VISIBLE);
+        try {
+            OTP = edNumber1.getText().toString().trim()
+                    + edNumber2.getText().toString().trim()
+                    + edNumber3.getText().toString().trim()
+                    + edNumber4.getText().toString().trim()
+                    + edNumber5.getText().toString().trim()
+                    + edNumber6.getText().toString().trim();
+            Call<ResApi> call = apiService.verifyOTPSignIn(idUser,OTP);
+            call.enqueue(new Callback<ResApi>() {
+                @Override
+                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                    if (response.body().code == 1) {
+                        idProgress.setVisibility(View.INVISIBLE);
+                        btnVerify.setVisibility(View.VISIBLE);
+                        String token = response.body().token;
+                        Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        preferenceManager.putString("token",token);
+                        startActivity(new Intent(VerifyOTPSignInActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        idProgress.setVisibility(View.INVISIBLE);
+                        btnVerify.setVisibility(View.VISIBLE);
+                        Toast.makeText(VerifyOTPSignInActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<ResApi> call, Throwable t) {
+                    idProgress.setVisibility(View.INVISIBLE);
+                    btnVerify.setVisibility(View.VISIBLE);
+                    Log.e("Error", "onFailure: " + t);
+                    Toast.makeText(VerifyOTPSignInActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }catch (Exception e){
+            idProgress.setVisibility(View.INVISIBLE);
+            btnVerify.setVisibility(View.VISIBLE);
+            Log.e("Exception", "onFailure: " + e);
+            Toast.makeText(VerifyOTPSignInActivity.this, "Exception: " + e, Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private boolean validateOTP() {
+        if (edNumber1.getText().toString().trim().isEmpty() ||
+                edNumber2.getText().toString().trim().isEmpty() ||
+                edNumber3.getText().toString().trim().isEmpty() ||
+                edNumber4.getText().toString().trim().isEmpty() ||
+                edNumber5.getText().toString().trim().isEmpty() ||
+                edNumber6.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Mã OTP không hợp lệ vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
     private void fillInputOTP() {
         edNumber1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -131,77 +194,15 @@ public class VerifyOTPActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void onCLickVerifyOTP() {
-        btnVerify.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        try {
-            Intent intent = getIntent();
-            idUserTemp = intent.getStringExtra("idUserTemp");
-            OTP = edNumber1.getText().toString().trim()
-                    + edNumber2.getText().toString().trim()
-                    + edNumber3.getText().toString().trim()
-                    + edNumber4.getText().toString().trim()
-                    + edNumber5.getText().toString().trim()
-                    + edNumber6.getText().toString().trim();
-
-
-            Call<ResApi> call = apiService.verifyOTPRegister(idUserTemp, OTP);
-            call.enqueue(new Callback<ResApi>() {
-                @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if (response.body().code == 1) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        btnVerify.setVisibility(View.VISIBLE);
-                        Toast.makeText(VerifyOTPActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(VerifyOTPActivity.this, LoginActivity.class));
-                        finish();
-                    } else {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        btnVerify.setVisibility(View.VISIBLE);
-                        Toast.makeText(VerifyOTPActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
-                    progressBar.setVisibility(View.INVISIBLE);
-                    btnVerify.setVisibility(View.VISIBLE);
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(VerifyOTPActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            progressBar.setVisibility(View.INVISIBLE);
-            btnVerify.setVisibility(View.VISIBLE);
-            Log.e("Exception", "onFailure: " + e);
-            Toast.makeText(VerifyOTPActivity.this, "Exception: " + e, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void initUI() {
+    private  void initUI(){
         edNumber1 = (EditText) findViewById(R.id.ed_number1);
         edNumber2 = (EditText) findViewById(R.id.ed_number2);
         edNumber3 = (EditText) findViewById(R.id.ed_number3);
         edNumber4 = (EditText) findViewById(R.id.ed_number4);
         edNumber5 = (EditText) findViewById(R.id.ed_number5);
         edNumber6 = (EditText) findViewById(R.id.ed_number6);
+        idProgress = (ProgressBar) findViewById(R.id.id_progress);
         btnVerify = (Button) findViewById(R.id.btn_verify);
-        progressBar = findViewById(R.id.id_progress);
 
-    }
-
-    private boolean validateOTP() {
-        if (edNumber1.getText().toString().trim().isEmpty() ||
-                edNumber2.getText().toString().trim().isEmpty() ||
-                edNumber3.getText().toString().trim().isEmpty() ||
-                edNumber4.getText().toString().trim().isEmpty() ||
-                edNumber5.getText().toString().trim().isEmpty() ||
-                edNumber6.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Mã OTP không hợp lệ vui lòng thử lại", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
     }
 }
