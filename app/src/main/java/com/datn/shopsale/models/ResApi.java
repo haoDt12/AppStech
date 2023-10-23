@@ -4,4 +4,5 @@ public class ResApi {
     public String message;
     public int code;
     public String id;
+    public String token;
 }
