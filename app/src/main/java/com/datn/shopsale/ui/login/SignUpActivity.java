@@ -1,6 +1,5 @@
 package com.datn.shopsale.ui.login;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,14 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.datn.shopsale.Interface.UserService;
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -38,14 +33,14 @@ public class SignUpActivity extends AppCompatActivity {
     private ProgressBar progressbar;
     private TextView tvLogin;
     private Button btnSignUp;
-    UserService userService;
+    ApiService apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         inutUI();
-        userService = RetrofitConnection.getUserService();
+        apiService = RetrofitConnection.getApiService();
 
 
         btnSignUp.setOnClickListener(view -> {
@@ -66,7 +61,7 @@ public class SignUpActivity extends AppCompatActivity {
             RequestBody nameRequestBody = RequestBody.create(MediaType.parse("text/plain"),edFullname.getText().toString().trim());
             RequestBody phoneRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPhoneNumber.getText().toString().trim());
             RequestBody passwdRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPassword.getText().toString().trim());
-            Call<ResApi>call = userService.register(emailRequestBody,nameRequestBody,passwdRequestBody,phoneRequestBody);
+            Call<ResApi>call = apiService.register(emailRequestBody,nameRequestBody,passwdRequestBody,phoneRequestBody);
             call.enqueue(new Callback<ResApi>() {
                 @Override
                 public void onResponse(Call<ResApi> call, Response<ResApi> response) {
@@ -88,6 +83,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ResApi> call, Throwable t) {
+                    progressbar.setVisibility(View.INVISIBLE);
+                    btnSignUp.setVisibility(View.VISIBLE);
                     Log.e("Error", "onFailure: " + t);
                     Toast.makeText(SignUpActivity.this, "error: "+t, Toast.LENGTH_SHORT).show();
                 }
@@ -95,6 +92,8 @@ public class SignUpActivity extends AppCompatActivity {
 
 
         }catch (Exception e){
+            progressbar.setVisibility(View.INVISIBLE);
+            btnSignUp.setVisibility(View.VISIBLE);
             Log.e("Error", "onFailure: " + e);
             Toast.makeText(SignUpActivity.this, "error: "+e, Toast.LENGTH_SHORT).show();
         }

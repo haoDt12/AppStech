@@ -10,7 +10,8 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 
-public interface UserService {
+public interface ApiService {
+    // Register
     @Multipart
     @POST("/api/registerUser")
     Call<ResApi> register(@Part("email") RequestBody email,
@@ -19,9 +20,23 @@ public interface UserService {
                           @Part("phone_number") RequestBody phoneNumber
     );
 
+    // Verify OTP SignUp
     @FormUrlEncoded
     @POST("/api/verifyOtpRegister")
     Call<ResApi> verifyOTPRegister(@Field("userTempId") String idUserTemp,
                                    @Field("otp") String otp
+    );
+
+    // SignIn
+    @FormUrlEncoded
+    @POST("/api/loginUser")
+    Call<ResApi> signin(@Field("username") String username,
+                        @Field("password") String passwd
+    );
+
+    @FormUrlEncoded
+    @POST("/api/verifyOtpLogin")
+    Call<ResApi> verifyOTPSignIn(@Field("userId") String idUserTemp,
+                                 @Field("otp") String otp
     );
 }

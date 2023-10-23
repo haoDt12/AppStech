@@ -25,6 +25,7 @@
     <string name="agree">Đồng ý</string>
     <string name="verify">Xác nhận</string>
     <string name="title_veriOTP">Vui lòng nhập mã xác nhận để hoàn thành đăng ký</string>
+    <string name="title_veriOTPSignIN">Vui lòng nhập mã xác nhận để hoàn thành đăng nhập</string>
 
 
     //ENG Language
