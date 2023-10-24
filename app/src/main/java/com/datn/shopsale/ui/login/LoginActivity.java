@@ -47,6 +47,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -134,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
         });
-        btnLoginWithEmail.setOnClickListener(v -> loginWithEmail());
+        btnLoginWithEmail.setOnClickListener(v -> login());
         btnLoginWithGoogle.setOnClickListener(v -> {
             signOut();
             signInWithGoogle();
@@ -158,7 +160,6 @@ public class LoginActivity extends AppCompatActivity {
             thread.start();
         });
     }
-
     private void initView() {
         edEmail = findViewById(R.id.ed_email);
         edPass = findViewById(R.id.ed_pass);
@@ -209,19 +210,20 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void loginWithEmail() {
-        String email = edEmail.getText().toString().trim();
+    private void login() {
+        String username = edEmail.getText().toString().trim();
         String pass = edPass.getText().toString().trim();
-        if (validForm(email, pass)) {
+
+        if (validForm(username, pass)) {
             if (isRemember) {
-                preferenceManager.putString(Constants.KEY_EMAIL, email);
+                preferenceManager.putString(Constants.KEY_EMAIL, username);
                 preferenceManager.putString(Constants.KEY_PASS, pass);
                 preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
             }else {
-                preferenceManager.putString(Constants.KEY_EMAIL, email);
+                preferenceManager.putString(Constants.KEY_EMAIL, username);
             }
             try {
-                Call<ResApi> call = apiService.signin(email, pass);
+                Call<ResApi> call = apiService.signin(username, pass);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
                     public void onResponse(Call<ResApi> call, Response<ResApi> response) {
@@ -231,6 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
                             i.putExtra("idUser", idUser);
                             startActivity(i);
+                            finish();
                         } else {
                             Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                         }
@@ -278,12 +281,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validForm(@NonNull String email, String pass) {
-        if (email.length() == 0 || pass.length() == 0) {
-            showToast(getString(R.string.requireForm));
+    private boolean validForm(@NonNull String username, String pass) {
+        String phonePattern = "^(0|\\+84)[3789][0-9]{8}$";
+        String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+
+        Pattern patternEmail = Pattern.compile(emailPattern);
+        Matcher matcherEmail = patternEmail.matcher(username);
+
+        Pattern patternPhone = Pattern.compile(phonePattern);
+        Matcher matcherPhone = patternPhone.matcher(username);
+
+        if(username.isEmpty()){
+            Toast.makeText(this, R.string.vui_long_nhap_email_sdt, Toast.LENGTH_SHORT).show();
             return false;
-        } else if (pass.length() < 6) {
-            showToast(getString(R.string.requirePass));
+        }
+        if (pass.isEmpty()){
+            Toast.makeText(this, R.string.vui_long_nhap_pass, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!matcherPhone.matches() && !matcherEmail.matches()){
+            Toast.makeText(this, R.string.email_sdt_khong_hop_le, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

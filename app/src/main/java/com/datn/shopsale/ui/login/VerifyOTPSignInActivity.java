@@ -17,6 +17,7 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -63,27 +64,27 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                     + edNumber4.getText().toString().trim()
                     + edNumber5.getText().toString().trim()
                     + edNumber6.getText().toString().trim();
-            Call<ResApi> call = apiService.verifyOTPSignIn(idUser,OTP);
-            call.enqueue(new Callback<ResApi>() {
+            Call<UserVerifyLoginResponse.Root> call = apiService.verifyOTPSignIn(idUser,OTP);
+            call.enqueue(new Callback<UserVerifyLoginResponse.Root>() {
                 @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if (response.body().code == 1) {
+                public void onResponse(Call<UserVerifyLoginResponse.Root> call, Response<UserVerifyLoginResponse.Root> response) {
+                    if (response.body().getCode() == 1) {
                         idProgress.setVisibility(View.INVISIBLE);
                         btnVerify.setVisibility(View.VISIBLE);
-                        String token = response.body().token;
                         Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        preferenceManager.putString("token",token);
-                        startActivity(new Intent(VerifyOTPSignInActivity.this, MainActivity.class));
+                        preferenceManager.putString("token",response.body().getToken());
+                        Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
+                        startActivity(intent);
                         finish();
                     } else {
                         idProgress.setVisibility(View.INVISIBLE);
                         btnVerify.setVisibility(View.VISIBLE);
-                        Toast.makeText(VerifyOTPSignInActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
+                public void onFailure(Call<UserVerifyLoginResponse.Root> call, Throwable t) {
                     idProgress.setVisibility(View.INVISIBLE);
                     btnVerify.setVisibility(View.VISIBLE);
                     Log.e("Error", "onFailure: " + t);
