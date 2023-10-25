@@ -26,7 +26,10 @@
     <string name="verify">Xác nhận</string>
     <string name="title_veriOTP">Vui lòng nhập mã xác nhận để hoàn thành đăng ký</string>
     <string name="title_veriOTPSignIN">Vui lòng nhập mã xác nhận để hoàn thành đăng nhập</string>
-
+    <string name="title_username">Email hoặc số điện thoại</string>
+    <string name="vui_long_nhap_email_sdt">Vui lòng nhập email hoặc số điện thoại</string>
+    <string name="vui_long_nhap_pass">Vui lòng nhập password</string>
+    <string name="email_sdt_khong_hop_le">Email hoặc số điện thoại nhập vào không đúng định dạng</string>
 
     //ENG Language
     <string name="title_home_eng">Home</string>

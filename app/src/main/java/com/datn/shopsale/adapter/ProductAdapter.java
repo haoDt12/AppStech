@@ -3,6 +3,7 @@ package com.datn.shopsale.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Product;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
         holder.tvName.setText(product.getName());
         holder.tvPrice.setText(product.getPrice());
+        Picasso.get().load(product.getImg()).into(holder.imgProduct);
     }
 
     @Override
@@ -44,10 +47,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView tvName;
         private TextView tvPrice;
+        private ImageView imgProduct;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
 
         }
     }

@@ -29,9 +29,9 @@ public class OrderActivity extends AppCompatActivity {
     private List<Product> generateItems() {
         List<Product> items = new ArrayList<>();
 
-        items.add(new Product("1","Iphone 14 ProMax","1000"));
-        items.add(new Product("2","IPhone 15","10000"));
-        items.add(new Product("3","SamSung","10000"));
+//        items.add(new Product("1","Iphone 14 ProMax","1000"));
+//        items.add(new Product("2","IPhone 15","10000"));
+//        items.add(new Product("3","SamSung","10000"));
         // Thêm các phần tử khác theo cách tương tự
 
         return items;
