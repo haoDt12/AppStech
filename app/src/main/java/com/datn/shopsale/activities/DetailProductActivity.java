@@ -65,7 +65,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     ArrayList<String> selectedColors = new ArrayList<>();
     ArrayList<String> selectedRams = new ArrayList<>();
     String id ;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,7 +166,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 final String userId = user.get_id();
                 final String productId = id;
                 final String selectedColor = selectedColors.get(0); // Lấy màu đã chọn (chỉ lấy một màu)
-                final String selectedRamRom = String.valueOf(product.getRam_rom());
+                final String selectedRamRom = selectedRams.get(0);
                 AddToCart(userId, productId, selectedColor, selectedRamRom);
             }
         }
@@ -194,7 +193,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         CartRequest.Root request = new CartRequest.Root();
         request.product = product1;
-        request.userId = userId;
+        request.userId = preferenceManager.getString("userId");
 
 
 //
@@ -218,8 +217,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 if (response.body().code ==1) {
                     Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(DetailProductActivity.this, "Failed to add to cart", Toast.LENGTH_SHORT).show();
-                    Log.i("TAG9", "onResponse: "+response.message());
+                    Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    Log.i("TAG9", "onResponse: "+response.body().message);
 
                 }
             }

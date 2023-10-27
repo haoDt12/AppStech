@@ -73,6 +73,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                         btnVerify.setVisibility(View.VISIBLE);
                         Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         preferenceManager.putString("token",response.body().getToken());
+                        preferenceManager.putString("userId",response.body().getUser().get_id());
                         Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
                         startActivity(intent);
                         finish();
