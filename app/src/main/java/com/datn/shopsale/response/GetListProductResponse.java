@@ -161,7 +161,6 @@ public class GetListProductResponse {
             this.video = video;
         }
     }
-
     public class Root{
         private ArrayList<Product> product;
         private String message;

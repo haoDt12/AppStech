@@ -31,10 +31,10 @@
             android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"
             />
-        <ImageView
-            android:id="@+id/img_product"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpg_product"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
             android:src="@drawable/img_iphone"
             android:layout_below="@id/btn_danhgia"
             android:layout_centerHorizontal="true"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Iphone 13 Promax"
-            android:layout_below="@id/img_product"
+            android:layout_below="@id/vpg_product"
             android:textStyle="bold"
             android:textSize="20dp"
             android:textColor="@color/black"
@@ -64,6 +64,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             />
+
         <TextView
             android:id="@+id/tv_color"
             android:layout_width="wrap_content"
@@ -79,11 +80,12 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recy_colorsProduct"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tv_color"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:orientation="horizontal"
             />
         <TextView
             android:id="@+id/tv_dungLuong"
@@ -97,15 +99,16 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="20dp"
             />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recy_dungLuong"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_below="@id/tv_dungLuong"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recy_dungLuong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_dungLuong"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                />
+
         <Button
             android:id="@+id/btn_addToCart"
             android:layout_width="match_parent"
