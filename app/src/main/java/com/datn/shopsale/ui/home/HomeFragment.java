@@ -108,12 +108,14 @@ public class HomeFragment extends Fragment{
             public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
                 if(response.body().getCode() == 1){
                     for (GetListProductResponse.Product item: response.body().getProduct()) {
-                        dataList.add(new Product(item.get_id(),item.getTitle(),item.getPrice(),item.getImg_cover()));
+                        dataList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(),item.getDescription(),
+                                item.getColor(), item.getPrice(),item.getQuantity(),item.getSold(),item.getList_img(),
+                                item.getDate(),item.getRam_rom(),item.getImg_cover(),item.getVideo()));
                     }
                     getActivity().runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            productAdapter = new ProductAdapter(dataList);
+                            productAdapter = new ProductAdapter(dataList,getActivity());
                             binding.rcvListitem.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                             binding.rcvListitem.setAdapter(productAdapter);
                         }

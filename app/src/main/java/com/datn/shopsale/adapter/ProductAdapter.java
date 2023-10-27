@@ -1,16 +1,22 @@
 package com.datn.shopsale.adapter;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.DetailProductActivity;
 import com.datn.shopsale.models.Product;
+import com.datn.shopsale.response.GetListProductResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -18,8 +24,11 @@ import java.util.ArrayList;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
 
     private ArrayList<Product> dataList;
-    public ProductAdapter(ArrayList<Product> dataList){
-        this.dataList = dataList;}
+    private Context context;
+    public ProductAdapter(ArrayList<Product> dataList,Context context){
+        this.dataList = dataList;
+        this.context = context;
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -33,10 +42,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (product == null){
             return;
         }
-
-        holder.tvName.setText(product.getName());
+        holder.tvName.setText(product.getTitle());
         holder.tvPrice.setText(product.getPrice());
-        Picasso.get().load(product.getImg()).into(holder.imgProduct);
+        holder.rltProduct.setOnClickListener(v->{
+            Intent intent = new Intent(context, DetailProductActivity.class);
+            intent.putExtra("list_img",product.getList_img());
+            intent.putExtra("video",product.getVideo());
+            intent.putExtra("title",product.getTitle());
+            intent.putExtra("price",product.getPrice()+"");
+            intent.putExtra("color",product.getColor());
+            intent.putExtra("ram_rom",product.getRam_rom());
+            intent.putExtra("id",product.get_id());
+
+            context.startActivity(intent);
+        });
+
+
     }
 
     @Override
@@ -48,12 +69,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         private TextView tvName;
         private TextView tvPrice;
         private ImageView imgProduct;
+        private RelativeLayout rltProduct;
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
             imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
-
+            rltProduct = (RelativeLayout) itemView.findViewById(R.id.rlt_product);
         }
     }
 }

@@ -1,14 +1,19 @@
 package com.datn.shopsale.Interface;
 
+import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.models.CartRequest;
+import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.ResApiNew;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 
 import java.util.List;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
@@ -49,4 +54,9 @@ public interface ApiService {
     Call<GetListCategoryResponse.Root> getListCategory(@Header("Authorization") String token);
     @POST("/api/getListProduct")
     Call<GetListProductResponse.Root> getListProduct(@Header("Authorization") String token);
+
+    @POST("/api/addCart")
+    Call<ResApiNew> addToCart(@Header("Authorization") String token,
+                              @Body CartRequest.Root cartRequest
+                         );
 }

@@ -30,7 +30,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder holder, int position) {
         Product product = mList.get(position);
-        holder.tvName.setText(product.getName());
+        holder.tvName.setText(product.getTitle());
         holder.tvPrice.setText(product.getPrice());
     }
 

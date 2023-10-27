@@ -1,34 +1,81 @@
 package com.datn.shopsale.models;
 
+import com.datn.shopsale.response.GetListProductResponse;
+
+import java.util.ArrayList;
+
 public class Product {
-    private String id;
-    private String name;
+    private String _id;
+    private GetListProductResponse.Category category;
+    private String title;
+    private String description;
+    private ArrayList<String> color;
     private String price;
-    private String img;
-    public Product(String id, String name, String price, String img) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.img = img;
-    }
+    private String quantity;
+    private String sold;
+    private ArrayList<String> list_img;
+    private String date;
+    private ArrayList<String> ram_rom;
+    private String img_cover;
+    private String video;
 
     public Product() {
     }
 
-    public String getId() {
-        return id;
+    public Product(String _id, GetListProductResponse.Category category, String title, String description, ArrayList<String> color, String price, String quantity, String sold, ArrayList<String> list_img, String date, ArrayList<String> ram_rom, String img_cover, String video) {
+        this._id = _id;
+        this.category = category;
+        this.title = title;
+        this.description = description;
+        this.color = color;
+        this.price = price;
+        this.quantity = quantity;
+        this.sold = sold;
+        this.list_img = list_img;
+        this.date = date;
+        this.ram_rom = ram_rom;
+        this.img_cover = img_cover;
+        this.video = video;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String get_id() {
+        return _id;
     }
 
-    public String getName() {
-        return name;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public GetListProductResponse.Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(GetListProductResponse.Category category) {
+        this.category = category;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ArrayList<String> getColor() {
+        return color;
+    }
+
+    public void setColor(ArrayList<String> color) {
+        this.color = color;
     }
 
     public String getPrice() {
@@ -39,11 +86,62 @@ public class Product {
         this.price = price;
     }
 
-    public String getImg() {
-        return img;
+    public String getQuantity() {
+        return quantity;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
+
+    public String getSold() {
+        return sold;
+    }
+
+    public void setSold(String sold) {
+        this.sold = sold;
+    }
+
+    public ArrayList<String> getList_img() {
+        return list_img;
+    }
+
+    public void setList_img(ArrayList<String> list_img) {
+        this.list_img = list_img;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public ArrayList<String> getRam_rom() {
+        return ram_rom;
+    }
+
+    public void setRam_rom(ArrayList<String> ram_rom) {
+        this.ram_rom = ram_rom;
+    }
+
+    public String getImg_cover() {
+        return img_cover;
+    }
+
+    public void setImg_cover(String img_cover) {
+        this.img_cover = img_cover;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
+
 }
+
