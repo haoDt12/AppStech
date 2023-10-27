@@ -62,8 +62,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private User user = new User();
     private Product product = new Product();
     private PreferenceManager preferenceManager;
-    ArrayList<String> selectedColors = new ArrayList<>();
-    ArrayList<String> selectedRams = new ArrayList<>();
+    String selectedColors ;
+    String selectedRams ;
     String id ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,18 +129,14 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         ColorAdapter.OnColorItemClickListener colorItemClickListener = new ColorAdapter.OnColorItemClickListener() {
             @Override
             public void onColorItemClick(String color) {
-                Product colorContent = new Product();
-                selectedColors.add(color);
-                colorContent.setColor(selectedColors);
+                selectedColors = color;
 
             }
         };
         RamAdapter.OnRamItemClickListener ramItemClickListener = new RamAdapter.OnRamItemClickListener() {
             @Override
             public void onRamItemClick(String ram) {
-                Product ramContent = new Product();
-                selectedRams.add(ram);
-                ramContent.setColor(selectedRams);
+               selectedRams = ram;
             }
         };
         ColorAdapter adapter = new ColorAdapter(colorList, colorItemClickListener);
@@ -165,8 +161,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             } else {
                 final String userId = user.get_id();
                 final String productId = id;
-                final String selectedColor = selectedColors.get(0); // Lấy màu đã chọn (chỉ lấy một màu)
-                final String selectedRamRom = selectedRams.get(0);
+                final String selectedColor = selectedColors; // Lấy màu đã chọn (chỉ lấy một màu)
+                final String selectedRamRom = selectedRams;
                 AddToCart(userId, productId, selectedColor, selectedRamRom);
             }
         }
@@ -178,12 +174,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
     private void AddToCart(String userId, String productId, String color, String ramRom) {
         // Tạo một đối tượng Product đại diện cho sản phẩm được chọn
-        Product product = new Product();
-        product.set_id(productId);
-        selectedColors.add(color);
-        product.setColor(selectedColors);
-        selectedRams.add(ramRom);
-        product.setColor(selectedRams);
 
         CartRequest.Product product1 = new CartRequest.Product();
         product1.color = String.valueOf(selectedColors);
@@ -196,17 +186,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         request.userId = preferenceManager.getString("userId");
 
 
-//
-//        CartRequest.Product cartRequest = new CartRequest.Product();
-//        cartRequest.setProduct(product);
-//        cartRequest.setUserId(userId);
-//        cartRequest.setTotal(0);
-//        CartRequest.
-//
-//        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//        Date date = new Date(timestamp.getTime());
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm aa", Locale.getDefault());
-//        cartRequest.setDate_time(simpleDateFormat.format(date));
 
         // Gọi API để thêm sản phẩm vào giỏ hàng
         Call<ResApiNew> call = apiService.addToCart(preferenceManager.getString("token"), request);
