@@ -58,7 +58,7 @@
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_dashboard"
+                android:text="@string/user"
                 android:textSize="20dp"
                 android:textColor="@color/black"/>
 
@@ -100,7 +100,7 @@
                 android:layout_gravity="center"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:text="@string/title_chart"
+                android:text="@string/chart"
                 android:textSize="20dp"
                 android:textColor="@color/black"/>
             <ImageView

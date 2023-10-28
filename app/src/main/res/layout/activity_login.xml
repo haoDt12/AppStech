@@ -30,7 +30,7 @@
             android:layout_marginTop="35dp"
             android:layout_marginEnd="35dp"
             android:background="@color/mauve"
-            android:hint="@string/title_username"
+            android:hint="@string/email_or_phone_number"
             android:textColorHint="@color/black"
             app:counterTextColor="@color/black"
             app:endIconTint="@color/black"
@@ -193,7 +193,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no_account"
+                android:text="@string/dont_have_account"
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
@@ -202,7 +202,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="5dp"
-                android:text="@string/signup"
+                android:text="@string/sign_up"
                 android:textColor="@color/blue"
                 android:textSize="15sp"
                 android:textStyle="bold" />

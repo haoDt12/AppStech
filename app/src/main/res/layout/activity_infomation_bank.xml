@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:text="@string/pay_bank"
+                android:text="@string/bank"
                 android:textColor="@color/black"
                 android:textSize="30dp"
                 android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/info_order"
+                android:text="@string/order_Information"
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -60,7 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/pay_title"
+                    android:text="@string/payment_amount"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -85,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/product_value"
+                    android:text="@string/oder_value"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -110,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/fees"
+                    android:text="@string/Transaction_fees"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/ship_code"
+                    android:text="@string/order_ID"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -187,7 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/pay_bank"
+                android:text="@string/bank"
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -199,7 +199,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_input_signup"
-                    android:hint="@string/code_bank">
+                    android:hint="@string/card_number">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/ed_number_card"
                         android:layout_width="match_parent"
@@ -217,7 +217,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/bg_input_signup"
-                android:hint="@string/ten_nguoi_dung">
+                android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_user_name"
@@ -234,7 +234,7 @@
                 android:layout_height="60dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:hint="@string/date_vie">
+                android:hint="@string/date">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_date"
@@ -270,7 +270,7 @@
                 android:id="@+id/btn_save"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/continue_"
+                android:text="@string/Continue"
                 android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>

@@ -17,6 +17,7 @@ public class Constants {
         }
 
     public static final String URL_DUCTUNG = "http://192.168.250.82:3000";
+    public static final String URL_Minh = "http://192.168.1.4:3000";
     public static final String URL_VUNG = "http://192.168.0.105:3000";
     public static final String URL_DIENTC = "http://192.168.1.8:3000";
     public static final String HEX_CHAR = "0123456789ABCDEF";

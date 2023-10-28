@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/your_address"
+            android:text="@string/shipping_address"
             android:textAlignment="center"
             android:textColor="#F0000000"
             android:textSize="20sp"
@@ -115,7 +115,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/payment_method"
+            android:text="@string/payment_methods"
             android:textAlignment="center"
             android:textColor="#F0000000"
             android:textSize="20sp"
@@ -220,7 +220,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:padding="1dp"
-                android:text="@string/shipping"
+                android:text="@string/shipping_fee"
                 android:textColor="#373b54"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -268,7 +268,7 @@
                     android:textSize="8sp"
                     android:layout_marginLeft="20dp"
                     app:cornerRadius="10dp"
-                    android:text="@string/place_order"/>
+                    android:text="@string/abate"/>
             </LinearLayout>
         </RelativeLayout>
 

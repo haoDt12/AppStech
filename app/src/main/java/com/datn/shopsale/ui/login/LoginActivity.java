@@ -27,7 +27,6 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.Constants;
-import com.datn.shopsale.utils.HashPassword;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -292,15 +291,15 @@ public class LoginActivity extends AppCompatActivity {
         Matcher matcherPhone = patternPhone.matcher(username);
 
         if(username.isEmpty()){
-            Toast.makeText(this, R.string.vui_long_nhap_email_sdt, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.re_enter_email_or_phone_number, Toast.LENGTH_SHORT).show();
             return false;
         }
         if (pass.isEmpty()){
-            Toast.makeText(this, R.string.vui_long_nhap_pass, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.re_enter_password, Toast.LENGTH_SHORT).show();
             return false;
         }
         if(!matcherPhone.matches() && !matcherEmail.matches()){
-            Toast.makeText(this, R.string.email_sdt_khong_hop_le, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.email_or_phone_number_wong, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

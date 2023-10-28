@@ -22,7 +22,7 @@
             android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/add_new_address"
+            android:text="@string/add_an_address"
             android:textSize="30dp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -44,7 +44,7 @@
         android:background="@drawable/bg_input_signup"
         android:padding="20dp"
         android:textSize="16sp"
-        android:hint="@string/ho_va_ten"
+        android:hint="@string/full_name"
         android:inputType="text"
         android:textColorHint="#BBAFAF"/>
     <EditText
@@ -58,12 +58,12 @@
         android:textSize="16sp"
         android:inputType="phone"
         android:layout_marginTop="15dp"
-        android:hint="@string/so_dien_thoai"
+        android:hint="@string/phone_number"
         android:textColorHint="#BBAFAF"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/location"
+        android:text="@string/delivery_address"
         android:textSize="17sp"
         android:textColor="@color/black"
         android:layout_marginLeft="45dp"
@@ -79,7 +79,7 @@
         android:textSize="16sp"
         android:padding="20dp"
         android:inputType="text"
-        android:hint="@string/taglocation"
+        android:hint="@string/tag_address"
         android:textColorHint="#BBAFAF"/>
     <EditText
         android:id="@+id/ed_street"
@@ -92,7 +92,7 @@
         android:padding="20dp"
         android:inputType="text"
         android:layout_marginTop="15dp"
-        android:hint="@string/tagstreet"
+        android:hint="@string/tag_street"
         android:textColorHint="#BBAFAF"/>
     <EditText
         android:id="@+id/ed_home"
@@ -105,7 +105,7 @@
         android:padding="20dp"
         android:layout_marginTop="15dp"
         android:inputType="text"
-        android:hint="@string/taghome"
+        android:hint="@string/tag_home"
         android:textColorHint="#BBAFAF"/>
     <Button
         android:id="@+id/btn_save"

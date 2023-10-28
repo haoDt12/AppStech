@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/change_pass"
+            android:text="@string/change_password"
             android:textAlignment="center"
             android:textSize="24sp"
             android:textColor="#F0F80606"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/current_pass"
+            android:text="@string/current_password"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/new_pass"
+            android:text="@string/new_password"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/reNew_pass"
+            android:text="@string/re_enter_password"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />

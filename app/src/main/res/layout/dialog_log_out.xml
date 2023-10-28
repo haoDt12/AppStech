@@ -18,10 +18,11 @@
         app:srcCompat="@drawable/cross" />
 
 
-    <androidx.cardview.widget.CardView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
+        android:background="@drawable/bg_bottom_nav"
         android:backgroundTint="@color/mauve">
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,8 +51,9 @@
                 android:layout_width="280dp"
                 android:layout_height="45dp"
                 android:gravity="center"
+                android:textColor="@color/mauve"
                 android:layout_gravity="center_horizontal"
                 android:text="Đăng xuất" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </FrameLayout>
 </LinearLayout>

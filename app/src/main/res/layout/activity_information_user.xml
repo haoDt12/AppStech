@@ -62,7 +62,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ho_va_ten"
+                    android:text="@string/full_name"
                     android:textSize="18sp"
                     android:textColor="#818181"
                     android:layout_alignParentLeft="true"/>
@@ -114,7 +114,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/so_dien_thoai"
+                    android:text="@string/phone_number"
                     android:textSize="18sp"
                     android:textColor="#818181"
                     android:layout_alignParentLeft="true"/>
@@ -176,7 +176,7 @@
                 android:layout_height="60dp"
                 android:background="@drawable/bg_input_signup"
                 android:padding="20dp"
-                android:hint="@string/ho_va_ten"
+                android:hint="@string/full_name"
                 android:textColorHint="#BBAFAF"/>
             <EditText
                 android:id="@+id/ed_email"
@@ -193,7 +193,7 @@
                 android:layout_height="60dp"
                 android:background="@drawable/bg_input_signup"
                 android:padding="20dp"
-                android:hint="@string/so_dien_thoai"
+                android:hint="@string/phone_number"
                 android:textColorHint="#BBAFAF"
                 android:layout_marginTop="20dp"/>
             <EditText

@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/info_order"
+                android:text="@string/order_Information"
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/pay_title"
+                    android:text="@string/payment_amount"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/product_value"
+                    android:text="@string/oder_value"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -87,7 +87,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/fees"
+                    android:text="@string/Transaction_fees"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:text="@string/ship_code"
+                    android:text="@string/order_ID"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/check_otp"
+                android:text="@string/verify_otp"
                 android:textColor="@color/black"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -208,7 +208,7 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/bg_input_signup"
-                android:hint="@string/otp">
+                android:hint="@string/enter_otp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ed_pass2"
@@ -221,7 +221,7 @@
                     android:textColor="@color/black" />
             </com.google.android.material.textfield.TextInputLayout>
             <TextView
-                android:text="@string/text_otp"
+                android:text="@string/otp_have_been_send_to_u_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -244,6 +244,7 @@
                 android:layout_marginRight="10dp"
                 android:backgroundTint="#ccc"
                 android:text="@string/cancel"
+                android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -252,7 +253,8 @@
                 android:id="@+id/btn_save"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:text="@string/pay"
+                android:text="@string/abate"
+                android:textAllCaps="false"
                 android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
