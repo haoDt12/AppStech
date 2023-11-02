@@ -2,8 +2,10 @@ package com.datn.shopsale.ui.cart;
 
 import android.content.Context;
 
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.utils.Constants;
+import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -19,7 +21,9 @@ import java.util.List;
 
 public class CartPresenter {
     private final ICartView iCartView;
-
+    private ApiService apiService;
+    private PreferenceManager preferenceManager;
+    private String userId;
 
     public CartPresenter(ICartView iCartView) {
         this.iCartView = iCartView;
@@ -27,6 +31,7 @@ public class CartPresenter {
 
     public void getDataCart(Context context) {
         // get from API
+
 
         // Fake data
         List<Cart> listCart = new ArrayList<>();
@@ -70,7 +75,7 @@ public class CartPresenter {
         itemCart2.setId("id1");
         itemCart2.setImg("https://cdn.hoanghamobile.com/i/productlist/dsp/Uploads/2022/09/08/2222.png");
         Date date2 = new Date();
-        itemCart2.setDate(date);
+        itemCart2.setDate(date2);
         itemCart2.setQuantity(1);
         itemCart2.setPrice(26000.0 * itemCart2.getQuantity());
         ArrayList<String> listProductId2 = new ArrayList<>();

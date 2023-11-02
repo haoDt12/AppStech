@@ -1,12 +1,10 @@
 package com.datn.shopsale.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,27 +19,15 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ColorAdapter;
 import com.datn.shopsale.adapter.ContentAdapter;
-import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.RamAdapter;
-import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.CartRequest;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
-import com.datn.shopsale.response.GetListProductResponse;
-import com.datn.shopsale.response.ResApiNew;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.login.LoginActivity;
-import com.datn.shopsale.ui.login.VerifyOTPActivity;
 import com.datn.shopsale.utils.PreferenceManager;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -159,11 +144,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             if (selectedColors.isEmpty() || id == null || selectedRams.isEmpty()) {
                 Toast.makeText(this, "Vui lòng chọn màu và dung lượng", Toast.LENGTH_SHORT).show();
             } else {
-                final String userId = user.get_id();
                 final String productId = id;
-                final String selectedColor = selectedColors; // Lấy màu đã chọn (chỉ lấy một màu)
-                final String selectedRamRom = selectedRams;
-                AddToCart(userId, productId, selectedColor, selectedRamRom);
+                AddToCart(productId);
             }
         }
     }
@@ -172,7 +154,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         super.onDestroy();
         contentAdapter.releasePlayer();
     }
-    private void AddToCart(String userId, String productId, String color, String ramRom) {
+    private void AddToCart(String productId) {
         // Tạo một đối tượng Product đại diện cho sản phẩm được chọn
 
         CartRequest.Product product1 = new CartRequest.Product();
@@ -188,11 +170,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
 
         // Gọi API để thêm sản phẩm vào giỏ hàng
-        Call<ResApiNew> call = apiService.addToCart(preferenceManager.getString("token"), request);
+        Call<ResApi> call = apiService.addToCart(preferenceManager.getString("token"), request);
 
-        call.enqueue(new Callback<ResApiNew>() {
+        call.enqueue(new Callback<ResApi>() {
             @Override
-            public void onResponse(Call<ResApiNew> call, Response<ResApiNew> response) {
+            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                 if (response.body().code ==1) {
                     Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
                 } else {
@@ -203,7 +185,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void onFailure(Call<ResApiNew> call, Throwable t) {
+            public void onFailure(Call<ResApi> call, Throwable t) {
                 Toast.makeText(DetailProductActivity.this, "Network error", Toast.LENGTH_SHORT).show();
             }
         });
