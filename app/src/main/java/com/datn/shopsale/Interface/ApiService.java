@@ -1,7 +1,8 @@
 package com.datn.shopsale.Interface;
 
-import com.datn.shopsale.models.CartRequest;
+import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
@@ -53,6 +54,18 @@ public interface ApiService {
 
     @POST("/api/addCart")
     Call<ResApi> addToCart(@Header("Authorization") String token,
-                              @Body CartRequest.Root cartRequest
-                         );
+                           @Body Cart objCart
+                           );
+    @FormUrlEncoded
+    @POST("/api/getCartByCartIdUser")
+    Call<ResponseCart> getDataCart(@Header("Authorization") String token,
+                                   @Field("id") String id
+    );
+    @FormUrlEncoded
+    @POST("/api/editCart")
+    Call<ResApi> editCart(@Header("Authorization") String token,
+                          @Field("userId") String id,
+                          @Field("productId") String productId,
+                          @Field("caculation") String caculation
+                          );
 }

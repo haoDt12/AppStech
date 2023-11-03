@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements ICartView {
         itemView.addView(cart_badge);
 
         cartPresenter = new CartPresenter(this);
-        cartPresenter.getDataCart(this);
+//        cartPresenter.getDataCart(this);
     }
 
     @Override
