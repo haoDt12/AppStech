@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.DetailProductActivity;
 import com.datn.shopsale.models.Product;
@@ -42,6 +43,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (product == null){
             return;
         }
+        Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         holder.tvPrice.setText(product.getPrice());
         holder.rltProduct.setOnClickListener(v->{
@@ -53,6 +55,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             intent.putExtra("color",product.getColor());
             intent.putExtra("ram_rom",product.getRam_rom());
             intent.putExtra("id",product.get_id());
+            intent.putExtra("imgCover",product.getImg_cover());
 
             context.startActivity(intent);
         });

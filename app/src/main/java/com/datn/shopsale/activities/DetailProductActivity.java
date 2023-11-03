@@ -20,7 +20,7 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ColorAdapter;
 import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.RamAdapter;
-import com.datn.shopsale.models.CartRequest;
+import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
@@ -40,16 +40,21 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private ImageView imgProduct;
     private TextView tvNameProduct;
     private TextView tvPriceProduct;
-    private RecyclerView recyColorsProduct,recyDungLuong;
+    private RecyclerView recyColorsProduct, recyDungLuong;
     private ContentAdapter contentAdapter;
     private ViewPager2 viewPager2;
     private ApiService apiService;
     private User user = new User();
     private Product product = new Product();
+    private ArrayList<String> ramList;
     private PreferenceManager preferenceManager;
-    String selectedColors ;
-    String selectedRams ;
-    String id ;
+    String selectedColors = "";
+    String selectedRams = "";
+    String id;
+    String imgCover;
+    String title;
+    int price;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +63,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         apiService = RetrofitConnection.getApiService();
         init();
     }
-    private void init(){
+
+    private void init() {
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
@@ -70,12 +76,13 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         viewPager2 = findViewById(R.id.vpg_product);
 
 
-        final String namePr = getIntent().getStringExtra("title");
-        final String pricePr = getIntent().getStringExtra("price");
+        title = getIntent().getStringExtra("title");
+        price = Integer.parseInt(getIntent().getStringExtra("price"));
         id = getIntent().getStringExtra("id");
+        imgCover = getIntent().getStringExtra("imgCover");
 
         ArrayList<String> colorList = getIntent().getStringArrayListExtra("color");
-        ArrayList<String> ramList = getIntent().getStringArrayListExtra("ram_rom");
+        ramList = getIntent().getStringArrayListExtra("ram_rom");
 
         ArrayList<String> listImg = getIntent().getStringArrayListExtra("list_img");
         final String video = getIntent().getStringExtra("video");
@@ -101,11 +108,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             }
         }
 
-        contentAdapter = new ContentAdapter(contentItems,this);
+        contentAdapter = new ContentAdapter(contentItems, this);
         viewPager2.setAdapter(contentAdapter);
 
-        tvNameProduct.setText(namePr);
-        tvPriceProduct.setText(String.valueOf(pricePr));
+        tvNameProduct.setText(title);
+        tvPriceProduct.setText(String.valueOf(price));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyColorsProduct.setLayoutManager(layoutManager);
@@ -121,12 +128,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         RamAdapter.OnRamItemClickListener ramItemClickListener = new RamAdapter.OnRamItemClickListener() {
             @Override
             public void onRamItemClick(String ram) {
-               selectedRams = ram;
+                selectedRams = ram;
             }
         };
         ColorAdapter adapter = new ColorAdapter(colorList, colorItemClickListener);
         recyColorsProduct.setAdapter(adapter);
-        RamAdapter adapter1 = new RamAdapter(ramList,ramItemClickListener);
+        RamAdapter adapter1 = new RamAdapter(ramList, ramItemClickListener);
         recyDungLuong.setAdapter(adapter1);
 
         imgBack.setOnClickListener(this);
@@ -136,58 +143,75 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.img_back){
+        if (view.getId() == R.id.img_back) {
             super.onBackPressed();
-        } else if (view.getId()==R.id.btn_danhgia) {
-            startActivity(new Intent(getApplicationContext(),ReviewActivity.class));
-        }else if(view.getId()==R.id.btn_addToCart){
-            if (selectedColors.isEmpty() || id == null || selectedRams.isEmpty()) {
-                Toast.makeText(this, "Vui lòng chọn màu và dung lượng", Toast.LENGTH_SHORT).show();
-            } else {
-                final String productId = id;
-                AddToCart(productId);
-            }
+        } else if (view.getId() == R.id.btn_danhgia) {
+            startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
+        } else if (view.getId() == R.id.btn_addToCart) {
+                if (validate()) {
+                    AddToCart();
+                }
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         contentAdapter.releasePlayer();
     }
-    private void AddToCart(String productId) {
-        // Tạo một đối tượng Product đại diện cho sản phẩm được chọn
 
-        CartRequest.Product product1 = new CartRequest.Product();
-        product1.color = String.valueOf(selectedColors);
-        product1.quantity = 1;
-        product1.ram_rom = String.valueOf(selectedRams);
-        product1.productId = productId;
+    private void AddToCart() {
+        String token = preferenceManager.getString("token");
+        String idUser = preferenceManager.getString("userId");
+        Cart objCart = new Cart();
+        objCart.setProductId(id);
+        objCart.setUserId(idUser);
+        objCart.setTitle(title);
+        objCart.setColor(selectedColors);
+        objCart.setRam_rom(selectedRams);
+        objCart.setPrice(price);
+        objCart.setQuantity(1);
+        objCart.setImgCover(imgCover);
+        objCart.setStatus(1);
+        try {
+            Call<ResApi> call = apiService.addToCart(token, objCart);
+            call.enqueue(new Callback<ResApi>() {
+                @Override
+                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                    if (response.body().code == 1) {
+                        Toast.makeText(DetailProductActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
 
-        CartRequest.Root request = new CartRequest.Root();
-        request.product = product1;
-        request.userId = preferenceManager.getString("userId");
+                    }
+                }
 
-
-
-        // Gọi API để thêm sản phẩm vào giỏ hàng
-        Call<ResApi> call = apiService.addToCart(preferenceManager.getString("token"), request);
-
-        call.enqueue(new Callback<ResApi>() {
-            @Override
-            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                if (response.body().code ==1) {
-                    Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                    Log.i("TAG9", "onResponse: "+response.body().message);
+                @Override
+                public void onFailure(Call<ResApi> call, Throwable t) {
+                    Log.e("error", t.getMessage());
+                    Toast.makeText(DetailProductActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
-            }
+            });
+        } catch (Exception e) {
+            Log.e("error", e.getMessage());
+            Toast.makeText(DetailProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
-            @Override
-            public void onFailure(Call<ResApi> call, Throwable t) {
-                Toast.makeText(DetailProductActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+    }
+
+    private boolean validate() {
+        if (selectedColors.equals("")) {
+            Toast.makeText(this, "Vui lòng chọn màu", Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (ramList.size() == 0) {
+            return true;
+        } else if (selectedRams.equals("")) {
+            Toast.makeText(this, "Vui lòng chọn Dung lượng", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
     }
 }

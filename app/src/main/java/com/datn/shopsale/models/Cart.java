@@ -5,39 +5,37 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Cart {
-    private String id;
+    private String productId;
     private String userId;
-    private ArrayList<String> productId;
     private String title;
-    private int status;
-    private String img;
+    private String color;
+    private String ram_rom;
+    private int price;
     private int quantity;
-    private double price;
-    private double total;
-    private Date date;
+    private String imgCover;
+    private int status;
 
     public Cart() {
     }
 
-    public Cart(String id, String userId, ArrayList<String> productId, String title, int status, String img, int quantity, double price, double total, Date date) {
-        this.id = id;
-        this.userId = userId;
+    public Cart(String productId, String userId, String title, String color, String ram_rom, int price, int quantity, String imgCover, int status) {
         this.productId = productId;
+        this.userId = userId;
         this.title = title;
-        this.status = status;
-        this.img = img;
-        this.quantity = quantity;
+        this.color = color;
+        this.ram_rom = ram_rom;
         this.price = price;
-        this.total = total;
-        this.date = date;
+        this.quantity = quantity;
+        this.imgCover = imgCover;
+        this.status = status;
     }
 
-    public String getId() {
-        return id;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getUserId() {
@@ -48,14 +46,6 @@ public class Cart {
         this.userId = userId;
     }
 
-    public ArrayList<String> getProductId() {
-        return productId;
-    }
-
-    public void setProductId(ArrayList<String> productId) {
-        this.productId = productId;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -64,20 +54,28 @@ public class Cart {
         this.title = title;
     }
 
-    public int getStatus() {
-        return status;
+    public String getColor() {
+        return color;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public String getImg() {
-        return img;
+    public String getRam_rom() {
+        return ram_rom;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setRam_rom(String ram_rom) {
+        this.ram_rom = ram_rom;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     public int getQuantity() {
@@ -88,27 +86,19 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
+    public String getImgCover() {
+        return imgCover;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setImgCover(String imgCover) {
+        this.imgCover = imgCover;
     }
 
-    public double getTotal() {
-        return total;
+    public int getStatus() {
+        return status;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

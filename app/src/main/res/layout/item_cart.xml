@@ -110,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="25dp"
-                        android:background="@drawable/bg_corner_img_button_decrease"
+                        android:background="@drawable/bg_corner_img_button_increase"
                         android:minHeight="30dp"
                         android:src="@drawable/icon_decrease_gray"
                         tools:ignore="ContentDescription,DuplicateSpeakableTextCheck,ImageContrastCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
