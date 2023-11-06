@@ -106,6 +106,7 @@
                     android:orientation="horizontal">
 
                     <ImageButton
+                        android:layout_gravity="center_vertical"
                         android:id="@+id/img_decrease"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -115,19 +116,20 @@
                         android:src="@drawable/icon_decrease_gray"
                         tools:ignore="ContentDescription,DuplicateSpeakableTextCheck,ImageContrastCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
-                    <TextView
-                        android:id="@+id/tv_quantity"
-                        android:layout_width="20dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center"
-                        android:text="2"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                  <EditText
+                      android:id="@+id/tv_quantity"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginLeft="5dp"
+                      android:layout_marginRight="5dp"
+                      android:gravity="center_vertical"
+                      android:padding="10dp"
+                      android:imeOptions="actionDone"
+                      android:inputType="number"
+                      />
 
                     <ImageButton
+                        android:layout_gravity="center_vertical"
                         android:id="@+id/img_increase"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

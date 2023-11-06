@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -86,9 +87,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             boolean isSelected = holder.cbCheck.isChecked();
             if (isSelected) {
                 item.setStatus(2);
+                iChangeQuantity.IclickCheckBox(item,_index);
 //                cartFragment.updateStatusCart(2, position);
             } else {
                 item.setStatus(1);
+                iChangeQuantity.IclickCheckBox2(item,_index);
 //                cartFragment.updateStatusCart(1, position);
             }
         });

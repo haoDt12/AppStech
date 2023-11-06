@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,6 +65,10 @@ public class CartFragment extends Fragment {
     private RelativeLayout layoutCart;
     PreferenceManager preferenceManager ;
     private ApiService apiService;
+    private TextView Tvsum;
+    private  int tong= 0;
+    private CheckBox chk_selectAll;
+    private  boolean selected = false;
 
     public CartFragment() {
     }
@@ -83,7 +89,6 @@ public class CartFragment extends Fragment {
         initView(root);
 
 //        cartPresenter.getDataCart(getContext());
-
         btnCheckout.setOnClickListener(v -> {
             startActivity(new Intent(getContext(), OrderActivity.class));
         });
@@ -96,21 +101,55 @@ public class CartFragment extends Fragment {
         apiService = RetrofitConnection.getApiService();
         initView(view);
         preferenceManager = new PreferenceManager(getActivity());
+
         getDataCart();
 
+
+        chk_selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                   setSelectedItem();
+                }else {
+                    unSelectedItem();
+                }
+            }
+        });
     }
 
     private void initView(@NonNull View view) {
         layoutCart = view.findViewById(R.id.layout_cart);
         rcvCart = view.findViewById(R.id.rcv_cart);
         btnCheckout = view.findViewById(R.id.btn_checkout);
+        Tvsum = view.findViewById(R.id.sum);
+        chk_selectAll = view.findViewById(R.id.chk_selectedAll);
     }
 
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    private void setSelectedItem(){
+        for (int i = 0; i < cartList.size(); i++) {
+            if( cartList.get(i).getStatus()==1){
+                cartList.get(i).setStatus(2);
+                tong+=  (cartList.get(i).getPrice()*cartList.get(i).getQuantity());
+            }
 
+            Tvsum.setText(String.valueOf(tong));
+            cartAdapter.notifyDataSetChanged();
+
+        }
+    }
+    private void unSelectedItem(){
+        for (int i = 0; i < cartList.size(); i++) {
+
+            cartList.get(i).setStatus(1);
+            tong = 0;
+            Tvsum.setText(String.valueOf(tong));
+            cartAdapter.notifyDataSetChanged();
+        }
+    }
     private void getDataCart() {
         cartList = new ArrayList<>();
         Call<ResponseCart> call = apiService.getDataCart(preferenceManager.getString("token"),
@@ -130,16 +169,31 @@ public class CartFragment extends Fragment {
                         objCart.setStatus(1);
                         cartList.add(objCart);
                     }
+                    Tvsum.setText(String.valueOf(tong));
                     getActivity().runOnUiThread(() -> {
                         cartAdapter = new CartAdapter(cartList, getActivity(), new IChangeQuantity() {
                             @Override
                             public void IclickReduce(Cart objCart, int index) {
                                 reduceQuantity(objCart,index);
+
                             }
 
                             @Override
                             public void IclickIncrease(Cart objCart, int index) {
                                 increaseQuantity(objCart,index);
+
+                            }
+
+                            @Override
+                            public void IclickCheckBox(Cart objCart, int index) {
+                                tong+= (objCart.getPrice()* objCart.getQuantity());
+                                Tvsum.setText(String.valueOf(tong));
+                            }
+
+                            @Override
+                            public void IclickCheckBox2(Cart objCart, int index) {
+                                tong-= (objCart.getPrice()* objCart.getQuantity());
+                                Tvsum.setText(String.valueOf(tong));
                             }
                         });
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false);
@@ -170,6 +224,10 @@ public class CartFragment extends Fragment {
                @Override
                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                    if(response.body().code==1){
+                       if(objCart.getStatus()==2){
+                         tong = tong + objCart.getPrice();
+                           Tvsum.setText(String.valueOf(tong));
+                       }
                        cartList.get(index).setQuantity(cartList.get(index).getQuantity()+1);
 
                        cartAdapter.notifyDataSetChanged();
@@ -201,6 +259,10 @@ public class CartFragment extends Fragment {
                 @Override
                 public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                     if(response.body().code==1){
+                        if(objCart.getStatus()==2){
+                            tong = tong - objCart.getPrice();
+                            Tvsum.setText(String.valueOf(tong));
+                        }
                         cartList.get(index).setQuantity(cartList.get(index).getQuantity()-1);
                         if(cartList.get(index).getQuantity()==0){
                             cartList.remove(index);
