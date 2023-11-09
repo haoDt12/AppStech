@@ -59,8 +59,6 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
         btnVerify.setVisibility(View.INVISIBLE);
         idProgress.setVisibility(View.VISIBLE);
         try {
-            LoadingDialog.dismissProgressDialog();
-            LoadingDialog.showProgressDialog(this,"Đang Tải...");
             OTP = edNumber1.getText().toString().trim()
                     + edNumber2.getText().toString().trim()
                     + edNumber3.getText().toString().trim()
@@ -76,7 +74,6 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                             idProgress.setVisibility(View.INVISIBLE);
                             btnVerify.setVisibility(View.VISIBLE);
                             Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                            LoadingDialog.dismissProgressDialog();
                             preferenceManager.putString("token",response.body().getToken());
                             preferenceManager.putString("userId",response.body().getUser().get_id());
                             Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
@@ -88,7 +85,6 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                             idProgress.setVisibility(View.INVISIBLE);
                             btnVerify.setVisibility(View.VISIBLE);
                             Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            LoadingDialog.dismissProgressDialog();
                         });
                     }
                 }
@@ -100,7 +96,6 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                         btnVerify.setVisibility(View.VISIBLE);
                         Log.e("Error", "onFailure: " + t);
                         Toast.makeText(VerifyOTPSignInActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
                     });
                 }
             });
@@ -109,7 +104,6 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
             btnVerify.setVisibility(View.VISIBLE);
             Log.e("Exception", "onFailure: " + e);
             Toast.makeText(VerifyOTPSignInActivity.this, "Exception: " + e, Toast.LENGTH_SHORT).show();
-            LoadingDialog.dismissProgressDialog();
         }
 
 

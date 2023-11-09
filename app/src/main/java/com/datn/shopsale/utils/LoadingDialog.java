@@ -14,8 +14,6 @@ public class LoadingDialog {
     }
 
     public static void dismissProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
-        }
     }
 }

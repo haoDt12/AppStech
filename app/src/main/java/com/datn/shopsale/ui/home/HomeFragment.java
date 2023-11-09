@@ -27,6 +27,7 @@ import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
@@ -64,8 +65,6 @@ public class HomeFragment extends Fragment{
         });
         preferenceManager = new PreferenceManager(getActivity());
         apiService = RetrofitConnection.getApiService();
-        displayCategory();
-
         List<Integer> imageList = new ArrayList<>();
         imageList.add(R.drawable.fist);
         imageList.add(R.drawable.seco);
@@ -85,18 +84,18 @@ public class HomeFragment extends Fragment{
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        int currentItem = binding.vpgSlideImage.getCurrentItem();
-                        int totalItems = binding.vpgSlideImage.getAdapter().getCount();
-                        int nextItem = (currentItem + 1) % totalItems;
-                        binding.vpgSlideImage.setCurrentItem(nextItem);
-                    }
+                getActivity().runOnUiThread(() -> {
+                    int currentItem = binding.vpgSlideImage.getCurrentItem();
+                    int totalItems = binding.vpgSlideImage.getAdapter().getCount();
+                    int nextItem = (currentItem + 1) % totalItems;
+                    binding.vpgSlideImage.setCurrentItem(nextItem);
                 });
             }
         }, 2000, 2000);
+        LoadingDialog.showProgressDialog(getActivity(),"Đang Tải...");
+        displayCategory();
         displayProduct();
+        Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
         return root;
     }
 
@@ -118,10 +117,14 @@ public class HomeFragment extends Fragment{
                             productAdapter = new ProductAdapter(dataList,getActivity());
                             binding.rcvListitem.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                             binding.rcvListitem.setAdapter(productAdapter);
+                            LoadingDialog.dismissProgressDialog();
                         }
                     });
                 }else {
-                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                    });
                 }
             }
 
@@ -175,16 +178,23 @@ public class HomeFragment extends Fragment{
                             });
                             binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                             binding.rcvListCategories.setAdapter(categoriesAdapter);
+                            LoadingDialog.dismissProgressDialog();
                         }
                     });
                 } else {
-                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                    });
                 }
             }
 
             @Override
             public void onFailure(Call<GetListCategoryResponse.Root> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    LoadingDialog.dismissProgressDialog();
+                });
             }
         });
     }

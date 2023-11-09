@@ -6,7 +6,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,7 @@ import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.login.SignUpActivity;
 import com.datn.shopsale.utils.Constants;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -69,7 +72,7 @@ public class CartFragment extends Fragment {
     private  int tong= 0;
     private CheckBox chk_selectAll;
     private  boolean selected = false;
-
+    private List<Cart> listCartSelected;
     public CartFragment() {
     }
 
@@ -123,6 +126,7 @@ public class CartFragment extends Fragment {
         btnCheckout = view.findViewById(R.id.btn_checkout);
         Tvsum = view.findViewById(R.id.sum);
         chk_selectAll = view.findViewById(R.id.chk_selectedAll);
+        listCartSelected = new ArrayList<>();
     }
 
     private void showToast(String message) {
@@ -130,6 +134,8 @@ public class CartFragment extends Fragment {
     }
 
     private void setSelectedItem(){
+        listCartSelected.clear();
+        listCartSelected = cartList;
         for (int i = 0; i < cartList.size(); i++) {
             if( cartList.get(i).getStatus()==1){
                 cartList.get(i).setStatus(2);
@@ -142,6 +148,7 @@ public class CartFragment extends Fragment {
         }
     }
     private void unSelectedItem(){
+        listCartSelected.clear();
         for (int i = 0; i < cartList.size(); i++) {
 
             cartList.get(i).setStatus(1);
@@ -151,6 +158,7 @@ public class CartFragment extends Fragment {
         }
     }
     private void getDataCart() {
+        LoadingDialog.showProgressDialog(getActivity(),"Đang Tải...");
         cartList = new ArrayList<>();
         Call<ResponseCart> call = apiService.getDataCart(preferenceManager.getString("token"),
                 preferenceManager.getString("userId"));
@@ -169,8 +177,8 @@ public class CartFragment extends Fragment {
                         objCart.setStatus(1);
                         cartList.add(objCart);
                     }
-                    Tvsum.setText(String.valueOf(tong));
                     getActivity().runOnUiThread(() -> {
+                        Tvsum.setText(String.valueOf(tong));
                         cartAdapter = new CartAdapter(cartList, getActivity(), new IChangeQuantity() {
                             @Override
                             public void IclickReduce(Cart objCart, int index) {
@@ -188,27 +196,35 @@ public class CartFragment extends Fragment {
                             public void IclickCheckBox(Cart objCart, int index) {
                                 tong+= (objCart.getPrice()* objCart.getQuantity());
                                 Tvsum.setText(String.valueOf(tong));
+                                listCartSelected.add(objCart);
                             }
 
                             @Override
                             public void IclickCheckBox2(Cart objCart, int index) {
                                 tong-= (objCart.getPrice()* objCart.getQuantity());
                                 Tvsum.setText(String.valueOf(tong));
+                                listCartSelected.remove(objCart);
                             }
                         });
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false);
                         rcvCart.setLayoutManager(linearLayoutManager);
                         rcvCart.setAdapter(cartAdapter);
-
+                        LoadingDialog.dismissProgressDialog();
                     });
                 }else {
-                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                    });
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseCart> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    LoadingDialog.dismissProgressDialog();
+                });
             }
         });
     }
