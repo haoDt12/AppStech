@@ -1,9 +1,11 @@
 package com.datn.shopsale.ui.dashboard.address;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     private LinearLayout lnlAddAddress;
     private RecyclerView rcvAddress;
     private ArrayList<Address> dataList = new ArrayList<>();
+    private static final int REQUEST_ADD_ADDRESS = 123;
     private AddressAdapter addressAdapter;
     PreferenceManager preferenceManager;
     private ApiService apiService;
@@ -68,7 +71,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         if (view.getId() == R.id.img_back) {
             super.onBackPressed();
         } else if (view.getId() == R.id.lnl_add_address) {
-            startActivity(new Intent(getApplicationContext(), AddAddressActivity.class));
+            startActivityForResult(new Intent(getApplicationContext(), AddAddressActivity.class), REQUEST_ADD_ADDRESS);
         }
     }
 
@@ -203,5 +206,13 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                 Toast.makeText(AddressActivity.this, " "+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ADD_ADDRESS && resultCode == Activity.RESULT_OK) {
+            // Refresh address list
+            getDataAddress();
+        }
     }
 }

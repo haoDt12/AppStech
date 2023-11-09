@@ -1,5 +1,6 @@
 package com.datn.shopsale.adapter;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,22 +22,12 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     private ArrayList<String> colorList;
     private OnColorItemClickListener listener; // Define a listener interface
     private String selectedColor;
-    private HashMap<String, Integer> colorToColorRes;
 
     public ColorAdapter(ArrayList<String> colorList,OnColorItemClickListener listener) {
         this.colorList = colorList;
         this.listener=listener;
         selectedColor=null;
         // Initialize the color mapping (customize this as needed)
-        colorToColorRes = new HashMap<>();
-        colorToColorRes.put("Red", R.color.red);
-        colorToColorRes.put("White", R.color.white);
-        colorToColorRes.put("Black", R.color.black);
-        colorToColorRes.put("Titan", R.color.titan);   // Replace R.color.whiteColor with your color resources
-        colorToColorRes.put("Blue", R.color.blue);
-        colorToColorRes.put("Pink",R.color.pink);
-        colorToColorRes.put("Violet",R.color.violet);
-        colorToColorRes.put("Yellow",R.color.yellow);
     }
     public interface OnColorItemClickListener {
         void onColorItemClick(String color);
@@ -52,9 +43,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         final String color = colorList.get(position);
-        if (colorToColorRes.containsKey(color)) {
-            holder.btnColor.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), colorToColorRes.get(color)));
-        }
+        holder.btnColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
 
         if (color.equals(selectedColor)) {
             holder.btnColor.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
