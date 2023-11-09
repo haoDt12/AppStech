@@ -1,7 +1,6 @@
 package com.datn.shopsale.ui.dashboard.address;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,28 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.AddressAdapter;
-import com.datn.shopsale.adapter.CartAdapter;
-import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.adapter.UserAdapter;
 import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.ResponseCart;
-import com.datn.shopsale.models.User;
 import com.datn.shopsale.request.AddressRequest;
-import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.cart.IChangeQuantity;
-import com.datn.shopsale.ui.dashboard.setting.ChangePassActivity;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.TimerTask;
 
 import retrofit2.Call;
@@ -110,6 +97,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
 
                                     final AlertDialog dialog = builder.create();
                                     dialog.show();
+                                    ImageButton imgBack = (ImageButton) dialog.findViewById(R.id.img_back);
                                     TextView add_adr = dialog.findViewById(R.id.add_adr);
                                     EditText edName = (EditText) dialog.findViewById(R.id.ed_name);
                                     EditText  edPhoneNumber = (EditText) dialog.findViewById(R.id.ed_phone_number);
@@ -136,11 +124,22 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                                             dialog.dismiss();
                                         }
                                     });
+                                    imgBack.setOnClickListener(v->{
+                                        dialog.dismiss();
+                                    });
                                 }
 
                                 @Override
                                 public void deleteAddress(Address address) {
-
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(AddressActivity.this);
+                                    builder.setTitle("Xóa sản phẩm");
+                                    builder.setMessage("Bạn có chắc chắn muốn xóa sản phẩm này?");
+                                    builder.setPositiveButton("Xóa", (dialog, which) -> {
+                                        delete(address.get_id());
+                                    });
+                                    builder.setNegativeButton("Hủy", null);
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
                                 }
                             });
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddressActivity.this, RecyclerView.VERTICAL, false);
@@ -182,6 +181,26 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onFailure(Call<ResApi> call, Throwable t) {
                 Log.d("MAIN", "Respone Fail" + t.getMessage());
+            }
+        });
+    }
+    private void delete(String id) {
+        AddressRequest address = new AddressRequest();
+        address.setAddressId(id);
+        Call<ResApi> call = apiService.deleteAddress(preferenceManager.getString("token"),preferenceManager.getString("userId"),id);
+        call.enqueue(new Callback<ResApi>() {
+            @Override
+            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                if (response.body().code == 1) {
+                    Toast.makeText(AddressActivity.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                   getDataAddress();
+                } else {
+                    Toast.makeText(AddressActivity.this, " "+response.body().message, Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<ResApi> call, Throwable t) {
+                Toast.makeText(AddressActivity.this, " "+t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -88,6 +88,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                 public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                     if (response.body().code == 1) {
                         Toast.makeText(AddAddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Toast.makeText(AddAddressActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
 
