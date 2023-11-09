@@ -1,7 +1,9 @@
 package com.datn.shopsale.adapter;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,19 +11,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
     private ArrayList<Address> dataList;
+    private Callback callback;
 
-    public AddressAdapter(ArrayList<Address> dataList) {
+    public AddressAdapter(ArrayList<Address> dataList,Callback callback) {
         this.dataList = dataList;
+        this.callback = callback;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -37,9 +44,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         if (address == null){
             return;
         }
-        holder.tvName.setText(address.getName());
-        holder.tvPhoneNumber.setText(address.getPhone_number());
-        holder.tvAddressDetail.setText(address.getDetail());
+        holder.bind(address);
     }
 
     @Override
@@ -54,16 +59,57 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         private CircleImageView imgLocation;
         private TextView tvName;
         private TextView tvPhoneNumber;
-        private TextView tvAddressDetail;
-        private TextView tvEdit;
+        private TextView tvAddressCity;
+        private TextView tvAddressStreet;
+        private View dragLayout;
+        private View mainLayout;
+        private SwipeLayout swipeLayout;
+
+
+        private TextView tvEdit,tvDelete;
 
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLocation = (CircleImageView) itemView.findViewById(R.id.img_location);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPhoneNumber = (TextView) itemView.findViewById(R.id.tv_phone_number);
-            tvAddressDetail = (TextView) itemView.findViewById(R.id.tv_address_detail);
+            tvAddressCity = (TextView) itemView.findViewById(R.id.tv_address_city);
+            tvAddressStreet = (TextView) itemView.findViewById(R.id.tv_address_street);
             tvEdit = (TextView) itemView.findViewById(R.id.tv_edit);
+            tvDelete = (TextView) itemView.findViewById(R.id.tv_delete);
+
+            dragLayout = itemView.findViewById(R.id.dragLayout);
+            mainLayout = itemView.findViewById(R.id.mainLayout);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.layout_swipe);
         }
+
+
+        public void bind(Address address) {
+            tvName.setText(address.getName());
+            tvPhoneNumber.setText(address.getPhone_number());
+            tvAddressCity.setText(address.getCity());
+            tvAddressStreet.setText(address.getStreet());
+
+            tvEdit.setOnClickListener(v->{
+                callback.editAddress(address);
+            });
+            tvDelete.setOnClickListener(v->{
+                callback.deleteAddress(address);
+            });
+            dragLayout.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return true; // Consume touch events
+                }
+            });
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+            swipeLayout.addDrag(SwipeLayout.DragEdge.Right, dragLayout);
+        }
+    }
+
+
+    public interface Callback{
+        void editAddress(Address address);
+        void deleteAddress(Address address);
     }
 }

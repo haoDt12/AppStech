@@ -1,68 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
+    android:id="@+id/layout_swipe"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="15dp"
-    android:padding="15dp">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+    app:drag_edge="right">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_location"
-            android:layout_centerVertical="true"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_location" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_toRightOf="@id/img_location"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="Nguyễn Văn A"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/tv_phone_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="0964xxxxxx"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="20dp"
-                    android:textStyle="normal"/>
-            </LinearLayout>
-            <TextView
-                android:id="@+id/tv_address_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Nam Từ Liêm, Hà Nội"
-                android:textSize="14sp"
-                android:layout_marginTop="10dp"
-                android:textStyle="normal"/>
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dragLayout"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
         <TextView
             android:id="@+id/tv_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/update"
-            android:layout_marginRight="13dp"
-            android:textColor="#0E8CEF"
+            android:layout_width="70dp"
+            android:layout_height="100dp"
+            android:layout_marginRight="5dp"
+            android:background="#FF5722"
+            android:text="SỬA"
+            android:gravity="center"
+            android:textColor="@color/white"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"/>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="70dp"
+            android:layout_height="100dp"
+            android:background="#F0F40909"
+            android:text="XÓA"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mauve"
+        android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/img_location"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_location" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/img_location"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Nguyễn Văn A"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_phone_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:hint="0964xxxxxx"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_address_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:hint="Nam Từ Liêm, Hà Nội"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+                    <TextView
+                        android:id="@+id/tv_address_street"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:hint="Nam Từ Liêm, Hà Nội"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </RelativeLayout>
+    </LinearLayout>
+</com.daimajia.swipe.SwipeLayout>

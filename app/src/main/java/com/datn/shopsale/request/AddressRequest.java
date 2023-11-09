@@ -1,41 +1,21 @@
-package com.datn.shopsale.models;
+package com.datn.shopsale.request;
 
-public class Address {
-    private String _id;
-    private String userId;
+public class AddressRequest {
     private String name;
     private String city;
     private String street;
     private String phone_number;
-    private String date;
+    private String addressId;
 
-
-    public Address() {
+    public AddressRequest() {
     }
 
-    public Address(String _id, String userId,String name, String city, String street, String phone_number) {
-        this._id = _id;
-        this.userId = userId;
+    public AddressRequest(String name, String city, String street, String phone_number, String addressId) {
         this.name = name;
         this.city = city;
         this.street = street;
         this.phone_number = phone_number;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+        this.addressId = addressId;
     }
 
     public String getName() {
@@ -70,11 +50,11 @@ public class Address {
         this.phone_number = phone_number;
     }
 
-    public String getDate() {
-        return date;
+    public String getAddressId() {
+        return addressId;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
     }
 }
