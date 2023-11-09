@@ -15,7 +15,7 @@
     <string name="dont_have_account">Chưa có tài khoản?</string>
     <string name="sign_up">Đăng ký.</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
-<!--    <string name="tv_forgot_pass">Quên mật khẩu</string>-->
+    <!--    <string name="tv_forgot_pass">Quên mật khẩu</string>-->
     <string name="enter_email">Nhập email</string>
     <string name="change_password">Đổi mật khẩu</string>
     <string name="send">Gửi</string>
@@ -28,7 +28,7 @@
     <string name="title_verify_Sign_In">Vui lòng nhập mã xác nhận để hoàn thành đăng nhập</string>
     <string name="email_or_phone_number">Email hoặc số điện thoại</string>
     <string name="re_enter_email_or_phone_number">Vui lòng nhập email hoặc số điện thoại</string>
-<!--    <string name="re_enter_password">Vui lòng nhập password</string>-->
+    <!--    <string name="re_enter_password">Vui lòng nhập password</string>-->
     <string name="email_or_phone_number_wong">Email hoặc số điện thoại nhập vào không đúng định dạng</string>
 
     //ENG Language
@@ -67,7 +67,7 @@
     <string name="total_money_product">Tổng tiền hàng:</string>
     <string name="shipping_fee">Phí vận chuyển:</string>
     <string name="total">Tổng:</string>\
-<!--    <string name="place_order">Đặt hàng</string>-->
+    <!--    <string name="place_order">Đặt hàng</string>-->
 
 
     <string name="delivery_address">Địa chỉ giao hàng</string>
@@ -104,9 +104,8 @@
     <string name="feedback_product">Đánh giá sản phẩm</string>
     <string name="contact">Liên hệ</string>
     <string name="tag_address">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
-    <string name="tag_street">Đường/ Tòa nhà</string>
-    <string name="tag_home">Số nhà/ Tầng</string>
-<!--    <string name="notification">Notification</string>-->
+    <string name="tag_street">Đường/ Số nhà</string>
+    <!--    <string name="notification">Notification</string>-->
     <string name="choose_bank">Lựa chọn ngân hàng</string>
     <string name="bank">Ngân hàng</string>
     <string name="order_Information">Thông tin đơn hàng</string>
@@ -124,5 +123,5 @@
     <string name="time_check_otp">Thời gian</string>
     <string name="enter_otp">Nhập mã OTP</string>
     <string name="otp_have_been_send_to_u_phone">OTP đã gủi về điện thoại</string>
-<!--    <string name="pay">Thanh toán</string>-->
+    <!--    <string name="pay">Thanh toán</string>-->
 </resources>

@@ -32,7 +32,7 @@ import java.util.List;
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
     private ArrayList<Product> items;
     private Context context;
-    private SimpleExoPlayer exoPlayer; // Sử dụng SimpleExoPlayer thay vì ExoPlayer
+    private SimpleExoPlayer exoPlayer;
     private boolean isPlaying = false;
 
     public ContentAdapter(ArrayList<Product> items, Context context) {

@@ -1,16 +1,19 @@
 package com.datn.shopsale.response;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 
-public class UserVerifyLoginResponse implements Serializable {
-    public class Address implements Serializable{
+public class ResponseAddress {
+    public class Address{
         private String _id;
+
+        private String userId;
         private String name;
         private String city;
         private String street;
         private String phone_number;
         private String date;
+
 
         public String get_id() {
             return _id;
@@ -18,6 +21,14 @@ public class UserVerifyLoginResponse implements Serializable {
 
         public void set_id(String _id) {
             this._id = _id;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
         }
 
         public String getName() {
@@ -32,8 +43,16 @@ public class UserVerifyLoginResponse implements Serializable {
             return city;
         }
 
+        public void setCity(String city) {
+            this.city = city;
+        }
+
         public String getStreet() {
             return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
         }
 
         public String getPhone_number() {
@@ -51,23 +70,10 @@ public class UserVerifyLoginResponse implements Serializable {
         public void setDate(String date) {
             this.date = date;
         }
-
-        @Override
-        public String toString() {
-            return "Address{" +
-                    "_id='" + _id + '\'' +
-                    ", name='" + name + '\'' +
-                    ", city='" + city + '\'' +
-                    ", street='" + street + '\'' +
-                    ", phone_number='" + phone_number + '\'' +
-                    ", date='" + date + '\'' +
-                    '}';
-        }
     }
 
-    public class Root implements Serializable{
+    public class Root{
         private User user;
-        private String token;
         private String message;
         private int code;
 
@@ -77,14 +83,6 @@ public class UserVerifyLoginResponse implements Serializable {
 
         public void setUser(User user) {
             this.user = user;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
         }
 
         public String getMessage() {
@@ -102,19 +100,9 @@ public class UserVerifyLoginResponse implements Serializable {
         public void setCode(int code) {
             this.code = code;
         }
-
-        @Override
-        public String toString() {
-            return "Root{" +
-                    "user=" + user +
-                    ", token='" + token + '\'' +
-                    ", message='" + message + '\'' +
-                    ", code=" + code +
-                    '}';
-        }
     }
 
-    public class User implements Serializable{
+    public class User{
         private String _id;
         private String avatar;
         private String email;
@@ -125,7 +113,6 @@ public class UserVerifyLoginResponse implements Serializable {
         private ArrayList<Address> address;
         private String date;
         private String account_type;
-        private int __v;
         private Object otp;
 
         public String get_id() {
@@ -208,14 +195,6 @@ public class UserVerifyLoginResponse implements Serializable {
             this.account_type = account_type;
         }
 
-        public int get__v() {
-            return __v;
-        }
-
-        public void set__v(int __v) {
-            this.__v = __v;
-        }
-
         public Object getOtp() {
             return otp;
         }
@@ -223,26 +202,6 @@ public class UserVerifyLoginResponse implements Serializable {
         public void setOtp(Object otp) {
             this.otp = otp;
         }
-
-        @Override
-        public String toString() {
-            return "User{" +
-                    "_id='" + _id + '\'' +
-                    ", avatar='" + avatar + '\'' +
-                    ", email='" + email + '\'' +
-                    ", password='" + password + '\'' +
-                    ", full_name='" + full_name + '\'' +
-                    ", phone_number='" + phone_number + '\'' +
-                    ", role='" + role + '\'' +
-                    ", address=" + address +
-                    ", date='" + date + '\'' +
-                    ", account_type='" + account_type + '\'' +
-                    ", __v=" + __v +
-                    ", otp=" + otp +
-                    '}';
-        }
     }
-
-
 
 }
