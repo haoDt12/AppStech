@@ -123,5 +123,8 @@
     <string name="time_check_otp">Thời gian</string>
     <string name="enter_otp">Nhập mã OTP</string>
     <string name="otp_have_been_send_to_u_phone">OTP đã gủi về điện thoại</string>
+    <string name="chitietdonhang">Chi tiết đơn hàng</string>
+    <string name="tongthanhtoan">Tổng thanh toán:</string>
+    <string name="trangthaidonhang">Trạng thái đơn hàng:</string>
     <!--    <string name="pay">Thanh toán</string>-->
 </resources>
