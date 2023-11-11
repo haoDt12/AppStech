@@ -28,4 +28,5 @@ public class Constants {
     public static final String CONTEXT_LOGIN_FACEBOOK_VI = "Tiếp tục với Facebook";
     public static final String CONTEXT_LOGOUT_FACEBOOK_EN = "Log out";
     public static final String CONTEXT_LOGOUT_FACEBOOK_VI = "Đăng xuất";
+
 }

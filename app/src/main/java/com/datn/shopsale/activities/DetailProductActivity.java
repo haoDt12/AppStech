@@ -122,7 +122,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onColorItemClick(String color) {
                 selectedColors = color;
-
             }
         };
         RamAdapter.OnRamItemClickListener ramItemClickListener = new RamAdapter.OnRamItemClickListener() {
