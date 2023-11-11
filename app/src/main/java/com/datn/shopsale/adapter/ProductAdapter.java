@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,10 +23,11 @@ import com.datn.shopsale.response.GetListProductResponse;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    private ArrayList<Product> dataList;
+    private List<Product> dataList;
     private Context context;
     public ProductAdapter(ArrayList<Product> dataList,Context context){
         this.dataList = dataList;
@@ -32,7 +35,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         return new ViewHolder(view);
     }
@@ -43,7 +46,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (product == null){
             return;
         }
-        Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
+//        Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
+        Picasso.get().load(product.getImg_cover()).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         holder.tvPrice.setText(product.getPrice());
         holder.rltProduct.setOnClickListener(v->{
@@ -56,7 +60,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             intent.putExtra("ram_rom",product.getRam_rom());
             intent.putExtra("id",product.get_id());
             intent.putExtra("imgCover",product.getImg_cover());
-
             context.startActivity(intent);
         });
 
@@ -67,6 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public int getItemCount() {
         return dataList == null?0:dataList.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView tvName;

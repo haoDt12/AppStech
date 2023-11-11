@@ -14,7 +14,6 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.Orders;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.ViewHolder>{
@@ -53,11 +52,16 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
         private TextView tvName;
         private TextView tvPrice;
 
+
+
+
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+
         }
     }
 }

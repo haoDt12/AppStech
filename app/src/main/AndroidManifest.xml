@@ -87,6 +87,9 @@
         <activity
             android:name=".ui.dashboard.chat.ListUsersChatActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AddBillActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

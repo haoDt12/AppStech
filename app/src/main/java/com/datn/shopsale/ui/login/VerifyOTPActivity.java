@@ -23,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class VerifyOTPActivity extends AppCompatActivity {
+    private static final String TAG= VerifyOTPActivity.class.getSimpleName();
     private String idUserTemp;
     private EditText edNumber1;
     private EditText edNumber2;
@@ -154,6 +155,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                     if (response.body().code == 1) {
                         progressBar.setVisibility(View.INVISIBLE);
                         btnVerify.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "onResponse: "+response.body().code);
                         Toast.makeText(VerifyOTPActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(VerifyOTPActivity.this, LoginActivity.class));
                         finish();
