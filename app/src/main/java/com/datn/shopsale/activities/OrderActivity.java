@@ -2,7 +2,10 @@ package com.datn.shopsale.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.OrderAdapter;
+import com.datn.shopsale.adapter.SpinnerAddressAdapter;
+import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.OderRequest;
+import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -36,16 +42,21 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvTotal;
     private TextView tvShipPrice;
     private TextView tvSumMoney;
+    private Spinner spinnerAddress;
     private Button btnOder;
+    private ArrayList<Address> dataList = new ArrayList<>();
     private int sumMoney = 0;
+    private String address;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         initView();
+        getDataAddress();
         onClickOder();
     }
     private void initView(){
+        spinnerAddress = (Spinner) findViewById(R.id.spinner_address);
         tvQuantity = (TextView) findViewById(R.id.tv_quantity);
         tvTotal = (TextView) findViewById(R.id.tv_total);
         tvShipPrice = (TextView) findViewById(R.id.tv_ship_price);
@@ -63,7 +74,7 @@ public class OrderActivity extends AppCompatActivity {
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
         tvShipPrice.setText("0đ");
         for (Cart item: listOder.getList()) {
-            sumMoney += item.getPrice();
+            sumMoney = sumMoney +  item.getPrice() * item.getQuantity();
         }
         tvSumMoney.setText(String.valueOf(sumMoney));
         tvTotal.setText(String.valueOf(sumMoney));
@@ -71,15 +82,15 @@ public class OrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
     private void onClickOder(){
-        List<OderRequest.Product> listProduct = new ArrayList<>();
-        for (Cart item: listOder.getList()) {
-            listProduct.add(new OderRequest.Product(item.getProductId(),item.getColor(),item.getRam_rom(),item.getQuantity()));
-        }
-        OderRequest.Root request = new OderRequest.Root();
-        request.setProduct(listProduct);
-        request.setUserId(preferenceManager.getString("userId"));
-        request.setAddress("123");
         btnOder.setOnClickListener(v -> {
+            List<OderRequest.Product> listProduct = new ArrayList<>();
+            for (Cart item: listOder.getList()) {
+                listProduct.add(new OderRequest.Product(item.getProductId(),item.getColor(),item.getRam_rom(),item.getQuantity()));
+            }
+            OderRequest.Root request = new OderRequest.Root();
+            request.setProduct(listProduct);
+            request.setUserId(preferenceManager.getString("userId"));
+            request.setAddress(address);
             LoadingDialog.showProgressDialog(this, "Đang Tải");
             Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"),request);
             call.enqueue(new Callback<ResApi>() {
@@ -88,10 +99,12 @@ public class OrderActivity extends AppCompatActivity {
                     if(response.body().code == 1){
                         runOnUiThread(() -> {
                             Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                            LoadingDialog.dismissProgressDialog();
                         });
                     }else {
                         runOnUiThread(() -> {
                             Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                            LoadingDialog.dismissProgressDialog();
                         });
                     }
                 }
@@ -100,9 +113,52 @@ public class OrderActivity extends AppCompatActivity {
                 public void onFailure(Call<ResApi> call, Throwable t) {
                     runOnUiThread(() -> {
                         Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
                     });
                 }
             });
+        });
+    }
+    private void getDataAddress() {
+        String idUser = preferenceManager.getString("userId");
+
+        Call<ResponseAddress.Root> call = apiService.getAddress(preferenceManager.getString("token"), idUser);
+        call.enqueue(new Callback<ResponseAddress.Root>() {
+            @Override
+            public void onResponse(Call<ResponseAddress.Root> call, Response<ResponseAddress.Root> response) {
+                if (response.body().getCode() == 1) {
+                    runOnUiThread(() -> {
+                        for (ResponseAddress.Address item : response.body().getUser().getAddress()) {
+                            dataList.add(new Address(item.get_id(),item.getUserId() ,item.getName(), item.getCity(), item.getStreet(), item.getPhone_number()));
+                        }
+                        SpinnerAddressAdapter adapter = new SpinnerAddressAdapter(OrderActivity.this, android.R.layout.simple_spinner_item, dataList);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerAddress.setAdapter(adapter);
+                        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                                Address selectedItem = dataList.get(position);
+                                address = selectedItem.get_id();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parentView) {
+                            }
+                        });
+                    });
+
+                } else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseAddress.Root> call, Throwable t) {
+                runOnUiThread(() -> {
+                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
         });
     }
 }
