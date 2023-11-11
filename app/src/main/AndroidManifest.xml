@@ -25,6 +25,9 @@
             android:name=".ui.login.VerifyOTPSignInActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ShowDetailOrderActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.login.VerifyOTPActivity"
             android:exported="false" />
         <activity

@@ -1,36 +1,28 @@
 package com.datn.shopsale.models;
 
+import com.datn.shopsale.response.GetListOrderResponse;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 public class Orders {
     private String id;
     private String userId;
-    private ArrayList<String> product;
-
-    private String title;
+    private ArrayList<GetListOrderResponse.Product> product;
     private String status;
-    private String img;
-    private String address;
-    private int quantity;
-    private double price;
+    private GetListOrderResponse.AddressId addressId;
     private double total;
     private Date date_time;
     public Orders() {
     }
 
-    public Orders(String id, String userId, ArrayList<String> product,String title, String status, String img, String address, int quantity, double price, double total, Date date_time) {
+    public Orders(String id, String userId, ArrayList<GetListOrderResponse.Product> product, String status, GetListOrderResponse.AddressId addressId, double total) {
         this.id = id;
         this.userId = userId;
         this.product = product;
-        this.title = title;
         this.status = status;
-        this.img = img;
-        this.address = address;
-        this.quantity = quantity;
-        this.price = price;
+        this.addressId = addressId;
         this.total = total;
-        this.date_time = date_time;
     }
 
     public String getId() {
@@ -49,11 +41,11 @@ public class Orders {
         this.userId = userId;
     }
 
-    public ArrayList<String> getProduct() {
+    public ArrayList<GetListOrderResponse.Product> getProduct() {
         return product;
     }
 
-    public void setProduct(ArrayList<String> product) {
+    public void setProduct(ArrayList<GetListOrderResponse.Product> product) {
         this.product = product;
     }
 
@@ -65,36 +57,12 @@ public class Orders {
         this.status = status;
     }
 
-    public String getImg() {
-        return img;
+    public GetListOrderResponse.AddressId getAddressId() {
+        return addressId;
     }
 
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+    public void setAddressId(GetListOrderResponse.AddressId addressId) {
+        this.addressId = addressId;
     }
 
     public double getTotal() {
@@ -111,13 +79,5 @@ public class Orders {
 
     public void setDate_time(Date date_time) {
         this.date_time = date_time;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 }
