@@ -28,6 +28,4 @@ public class Constants {
     public static final String CONTEXT_LOGIN_FACEBOOK_VI = "Tiếp tục với Facebook";
     public static final String CONTEXT_LOGOUT_FACEBOOK_EN = "Log out";
     public static final String CONTEXT_LOGOUT_FACEBOOK_VI = "Đăng xuất";
-    public static final String URL_API = "https://40af-14-191-38-142.ngrok-free.app";
-
 }

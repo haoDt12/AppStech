@@ -63,6 +63,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/tv_color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đen"
@@ -82,6 +83,7 @@
                         android:textSize="15sp"
                         android:textStyle="bold" />
                     <TextView
+                        android:id="@+id/tv_quantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5"

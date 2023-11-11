@@ -5,26 +5,22 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
+import com.datn.shopsale.request.GetProductByIdResponse;
+import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
-
-import java.util.List;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
     // Register
@@ -104,4 +100,9 @@ public interface ApiService {
     Call<ResponseAddress.Root> getAddress(@Header("Authorization") String token,
                                      @Field("userId") String id
     );
+    @POST("/api/createOrder")
+    Call<ResApi> createOrder(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @FormUrlEncoded
+    @POST("/api/getProductById")
+    Call<GetProductByIdResponse.Root> getProductById(@Header("Authorization") String token, @Field("productId") String productId);
 }

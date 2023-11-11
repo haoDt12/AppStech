@@ -64,6 +64,7 @@ public class HomeFragment extends Fragment{
             startActivity(new Intent(getActivity(), SearchActivity.class));
         });
         preferenceManager = new PreferenceManager(getActivity());
+        Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
         List<Integer> imageList = new ArrayList<>();
         imageList.add(R.drawable.fist);

@@ -171,6 +171,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_quantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -199,6 +200,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tv_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -225,6 +227,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
             <TextView
+                android:id="@+id/tv_ship_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -247,6 +250,7 @@
                 android:layout_alignParentEnd="true">
 
                 <TextView
+                    android:id="@+id/tv_sum_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="1dp"
@@ -263,6 +267,7 @@
                     android:textSize="15dp"
                     android:textStyle="bold" />
                 <Button
+                    android:id="@+id/btn_oder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="8sp"
