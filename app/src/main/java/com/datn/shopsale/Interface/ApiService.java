@@ -6,7 +6,10 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.response.GetListCategoryResponse;
+import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetOrderResponse;
+import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
@@ -104,4 +107,16 @@ public interface ApiService {
     Call<ResponseAddress.Root> getAddress(@Header("Authorization") String token,
                                      @Field("userId") String id
     );
+    @FormUrlEncoded
+    @POST("/api/getOrderByUserId")
+    Call<GetListOrderResponse.Root> getOrderByUserId(@Header("Authorization") String token,
+                                                     @Field("userId") String userId);
+    @FormUrlEncoded
+    @POST("/api/getOrderByOrderId")
+    Call<GetOrderResponse.Root> getOrderByOrderId(@Header("Authorization") String token,
+                                                  @Field("orderId") String orderId);
+    @FormUrlEncoded
+    @POST("/api/getProductById")
+    Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
+                                                 @Field("productId") String productId);
 }

@@ -22,7 +22,14 @@
 <!--            android:name=".ui.dashboard.address.CitySelectionActivity"-->
 <!--            android:exported="false" />-->
         <activity
+            android:name=".activities.ChatScreenAdminActivity"
+            android:parentActivityName=".activities.ChatScreenAdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.login.VerifyOTPSignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShowDetailOrderActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.VerifyOTPActivity"
@@ -80,7 +87,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.chat.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".ui.dashboard.chat.ChatActivity" />
         <activity
             android:name=".ui.dashboard.setting.ChangePassActivity"
             android:exported="false" />
