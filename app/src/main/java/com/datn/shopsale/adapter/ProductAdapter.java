@@ -20,6 +20,8 @@ import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder>{
@@ -45,7 +47,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }
         Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
-        holder.tvPrice.setText(product.getPrice());
+        long number = Long.parseLong(product.getPrice());
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+        formatSymbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
+        String formattedNumber = decimalFormat.format(number);
+        holder.tvPrice.setText(formattedNumber);
+
         holder.rltProduct.setOnClickListener(v->{
             Intent intent = new Intent(context, DetailProductActivity.class);
             intent.putExtra("list_img",product.getList_img());
