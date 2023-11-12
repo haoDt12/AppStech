@@ -180,6 +180,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void signOut() {
+        FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getActivity(), LoginActivity.class));
         preferenceManager.clear();
         getActivity().finish();

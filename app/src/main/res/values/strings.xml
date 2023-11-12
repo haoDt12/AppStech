@@ -132,4 +132,11 @@
     <string name="tongthanhtoan">Tổng thanh toán:</string>
     <string name="trangthaidonhang">Trạng thái đơn hàng:</string>
     <!--    <string name="pay">Thanh toán</string>-->
+
+    <string name="name_product">Tên sản phẩm</string>
+    <string name="price">Giá sản phẩm</string>
+    <string name="status">Trạng thái</string>
+    <string name="time"> giờ</string>
+    <string name="date_time">Ngày và giờ</string>
+    <string name="add_an_bill">Tạo hoá đơn</string>
 </resources>
