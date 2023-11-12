@@ -1,10 +1,11 @@
 package com.datn.shopsale.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class Cart {
+public class Cart implements Serializable {
     private String productId;
     private String userId;
     private String title;

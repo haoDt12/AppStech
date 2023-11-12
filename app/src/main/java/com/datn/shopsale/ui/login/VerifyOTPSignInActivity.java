@@ -19,6 +19,7 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
@@ -80,18 +81,22 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        idProgress.setVisibility(View.INVISIBLE);
-                        btnVerify.setVisibility(View.VISIBLE);
-                        Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            idProgress.setVisibility(View.INVISIBLE);
+                            btnVerify.setVisibility(View.VISIBLE);
+                            Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        });
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserVerifyLoginResponse.Root> call, Throwable t) {
-                    idProgress.setVisibility(View.INVISIBLE);
-                    btnVerify.setVisibility(View.VISIBLE);
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(VerifyOTPSignInActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                    runOnUiThread(()->{
+                        idProgress.setVisibility(View.INVISIBLE);
+                        btnVerify.setVisibility(View.VISIBLE);
+                        Log.e("Error", "onFailure: " + t);
+                        Toast.makeText(VerifyOTPSignInActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         }catch (Exception e){

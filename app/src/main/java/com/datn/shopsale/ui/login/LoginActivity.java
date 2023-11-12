@@ -27,6 +27,7 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.Constants;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -222,31 +223,42 @@ public class LoginActivity extends AppCompatActivity {
                 preferenceManager.putString(Constants.KEY_EMAIL, username);
             }
             try {
+                LoadingDialog.showProgressDialog(this,"Đang Tải...");
                 Call<ResApi> call = apiService.signin(username, pass);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
                     public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                         if (response.body().code == 1) {
-                            Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                            String idUser = response.body().id;
-                            Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
-                            i.putExtra("idUser", idUser);
-                            startActivity(i);
-                            finish();
+                            runOnUiThread(() -> {
+                                Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                LoadingDialog.dismissProgressDialog();
+                                String idUser = response.body().id;
+                                Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
+                                i.putExtra("idUser", idUser);
+                                startActivity(i);
+                                finish();
+                            });
                         } else {
-                            Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                            runOnUiThread(() -> {
+                                Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                LoadingDialog.dismissProgressDialog();
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResApi> call, Throwable t) {
-                        Log.e("Error", "onFailure: " + t);
-                        Toast.makeText(LoginActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            Log.e("Error", "onFailure: " + t);
+                            Toast.makeText(LoginActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                            LoadingDialog.dismissProgressDialog();
+                        });
                     }
                 });
             } catch (Exception e) {
                 Log.e("Error", "onFailure: " + e);
                 Toast.makeText(LoginActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
+                LoadingDialog.dismissProgressDialog();
             }
 //            firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
 //                if (task.isSuccessful()) {

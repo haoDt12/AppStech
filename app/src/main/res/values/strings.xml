@@ -107,6 +107,7 @@
     <string name="tag_address">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
     <string name="tag_street">Đường/ Tòa nhà</string>
     <string name="tag_home">Số nhà/ Tầng</string>
+    <string name="tag_street">Đường/ Số nhà</string>
     <!--    <string name="notification">Notification</string>-->
     <string name="choose_bank">Lựa chọn ngân hàng</string>
     <string name="bank">Ngân hàng</string>
@@ -127,5 +128,8 @@
     <string name="otp_have_been_send_to_u_phone">OTP đã gủi về điện thoại</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chitietdonhang">Chi tiết đơn hàng</string>
+    <string name="tongthanhtoan">Tổng thanh toán:</string>
+    <string name="trangthaidonhang">Trạng thái đơn hàng:</string>
     <!--    <string name="pay">Thanh toán</string>-->
 </resources>
