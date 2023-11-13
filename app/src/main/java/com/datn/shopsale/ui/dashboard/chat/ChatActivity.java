@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class ChatActivity extends AppCompatActivity {
     private RecyclerView rcvChat;
@@ -166,11 +167,20 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
+        Calendar calendar = Calendar.getInstance();
+
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        calendar.setTimeZone(timeZone);
+
+        long vietnamTimeInMillis = calendar.getTimeInMillis();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(vietnamTimeInMillis);
+        Timestamp t = new Timestamp(timestamp);
         String message = edChat.getText().toString().trim();
+
         if (message.isEmpty()) {
             return;
         } else {
-            chatRoomModel.setLastMessageTimestamp(Timestamp.now());
+            chatRoomModel.setLastMessageTimestamp(t);
             chatRoomModel.setLastMessage(message);
             chatRoomModel.setLastImage("");
             chatRoomModel.setIdUserOfLastMessage(preferenceManager.getString("userId"));
@@ -182,11 +192,10 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
                             rcvChat.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
-                            edChat.setText("");
                         }
                     });
+            edChat.setText("");
         }
-
     }
 
     private void getOrCreateChatRoomModel() {
@@ -197,10 +206,16 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             chatRoomModel = task.getResult().toObject(ChatRoomModal.class);
                             if (chatRoomModel == null) {
+                                Calendar calendar = Calendar.getInstance();
+                                TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+                                calendar.setTimeZone(timeZone);
+                                long vietnamTimeInMillis = calendar.getTimeInMillis();
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(vietnamTimeInMillis);
+                                Timestamp t = new Timestamp(timestamp);
                                 chatRoomModel = new ChatRoomModal(
                                         chatRoomId,
                                         Arrays.asList(Constants.idUserAdmin, preferenceManager.getString("userId")),
-                                        Timestamp.now(),
+                                        t,
                                         "",
                                         "",
                                         preferenceManager.getString("avatarLogin"),
@@ -239,7 +254,13 @@ public class ChatActivity extends AppCompatActivity {
                         Task<Uri> downloadUrl = taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                chatRoomModel.setLastMessageTimestamp(Timestamp.now());
+                                Calendar calendar = Calendar.getInstance();
+                                TimeZone timeZone = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+                                calendar.setTimeZone(timeZone);
+                                long vietnamTimeInMillis = calendar.getTimeInMillis();
+                                java.sql.Timestamp timestamp = new java.sql.Timestamp(vietnamTimeInMillis);
+                                Timestamp t = new Timestamp(timestamp);
+                                chatRoomModel.setLastMessageTimestamp(t);
                                 chatRoomModel.setLastMessage("");
                                 chatRoomModel.setLastImage(uri.toString());
                                 chatRoomModel.setIdUserOfLastMessage(preferenceManager.getString("userId"));

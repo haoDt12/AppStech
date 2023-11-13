@@ -107,7 +107,6 @@
     <string name="tag_address">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
     <string name="tag_street">Đường/ Tòa nhà</string>
     <string name="tag_home">Số nhà/ Tầng</string>
-    <string name="tag_street">Đường/ Số nhà</string>
     <!--    <string name="notification">Notification</string>-->
     <string name="choose_bank">Lựa chọn ngân hàng</string>
     <string name="bank">Ngân hàng</string>
