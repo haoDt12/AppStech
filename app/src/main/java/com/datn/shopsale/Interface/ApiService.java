@@ -5,7 +5,6 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
-import com.datn.shopsale.request.GetProductByIdResponse;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
@@ -101,21 +100,22 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getUserById")
     Call<ResponseAddress.Root> getAddress(@Header("Authorization") String token,
-                                     @Field("userId") String id
+                                          @Field("userId") String id
     );
+
     @POST("/api/createOrder")
     Call<ResApi> createOrder(@Header("Authorization") String token, @Body OderRequest.Root request);
-    @FormUrlEncoded
-    @POST("/api/getProductById")
-    Call<GetProductByIdResponse.Root> getProductById(@Header("Authorization") String token, @Field("productId") String productId);
+
     @FormUrlEncoded
     @POST("/api/getOrderByUserId")
     Call<GetListOrderResponse.Root> getOrderByUserId(@Header("Authorization") String token,
                                                      @Field("userId") String userId);
+
     @FormUrlEncoded
     @POST("/api/getOrderByOrderId")
     Call<GetOrderResponse.Root> getOrderByOrderId(@Header("Authorization") String token,
                                                   @Field("orderId") String orderId);
+
     @FormUrlEncoded
     @POST("/api/getProductById")
     Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,

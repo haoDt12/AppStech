@@ -19,7 +19,6 @@ import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.ViewHolder>{

@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -11,12 +14,14 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.ChatScreenAdminActivity;
 import com.datn.shopsale.activities.SearchActivity;
 import com.datn.shopsale.adapter.CategoriesAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
@@ -27,6 +32,8 @@ import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -59,6 +66,9 @@ public class HomeFragment extends Fragment{
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        setHasOptionsMenu(true);
+        AppCompatActivity activity= (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(binding.toolbarHome);
 
         binding.lnlSearch.setOnClickListener(view -> {
             startActivity(new Intent(getActivity(), SearchActivity.class));
@@ -198,6 +208,28 @@ public class HomeFragment extends Fragment{
                 });
             }
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_home,menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id==R.id.chat){
+            if(preferenceManager.getString("userId").equals(Constants.idUserAdmin)){
+                startActivity(new Intent(getActivity(), ChatScreenAdminActivity.class));
+            }else {
+                startActivity(new Intent(getActivity(), ChatActivity.class));
+
+            }
+            return  true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

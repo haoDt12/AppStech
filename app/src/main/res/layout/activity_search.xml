@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SearchActivity">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,14 +23,16 @@
                 android:src="@drawable/angle_left"
                 android:background="@color/white"
                 android:layout_marginTop="10dp"/>
-            <SearchView
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/id_search"
                 android:layout_width="300sp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/bg_search_view"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
-                android:queryHint="Nhập từ khóa tìm kiếm"/>
+                android:queryHint="Nhập từ khóa tìm kiếm" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/lnl_history"
