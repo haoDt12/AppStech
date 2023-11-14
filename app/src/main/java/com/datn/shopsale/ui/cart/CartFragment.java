@@ -1,35 +1,27 @@
 package com.datn.shopsale.ui.cart;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
@@ -37,23 +29,15 @@ import com.datn.shopsale.activities.OrderActivity;
 import com.datn.shopsale.adapter.CartAdapter;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
-import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.login.SignUpActivity;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -75,6 +59,7 @@ public class CartFragment extends Fragment {
     private  boolean selected = false;
     private List<Cart> listCartSelected;
     private ListOder listOder;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
     public CartFragment() {
     }
 
@@ -97,7 +82,7 @@ public class CartFragment extends Fragment {
         btnCheckout.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(),OrderActivity.class);
             intent.putExtra("listOder",listOder);
-            startActivity(intent);
+            activityResultLauncher.launch(intent);
         });
         return root;
     }
@@ -111,6 +96,7 @@ public class CartFragment extends Fragment {
         listCartSelected = new ArrayList<>();
         listOder = new ListOder();
         getDataCart();
+        onFragmentResult();
 
 
         chk_selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -447,4 +433,11 @@ public class CartFragment extends Fragment {
 //        });
 //        dialog.show();
 //    }
+private void onFragmentResult(){
+    activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if(result.getResultCode() == RESULT_OK){
+            getDataCart();
+        }
+    });
+}
 }

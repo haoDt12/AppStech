@@ -138,4 +138,7 @@
     <string name="time"> giờ</string>
     <string name="date_time">Ngày và giờ</string>
     <string name="add_an_bill">Tạo hoá đơn</string>
+
+    <string name="street">Street</string>
+    <string name="city">City</string>
 </resources>

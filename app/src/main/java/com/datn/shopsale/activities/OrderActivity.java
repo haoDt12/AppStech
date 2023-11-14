@@ -1,5 +1,6 @@
 package com.datn.shopsale.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -100,6 +101,7 @@ public class OrderActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                             LoadingDialog.dismissProgressDialog();
+                            setResult(Activity.RESULT_OK);
                             finish();
                         });
                     }else {

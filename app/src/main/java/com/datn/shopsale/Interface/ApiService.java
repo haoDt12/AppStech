@@ -11,9 +11,11 @@ import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
+import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -120,4 +122,30 @@ public interface ApiService {
     @POST("/api/getProductById")
     Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
                                                  @Field("productId") String productId);
+
+    @FormUrlEncoded
+    @POST("/api/getUserById")
+    Call<GetUserByIdResponse.Root> getUserById(@Header("Authorization") String token,
+                                               @Field("userId") String id
+    );
+
+    @Multipart
+    @POST("/api/editUser")
+    Call<ResApi> editUserImg(
+            @Header("Authorization") String token,
+            @Part("email") RequestBody email,
+            @Part("full_name") RequestBody fullName,
+            @Part("phone_number") RequestBody phoneNumber,
+            @Part MultipartBody.Part file,
+            @Part("userId") RequestBody userId
+    );
+    @Multipart
+    @POST("/api/editUser")
+    Call<ResApi> editUser(
+            @Header("Authorization") String token,
+            @Part("email") RequestBody email,
+            @Part("full_name") RequestBody fullName,
+            @Part("phone_number") RequestBody phoneNumber,
+            @Part("userId") RequestBody userId
+    );
 }
