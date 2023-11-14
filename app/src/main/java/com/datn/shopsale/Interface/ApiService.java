@@ -8,7 +8,10 @@ import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.GetProductByIdResponse;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.GetListCategoryResponse;
+import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetOrderResponse;
+import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 
@@ -105,4 +108,16 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getProductById")
     Call<GetProductByIdResponse.Root> getProductById(@Header("Authorization") String token, @Field("productId") String productId);
+    @FormUrlEncoded
+    @POST("/api/getOrderByUserId")
+    Call<GetListOrderResponse.Root> getOrderByUserId(@Header("Authorization") String token,
+                                                     @Field("userId") String userId);
+    @FormUrlEncoded
+    @POST("/api/getOrderByOrderId")
+    Call<GetOrderResponse.Root> getOrderByOrderId(@Header("Authorization") String token,
+                                                  @Field("orderId") String orderId);
+    @FormUrlEncoded
+    @POST("/api/getProductById")
+    Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
+                                                 @Field("productId") String productId);
 }

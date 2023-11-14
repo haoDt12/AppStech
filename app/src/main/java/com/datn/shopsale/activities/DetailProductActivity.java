@@ -43,11 +43,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private RecyclerView recyColorsProduct, recyDungLuong;
     private ContentAdapter contentAdapter;
     private ViewPager2 viewPager2;
-    private ApiService apiService;
+
     private User user = new User();
     private Product product = new Product();
     private ArrayList<String> ramList;
     private PreferenceManager preferenceManager;
+    private ApiService apiService;
     String selectedColors = "";
     String selectedRams = "";
     String id;
