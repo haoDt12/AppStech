@@ -4,218 +4,213 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.InformationUserActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.dashboard.InformationUserActivity">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:background="#F2F0F0">
+
         <ImageButton
             android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
             android:layout_marginLeft="30dp"
-            android:src="@drawable/angle_left"
-            android:background="#F2F0F0" />
+            android:layout_marginTop="45dp"
+            android:background="#F2F0F0"
+            android:src="@drawable/angle_left" />
+
         <ImageView
             android:id="@+id/img_update"
             android:layout_width="35dp"
             android:layout_height="30dp"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="45dp"
             android:layout_marginRight="30dp"
-            android:src="@drawable/pencil_24"
-            android:layout_alignParentRight="true"/>
+            android:src="@drawable/pencil_24" />
+        <ImageView
+            android:id="@+id/cancel_action"
+            android:layout_width="35dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="45dp"
+            android:visibility="invisible"
+            android:layout_marginRight="30dp"
+            android:src="@drawable/baseline_cancel_24" />
 
         <ImageView
             android:id="@+id/img_user"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:src="@drawable/ic_user"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="85dp"/>
+            android:layout_marginTop="85dp"
+            android:src="@drawable/ic_user" />
 
         <ImageView
             android:id="@+id/img_camera"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="175dp"
             android:layout_marginRight="130dp"
-            android:layout_alignParentRight="true"
             android:src="@drawable/ic_photo_camera"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/lnl_layout_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:layout_marginStart="35sp"
-            android:layout_marginEnd="35sp"
             android:layout_marginTop="50sp"
+            android:layout_marginEnd="35sp"
+            android:orientation="vertical"
             android:visibility="visible">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:text="@string/full_name"
-                    android:textSize="18sp"
                     android:textColor="#818181"
-                    android:layout_alignParentLeft="true"/>
+                    android:textSize="18sp" />
+
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="Nguyễn Văn A"
-                    android:textSize="18sp"
                     android:textColor="#101010"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="18sp" />
 
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="20dp"
                 android:background="#C1C1C1" />
+
             <RelativeLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:text="@string/email"
-                    android:textSize="18sp"
                     android:textColor="#818181"
-                    android:layout_alignParentLeft="true"/>
+                    android:textSize="18sp" />
+
                 <TextView
                     android:id="@+id/tv_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="anv123@gmail.com"
-                    android:textSize="18sp"
                     android:textColor="#101010"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="18sp" />
 
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="20dp"
                 android:background="#C1C1C1" />
+
             <RelativeLayout
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
                     android:text="@string/phone_number"
-                    android:textSize="18sp"
                     android:textColor="#818181"
-                    android:layout_alignParentLeft="true"/>
+                    android:textSize="18sp" />
+
                 <TextView
                     android:id="@+id/tv_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:text="0987654321"
-                    android:textSize="18sp"
                     android:textColor="#101010"
-                    android:layout_alignParentRight="true"/>
+                    android:textSize="18sp" />
 
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_marginTop="20dp"
                 android:background="#C1C1C1" />
-            <RelativeLayout
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/address"
-                    android:textSize="18sp"
-                    android:textColor="#818181"
-                    android:layout_alignParentLeft="true"/>
-                <TextView
-                    android:id="@+id/tv_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hà Nội"
-                    android:textSize="18sp"
-                    android:textColor="#101010"
-                    android:layout_alignParentRight="true"/>
-
-            </RelativeLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:background="#C1C1C1" />
-
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/lnl_layout_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginStart="35sp"
-            android:layout_marginEnd="35sp"
             android:layout_marginTop="50sp"
+            android:layout_marginEnd="35sp"
+            android:orientation="vertical"
             android:visibility="invisible">
+
             <EditText
                 android:id="@+id/ed_name"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:background="@drawable/bg_input_signup"
-                android:padding="20dp"
                 android:hint="@string/full_name"
-                android:textColorHint="#BBAFAF"/>
+                android:padding="20dp"
+                android:textColorHint="#BBAFAF" />
+
             <EditText
                 android:id="@+id/ed_email"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_input_signup"
-                android:padding="20dp"
                 android:hint="@string/email"
-                android:textColorHint="#BBAFAF"
-                android:layout_marginTop="20dp"/>
+                android:padding="20dp"
+                android:textColorHint="#BBAFAF" />
+
             <EditText
                 android:id="@+id/ed_phone"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_input_signup"
-                android:padding="20dp"
                 android:hint="@string/phone_number"
-                android:textColorHint="#BBAFAF"
-                android:layout_marginTop="20dp"/>
-            <EditText
-                android:id="@+id/ed_location"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/bg_input_signup"
                 android:padding="20dp"
-                android:hint="@string/address"
-                android:textColorHint="#BBAFAF"
-                android:layout_marginTop="20dp"/>
+                android:textColorHint="#BBAFAF" />
+
             <Button
                 android:id="@+id/btn_save"
-                android:layout_marginStart="50dp"
-                android:layout_marginEnd="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
-                android:text="@string/save"
-                android:textStyle="bold"
+                android:layout_marginStart="50dp"
                 android:layout_marginTop="60dp"
-                android:background="@drawable/bg_btn_signup"/>
+                android:layout_marginEnd="50dp"
+                android:background="@drawable/bg_btn_signup"
+                android:text="@string/save"
+                android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
 

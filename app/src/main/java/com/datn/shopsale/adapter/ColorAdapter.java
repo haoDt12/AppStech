@@ -1,22 +1,17 @@
 package com.datn.shopsale.adapter;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
     private ArrayList<String> colorList;
@@ -43,7 +38,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         final String color = colorList.get(position);
-        holder.btnColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+        holder.btnColor.setBackgroundColor(Color.parseColor(color));
 
         if (color.equals(selectedColor)) {
             holder.btnColor.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn

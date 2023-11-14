@@ -3,6 +3,7 @@ package com.datn.shopsale.ui.dashboard;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,23 +21,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
+import com.datn.shopsale.response.GetUserByIdResponse;
+import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
+import com.datn.shopsale.ui.dashboard.chat.ListUsersChatActivity;
 import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
-import com.datn.shopsale.ui.dashboard.chat.ListUsersChatActivity;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DashboardFragment extends Fragment {
 
@@ -52,7 +60,10 @@ public class DashboardFragment extends Fragment {
     private TextView tvName;
     private TextView tvEmail;
     private PreferenceManager preferenceManager;
-
+    private TextView tvTitle;
+    private ImageView imgAvatarUsers;
+    private ApiService apiService;
+    private GetUserByIdResponse.User user;
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
         return fragment;
@@ -82,6 +93,11 @@ public class DashboardFragment extends Fragment {
 
         btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
+
+        tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        imgAvatarUsers = (ImageView) view.findViewById(R.id.img_avatarUsers);
+        apiService = RetrofitConnection.getApiService();
+        getUser();
 
         lnlProfile = view.findViewById(R.id.lnl_profile);
         lnChat = view.findViewById(R.id.ln_chat);
@@ -189,5 +205,35 @@ public class DashboardFragment extends Fragment {
     private void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+    private void getUser(){
+        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
+        Call<GetUserByIdResponse.Root> call = apiService.getUserById(preferenceManager.getString("token"),preferenceManager.getString("userId"));
+        call.enqueue(new Callback<GetUserByIdResponse.Root>() {
+            @Override
+            public void onResponse(Call<GetUserByIdResponse.Root> call, Response<GetUserByIdResponse.Root> response) {
+                if(response.body().getCode() == 1){
+                    getActivity().runOnUiThread(() -> {
+                        user = response.body().getUser();
+                        Picasso.get().load(user.getAvatar()).into(imgAvatarUsers);
+                        tvName.setText(user.getFull_name());
+                        tvEmail.setText(user.getEmail());
+                        LoadingDialog.dismissProgressDialog();
+                    });
+                }else {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                    });
+                }
+            }
 
+            @Override
+            public void onFailure(Call<GetUserByIdResponse.Root> call, Throwable t) {
+                getActivity().runOnUiThread(() -> {
+                    Log.d("onFailure", "onFailure: " + t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
+                });
+            }
+        });
+    }
 }
