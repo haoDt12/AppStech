@@ -100,6 +100,7 @@ public class OrderActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                             LoadingDialog.dismissProgressDialog();
+                            finish();
                         });
                     }else {
                         runOnUiThread(() -> {
