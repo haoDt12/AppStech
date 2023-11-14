@@ -70,16 +70,16 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<UserVerifyLoginResponse.Root> call, Response<UserVerifyLoginResponse.Root> response) {
                     if (response.body().getCode() == 1) {
-                        runOnUiThread(() -> {
-                            idProgress.setVisibility(View.INVISIBLE);
-                            btnVerify.setVisibility(View.VISIBLE);
-                            Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                            preferenceManager.putString("token",response.body().getToken());
-                            preferenceManager.putString("userId",response.body().getUser().get_id());
-                            Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        });
+                        idProgress.setVisibility(View.INVISIBLE);
+                        btnVerify.setVisibility(View.VISIBLE);
+                        Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        preferenceManager.putString("token",response.body().getToken());
+                        preferenceManager.putString("userId",response.body().getUser().get_id());
+                        preferenceManager.putString("avatarLogin",response.body().getUser().getAvatar());
+                        preferenceManager.putString("nameLogin",response.body().getUser().getFull_name());
+                        Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
+                        startActivity(intent);
+                        finish();
                     } else {
                         runOnUiThread(() -> {
                             idProgress.setVisibility(View.INVISIBLE);

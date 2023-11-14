@@ -4,58 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.chat.ChatActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.dashboard.chat.ChatActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_chat"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom">
+        android:layout_below="@+id/toolbar_chat"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_above="@+id/ed_chat"
+         />
 
-        <RelativeLayout
-            android:id="@+id/id_chat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
+    <ImageButton
 
-            <ImageButton
-                android:id="@+id/btn_option"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="20dp"
-                android:background="#FFFFFF"
-                android:src="@drawable/menu_dots_24" />
+        android:id="@+id/btn_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="20dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/menu_dots_24" />
 
-            <EditText
-                android:id="@+id/ed_chat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="8dp"
-                android:layout_toStartOf="@+id/imgbtn_send"
-                android:layout_toEndOf="@+id/btn_option"
-                android:hint="Enter messagge" />
+    <EditText
+        android:layout_alignParentBottom="true"
+        android:id="@+id/ed_chat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/imgbtn_send"
+        android:layout_toEndOf="@+id/btn_option"
+        android:hint="Enter messagge" />
 
-            <ImageButton
-                android:id="@+id/imgbtn_send"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
+    <ImageButton
+        android:id="@+id/imgbtn_send"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/send" />
 
-                android:layout_marginTop="10dp"
-                android:background="#FFFFFF"
-                android:src="@drawable/send" />
-        </RelativeLayout>
-    </LinearLayout>
 
 </RelativeLayout>
