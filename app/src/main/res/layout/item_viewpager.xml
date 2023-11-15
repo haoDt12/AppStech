@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/lnl_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <com.datn.shopsale.adapter.CustomPlayerView
+        <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/videoView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:use_controller="false"
             android:layout_weight="1" >
 
             <ImageView
@@ -20,7 +22,14 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center" />
-        </com.datn.shopsale.adapter.CustomPlayerView>
+            <ImageView
+                android:src="@drawable/baseline_fullscreen_24"
+                android:id="@+id/img_full"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="end|bottom" />
+
+        </com.google.android.exoplayer2.ui.PlayerView>
     </LinearLayout>
 
     <ImageView
