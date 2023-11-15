@@ -3,20 +3,24 @@ package com.datn.shopsale.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.Product;
+import com.datn.shopsale.request.GetProductByIdResponse;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
-    private List<Product> mList;
+    private ListOder mList;
 
-    public OrderAdapter(List<Product> mList) {
+    public OrderAdapter(ListOder mList) {
         this.mList = mList;
     }
 
@@ -29,25 +33,33 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder holder, int position) {
-        Product product = mList.get(position);
-        holder.tvName.setText(product.getTitle());
-        holder.tvPrice.setText(product.getPrice());
+        holder.tvName.setText(mList.getList().get(position).getTitle());
+        holder.tvPrice.setText(String.valueOf(mList.getList().get(position).getPrice()));
+        Picasso.get().load(mList.getList().get(position).getImgCover()).into(holder.imgProduct);
+        holder.tvColor.setText(mList.getList().get(position).getColor());
+        holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }
 
     @Override
     public int getItemCount() {
-        return mList.size();
+        return mList.getList().size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvName;
         private TextView tvPrice;
 
+        private ImageView imgProduct;
+        private TextView tvColor;
+        private TextView tvQuantity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
+            tvColor = (TextView) itemView.findViewById(R.id.tv_color);
+            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
         }
     }
 }

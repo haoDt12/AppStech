@@ -1,36 +1,25 @@
 package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ListOrderAdapter;
-import com.datn.shopsale.adapter.NotificationAdapter;
-import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.databinding.FragmentHomeBinding;
-import com.datn.shopsale.databinding.FragmentNotificationsBinding;
 import com.datn.shopsale.databinding.FragmentWaitConfirmBinding;
-import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.models.Orders;
-import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,14 +71,15 @@ public class WaitConfirmFragment extends Fragment {
                         }
                     }
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
-                            binding.rcvWaitConfirm.setAdapter(adapter);
-                        }
-                    });
+                    if (getActivity() != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
+                                binding.rcvWaitConfirm.setAdapter(adapter);
+                            }
+                        });}
                 } else {
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                 }

@@ -33,6 +33,7 @@ import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -47,10 +48,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment{
+    private boolean isLoadProduct = false;
+    private boolean isLoadCategory = false;
 
     private FragmentHomeBinding binding;
 
-    private ArrayList<Product> dataList = new ArrayList<>();
+    private final ArrayList<Product> dataList = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
 
@@ -74,6 +77,7 @@ public class HomeFragment extends Fragment{
             startActivity(new Intent(getActivity(), SearchActivity.class));
         });
         preferenceManager = new PreferenceManager(getActivity());
+        Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
         List<Integer> imageList = new ArrayList<>();
         imageList.add(R.drawable.fist);
@@ -102,7 +106,7 @@ public class HomeFragment extends Fragment{
                 });
             }
         }, 2000, 2000);
-        LoadingDialog.showProgressDialog(getActivity(),"Đang Tải...");
+        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
         displayCategory();
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
@@ -127,20 +131,38 @@ public class HomeFragment extends Fragment{
                             productAdapter = new ProductAdapter(dataList,getActivity());
                             binding.rcvListitem.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                             binding.rcvListitem.setAdapter(productAdapter);
-                            LoadingDialog.dismissProgressDialog();
+                            isLoadProduct = true;
+                            if(isLoadCategory){
+                                LoadingDialog.dismissProgressDialog();
+                            }
                         }
                     });
                 }else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        if(isLoadCategory){
+                            LoadingDialog.dismissProgressDialog();
+                        }
+                    });
+                }
+                if(response.body().getMessage().equals("wrong token")){
+                    getActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
+                        preferenceManager.clear();
+                        startActivity(new Intent(getActivity(), LoginActivity.class));
+                        getActivity().finish();
                     });
                 }
             }
 
             @Override
             public void onFailure(Call<GetListProductResponse.Root> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    if(isLoadCategory){
+                        LoadingDialog.dismissProgressDialog();
+                    }
+                });
             }
         });
     }
@@ -182,19 +204,24 @@ public class HomeFragment extends Fragment{
                                         isDisableItem = !isDisableItem;
                                         displayCategory();
                                     } else {
-                                        Toast.makeText(getActivity(), "" + category.toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getActivity(), "" + category, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                             binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                             binding.rcvListCategories.setAdapter(categoriesAdapter);
-                            LoadingDialog.dismissProgressDialog();
+                            isLoadCategory = true;
+                            if(isLoadProduct){
+                                LoadingDialog.dismissProgressDialog();
+                            }
                         }
                     });
                 } else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
+                        if(isLoadProduct){
+                            LoadingDialog.dismissProgressDialog();
+                        }
                     });
                 }
             }
@@ -203,7 +230,9 @@ public class HomeFragment extends Fragment{
             public void onFailure(Call<GetListCategoryResponse.Root> call, Throwable t) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    LoadingDialog.dismissProgressDialog();
+                    if(isLoadProduct){
+                        LoadingDialog.dismissProgressDialog();
+                    }
                 });
             }
         });

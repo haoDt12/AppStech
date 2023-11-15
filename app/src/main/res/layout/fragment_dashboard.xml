@@ -28,13 +28,14 @@
            android:orientation="horizontal"
            android:padding="20dp">
            <androidx.cardview.widget.CardView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               app:cardCornerRadius="100dp">
+               android:layout_width="70dp"
+               android:layout_height="70dp"
+               app:cardCornerRadius="35dp">
                <ImageView
+                   android:layout_gravity="center"
                    android:id="@+id/img_avatarUsers"
-                   android:layout_width="70dp"
-                   android:layout_height="70dp"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
                    android:src="@drawable/ic_user"/>
            </androidx.cardview.widget.CardView>
 
