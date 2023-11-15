@@ -46,20 +46,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/img_location"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/ic_location" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/img_location"
+                    android:layout_marginLeft="10dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -79,7 +78,7 @@
                             android:id="@+id/tv_phone_number"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
+                            android:layout_marginLeft="50dp"
                             android:hint="0964xxxxxx"
                             android:textSize="14sp"
                             android:textStyle="normal" />

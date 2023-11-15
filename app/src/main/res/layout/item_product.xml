@@ -37,19 +37,17 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="7sp"
             android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="đ"
-                android:textColor="#FF6A6A"
-                android:textSize="17sp" />
-
             <TextView
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="11.000.000"
+                android:textColor="#FF6A6A"
+                android:textSize="17sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" VNĐ"
                 android:textColor="#FF6A6A"
                 android:textSize="17sp" />
         </LinearLayout>
