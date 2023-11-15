@@ -2,28 +2,42 @@ package com.datn.shopsale.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.ShowDetailOrderActivity;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
+import com.datn.shopsale.response.GetProductResponse;
+import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.PreferenceManager;
 
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.ViewHolder>{
     private List<Orders> mList ;
     private Context context;
+    private ApiService apiService;
+    private PreferenceManager preferenceManager;
 
     public ListOrderAdapter(List<Orders> mList,Context context) {
         this.mList = mList;
@@ -45,14 +59,36 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
             return;
         }
         GetListOrderResponse.Product products = order.getProduct().get(0);
-        holder.tvPrice.setText(products.price+"");
-        holder.tvName.setText(products.title);
-        Glide.with(context).load(products.img_cover).into(holder.imgProduct);
 
         holder.itemOrder.setOnClickListener(view -> {
             Intent i = new Intent(context, ShowDetailOrderActivity.class);
             i.putExtra("orderId", order.getId());
             context.startActivity(i);
+        });
+        apiService = RetrofitConnection.getApiService();
+        preferenceManager = new PreferenceManager(context);
+        String proId = products.productId;
+        String token = preferenceManager.getString("token");
+        Call<GetProductResponse.Root> call = apiService.getProductById(token, proId);
+        call.enqueue(new Callback<GetProductResponse.Root>() {
+            @Override
+            public void onResponse(Call<GetProductResponse.Root> call, Response<GetProductResponse.Root> response) {
+                if (response.body().getCode()==1){
+                    Log.d("zzzzzzzzzzz", "onResponse: "+response.body().getProduct());
+                    holder.tvName.setText(response.body().getProduct().getTitle());
+
+                    holder.tvPrice.setText(formatCurrency(response.body().getProduct().getPrice()));
+                    Glide.with(context).load(response.body().getProduct().getImg_cover()).into(holder.imgProduct);
+
+                } else {
+                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetProductResponse.Root> call, Throwable t) {
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -73,5 +109,14 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
             itemOrder = (CardView) itemView.findViewById(R.id.item_order);
         }
+    }
+    public String formatCurrency(String price) {
+        // Tạo một đối tượng DecimalFormat với mẫu số mong muốn
+        long number = Long.parseLong(price);
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+        formatSymbols.setGroupingSeparator('.'); // Set '.' as the grouping separator
+        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
+        String formattedNumber = decimalFormat.format(number);
+        return formattedNumber;
     }
 }
