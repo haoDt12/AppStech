@@ -86,7 +86,11 @@ public class CartFragment extends Fragment {
         });
         return root;
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        chk_selectAll.setChecked(false);
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
