@@ -148,4 +148,9 @@ public interface ApiService {
             @Part("phone_number") RequestBody phoneNumber,
             @Part("userId") RequestBody userId
     );
+    @FormUrlEncoded
+    @POST("/api/addFCM")
+    Call<ResApi> addFCM(@Header("Authorization") String token,
+                                               @Field("userId") String id,
+                                          @Field("fcm") String fcm);
 }

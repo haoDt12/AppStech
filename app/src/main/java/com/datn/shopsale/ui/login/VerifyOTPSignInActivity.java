@@ -1,7 +1,5 @@
 package com.datn.shopsale.ui.login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,14 +11,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,6 +54,10 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                 onClickVerify();
             }
         });
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            String token = task.getResult();
+            preferenceManager.putString("fcm",token);
+        });
     }
     private  void onClickVerify(){
         btnVerify.setVisibility(View.INVISIBLE);
@@ -70,16 +74,14 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<UserVerifyLoginResponse.Root> call, Response<UserVerifyLoginResponse.Root> response) {
                     if (response.body().getCode() == 1) {
-                        idProgress.setVisibility(View.INVISIBLE);
-                        btnVerify.setVisibility(View.VISIBLE);
-                        Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                        preferenceManager.putString("token",response.body().getToken());
-                        preferenceManager.putString("userId",response.body().getUser().get_id());
-                        preferenceManager.putString("avatarLogin",response.body().getUser().getAvatar());
-                        preferenceManager.putString("nameLogin",response.body().getUser().getFull_name());
-                        Intent intent = new Intent(VerifyOTPSignInActivity.this,MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        runOnUiThread(() -> {
+                            Toast.makeText(VerifyOTPSignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                            preferenceManager.putString("token",response.body().getToken());
+                            preferenceManager.putString("userId",response.body().getUser().get_id());
+                            preferenceManager.putString("avatarLogin",response.body().getUser().getAvatar());
+                            preferenceManager.putString("nameLogin",response.body().getUser().getFull_name());
+                            addTokenFMC(preferenceManager.getString("token"),preferenceManager.getString("userId"),preferenceManager.getString("fcm"));
+                        });
                     } else {
                         runOnUiThread(() -> {
                             idProgress.setVisibility(View.INVISIBLE);
@@ -213,5 +215,35 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
         idProgress = (ProgressBar) findViewById(R.id.id_progress);
         btnVerify = (Button) findViewById(R.id.btn_verify);
 
+    }
+    private void addTokenFMC(String token, String userId, String fcm){
+        Call<ResApi> call = apiService.addFCM(token,userId,fcm);
+        call.enqueue(new Callback<ResApi>() {
+            @Override
+            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
+                if(response.body().code == 1){
+                    idProgress.setVisibility(View.INVISIBLE);
+                    btnVerify.setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(VerifyOTPSignInActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    runOnUiThread(() -> {
+                        idProgress.setVisibility(View.INVISIBLE);
+                        btnVerify.setVisibility(View.VISIBLE);
+                        Toast.makeText(VerifyOTPSignInActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResApi> call, Throwable t) {
+                runOnUiThread(() -> {
+                    idProgress.setVisibility(View.INVISIBLE);
+                    btnVerify.setVisibility(View.VISIBLE);
+                    Log.d("zzzzz", "onFailure: " + t.getMessage());
+                });
+            }
+        });
     }
 }

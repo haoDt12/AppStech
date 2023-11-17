@@ -7,18 +7,26 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:300820864058:android:d35c5a028664e07a8e2903",
+        "mobilesdk_app_id": "1:300820864058:android:47c2a770daa04c8c8e2903",
         "android_client_info": {
           "package_name": "com.datn.shopsale"
         }
       },
       "oauth_client": [
         {
-          "client_id": "300820864058-6b1llva1g8n5htvbj2cl495s5fjtn6nu.apps.googleusercontent.com",
+          "client_id": "300820864058-62t069rt8emhlc47paeuoo307i5nj4ks.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.datn.shopsale",
-            "certificate_hash": "99d15809b933814b39b55236b631ae3f61b33762"
+            "certificate_hash": "010671ca89f949d133c9b6d415e55642b9697d53"
+          }
+        },
+        {
+          "client_id": "300820864058-e7siuvqbku2l1idhcgr1gpeombul83f6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "24b02121254fdcc5366c9458adc8955a4fb0e55c"
           }
         },
         {
@@ -27,6 +35,30 @@
           "android_info": {
             "package_name": "com.datn.shopsale",
             "certificate_hash": "a9c7f81688a3db8ac0cd8ef0306b1d7ca67ca77b"
+          }
+        },
+        {
+          "client_id": "300820864058-eingkse5su59qh3567d5v7i12nhlvqg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "99d15809b933814b39b55236b631ae3f61b33762"
+          }
+        },
+        {
+          "client_id": "300820864058-kii8alpbksp47l1m2403kstm9ho4d5it.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "ce9285be3d70a3d7145d80e3c3019c1d0f1a410c"
+          }
+        },
+        {
+          "client_id": "300820864058-m5cvef6f2lcdtr730rp9o3fsvonphope.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datn.shopsale",
+            "certificate_hash": "3d5c7f321aaa65085ec4374a7b1bd2194aa94287"
           }
         }
       ],
@@ -39,7 +71,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "300820864058-iok8dto6j27l3258iiimpms86i5rtcj3.apps.googleusercontent.com",
+              "client_id": "107547844893403650796",
               "client_type": 3
             }
           ]
