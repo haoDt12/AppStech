@@ -1,11 +1,17 @@
 package com.datn.shopsale.adapter;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.OrderActivity;
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.User;
 
@@ -24,9 +31,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
     private ArrayList<Address> dataList;
     private Callback callback;
-
-    public AddressAdapter(ArrayList<Address> dataList,Callback callback) {
+    private Context context;
+    private int selectedItemPosition = -1;
+    public AddressAdapter(ArrayList<Address> dataList,Context context,Callback callback) {
         this.dataList = dataList;
+        this.context = context;
         this.callback = callback;
         notifyDataSetChanged();
     }
@@ -44,7 +53,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         if (address == null){
             return;
         }
-        holder.bind(address);
+        holder.bind(address,position);
     }
 
     @Override
@@ -56,11 +65,12 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     }
 
     public class AddressViewHolder extends RecyclerView.ViewHolder {
-        private CircleImageView imgLocation;
         private TextView tvName;
         private TextView tvPhoneNumber;
         private TextView tvAddressCity;
         private TextView tvAddressStreet;
+        private RadioButton rdoAddress;
+
         private View dragLayout;
         private View mainLayout;
         private SwipeLayout swipeLayout;
@@ -70,7 +80,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
 
         public AddressViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgLocation = (CircleImageView) itemView.findViewById(R.id.img_location);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPhoneNumber = (TextView) itemView.findViewById(R.id.tv_phone_number);
             tvAddressCity = (TextView) itemView.findViewById(R.id.tv_address_city);
@@ -84,11 +93,22 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         }
 
 
-        public void bind(Address address) {
+        public void bind(Address address,int position) {
             tvName.setText(address.getName());
             tvPhoneNumber.setText(address.getPhone_number());
             tvAddressCity.setText(address.getCity());
             tvAddressStreet.setText(address.getStreet());
+            mainLayout.setBackgroundResource(selectedItemPosition == position ? R.color.red:R.color.mauve);
+            mainLayout.setOnClickListener(v -> {
+                selectedItemPosition = position;
+                notifyDataSetChanged(); // Notify the adapter that the data set changed
+                saveSelectedAddressToPreferences(address.getName(), address.getPhone_number(), address.getCity(), address.getStreet());
+                Intent intent = new Intent(context, OrderActivity.class);
+                ((Activity) context).setResult(Activity.RESULT_OK, intent);
+                ((Activity) context).finish();
+            });
+
+
 
             tvEdit.setOnClickListener(v->{
                 callback.editAddress(address);
@@ -111,5 +131,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     public interface Callback{
         void editAddress(Address address);
         void deleteAddress(Address address);
+    }
+    private void saveSelectedAddressToPreferences(String name, String phone, String city, String street) {
+        SharedPreferences preferences = context.getSharedPreferences("SelectedAddress", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("selectedAddressName", name);
+        editor.putString("selectedAddressPhone", phone);
+        editor.putString("selectedAddressCity", city);
+        editor.putString("selectedAddressStreet", street);
+        editor.apply();
     }
 }
