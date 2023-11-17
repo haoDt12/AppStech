@@ -79,17 +79,13 @@ public class CartFragment extends Fragment {
         initView(root);
 
 //        cartPresenter.getDataCart(getContext());
-        btnCheckout.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(),OrderActivity.class);
-            intent.putExtra("listOder",listOder);
-            activityResultLauncher.launch(intent);
-        });
         return root;
     }
     @Override
     public void onStart() {
         super.onStart();
         chk_selectAll.setChecked(false);
+        listCartSelected.clear();
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -101,19 +97,27 @@ public class CartFragment extends Fragment {
         listOder = new ListOder();
         getDataCart();
         onFragmentResult();
-
+        btnCheckout.setOnClickListener(v -> {
+            if(listCartSelected.size() != 0){
+                Intent intent = new Intent(getActivity(), OrderActivity.class);
+                intent.putExtra("listOder",listOder);
+                activityResultLauncher.launch(intent);
+            }else {
+                Toast.makeText(getActivity(), "Vui lòng chọn sản phẩm để thanh toán", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         chk_selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                    setSelectedItem();
+                   listCartSelected.clear();
                    listCartSelected.addAll(cartList);
                    listOder.setList(listCartSelected);
                 }else {
                     unSelectedItem();
                     listCartSelected.clear();
-                    listOder.setList(listCartSelected);
                 }
             }
         });
