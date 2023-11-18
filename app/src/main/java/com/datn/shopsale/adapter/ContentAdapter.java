@@ -1,33 +1,30 @@
 package com.datn.shopsale.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.VideoDetailActivity;
 import com.datn.shopsale.models.Product;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
     private ArrayList<Product> items;
@@ -39,7 +36,13 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         this.items = items;
         this.context = context;
 
-        exoPlayer = new SimpleExoPlayer.Builder(context).build();
+        DataSource.Factory dataSourceFactory = new DefaultHttpDataSource.Factory()
+                .setAllowCrossProtocolRedirects(true);
+
+        // Sử dụng DataSource.Factory này để tạo ExoPlayer
+        exoPlayer = new SimpleExoPlayer.Builder(context)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(dataSourceFactory))
+                .build();
     }
 
     @NonNull
@@ -50,7 +53,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Product contentItem = items.get(position);
 
         if (contentItem.getVideo() != null) {
@@ -99,6 +102,13 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
             Picasso.get().load(contentItem.getList_img().get(0)) // Hiển thị hình ảnh đầu tiên
                     .into(holder.imageView);
         }
+        holder.imgFull.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Gọi phương thức để xử lý sự kiện bấm vào imgFull
+                onImgFullClick(position);
+            }
+        });
     }
 
 
@@ -114,11 +124,9 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView, imagePlay;
-        CustomPlayerView playerView;
+        ImageView imageView, imagePlay,imgFull;
+        PlayerView playerView;
         LinearLayout lnlVideo;
-
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -126,7 +134,19 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
             playerView = itemView.findViewById(R.id.videoView);
             imagePlay = (ImageView) itemView.findViewById(R.id.img_play);
             lnlVideo = (LinearLayout) itemView.findViewById(R.id.lnl_video);
+            imgFull = (ImageView) itemView.findViewById(R.id.img_full);
+        }
+    }
+    private void onImgFullClick(int position) {
+        // Lấy ra sản phẩm tại vị trí được bấm
+        Product clickedProduct = items.get(position);
 
+        // Kiểm tra xem sản phẩm có video không
+        if (clickedProduct.getVideo() != null) {
+            // Nếu có video, chuyển sang VideoDetailActivity và truyền video URL
+            Intent intent = new Intent(context, VideoDetailActivity.class);
+            intent.putExtra("video_url", clickedProduct.getVideo());
+            context.startActivity(intent);
         }
     }
 }

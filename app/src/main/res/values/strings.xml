@@ -5,6 +5,7 @@
     <string name="category">Danh mục</string>
     <string name="cart">Giỏ hàng</string>
     <string name="user">Người dùng</string>
+    <string name="tinnhan">Tin nhắn</string>
     <string name="chart">Thông kê, doanh thu</string>
     <string name="notifications">Thông báo</string>
     <string name="dark_modes">Chế độ tối</string>
@@ -104,7 +105,8 @@
     <string name="feedback_product">Đánh giá sản phẩm</string>
     <string name="contact">Liên hệ</string>
     <string name="tag_address">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
-    <string name="tag_street">Đường/ Số nhà</string>
+    <string name="tag_street">Đường/ Tòa nhà</string>
+    <string name="tag_home">Số nhà/ Tầng</string>
     <!--    <string name="notification">Notification</string>-->
     <string name="choose_bank">Lựa chọn ngân hàng</string>
     <string name="bank">Ngân hàng</string>
@@ -123,6 +125,11 @@
     <string name="time_check_otp">Thời gian</string>
     <string name="enter_otp">Nhập mã OTP</string>
     <string name="otp_have_been_send_to_u_phone">OTP đã gủi về điện thoại</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="chitietdonhang">Chi tiết đơn hàng</string>
+    <string name="tongthanhtoan">Tổng thanh toán:</string>
+    <string name="trangthaidonhang">Trạng thái đơn hàng:</string>
     <!--    <string name="pay">Thanh toán</string>-->
 
     <string name="name_product">Tên sản phẩm</string>
@@ -131,4 +138,7 @@
     <string name="time"> giờ</string>
     <string name="date_time">Ngày và giờ</string>
     <string name="add_an_bill">Tạo hoá đơn</string>
+
+    <string name="street">Street</string>
+    <string name="city">City</string>
 </resources>

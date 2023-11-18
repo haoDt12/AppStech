@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -18,11 +19,21 @@
         android:theme="@style/Theme.ShopSale"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".ui.dashboard.address.CitySelectionActivity"-->
-<!--            android:exported="false" />-->
+        <activity
+            android:name=".activities.VideoDetailActivity"
+            android:exported="false" />
+        <!-- <activity -->
+        <!-- android:name=".ui.dashboard.address.CitySelectionActivity" -->
+        <!-- android:exported="false" /> -->
+        <activity
+            android:name=".activities.ChatScreenAdminActivity"
+            android:parentActivityName=".activities.ChatScreenAdminActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.login.VerifyOTPSignInActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ShowDetailOrderActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.VerifyOTPActivity"
@@ -63,9 +74,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.address.AddressActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.dashboard.store.StoreActivity"
             android:exported="false" />
@@ -80,15 +89,13 @@
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.chat.ChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".ui.dashboard.chat.ChatActivity" />
         <activity
             android:name=".ui.dashboard.setting.ChangePassActivity"
             android:exported="false" />
         <activity
             android:name=".ui.dashboard.chat.ListUsersChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.AddBillActivity"
             android:exported="false" />
 
         <meta-data

@@ -1,37 +1,35 @@
 package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.datn.shopsale.R;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.adapter.ListOrderAdapter;
-import com.datn.shopsale.adapter.NotificationAdapter;
-import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.databinding.FragmentHomeBinding;
-import com.datn.shopsale.databinding.FragmentNotificationsBinding;
 import com.datn.shopsale.databinding.FragmentWaitConfirmBinding;
-import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.models.Orders;
-import com.datn.shopsale.models.Product;
+import com.datn.shopsale.response.GetListOrderResponse;
+import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class WaitConfirmFragment extends Fragment {
     private ListOrderAdapter adapter;
-    private List<Orders> mList;
-
+    private PreferenceManager preferenceManager;
+    private ApiService apiService;
     private FragmentWaitConfirmBinding binding;
-
     public WaitConfirmFragment() {
         // Required empty public constructor
     }
@@ -47,44 +45,51 @@ public class WaitConfirmFragment extends Fragment {
 
         binding = FragmentWaitConfirmBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        binding.rcvList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        fillRecycleView();
+        preferenceManager = new PreferenceManager(getActivity());
+        apiService = RetrofitConnection.getApiService();
+        getListOrderWaitConfirm();
         return root;
     }
+    private void getListOrderWaitConfirm() {
+        String token = preferenceManager.getString("token");
+        String userId = preferenceManager.getString("userId");
+        ArrayList<Orders> dataOrder = new ArrayList<>();
+        ArrayList<Orders> dataOrderInTransit = new ArrayList<>();
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        binding=null;
+        Call<GetListOrderResponse.Root> call = apiService.getOrderByUserId(token, userId);
+        call.enqueue(new Callback<GetListOrderResponse.Root>() {
+            @Override
+            public void onResponse(Call<GetListOrderResponse.Root> call, Response<GetListOrderResponse.Root> response) {
+                if (response.body().code == 1) {
+                    for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
+                        Log.d("hhhhhhhh", "onResponse: "+response.body().listOrder);
+                        dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
+                    }
+                    for (Orders item: dataOrder) {
+                        if (item.getStatus().equals("WaitConfirm")){
+                            dataOrderInTransit.add(item);
+                        }
+                    }
+
+                    if (getActivity() != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
+                                binding.rcvWaitConfirm.setAdapter(adapter);
+                            }
+                        });}
+                } else {
+                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetListOrderResponse.Root> call, Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void fillRecycleView() {
-        mList = new ArrayList<>();
-        mList.add(new Orders("0",
-                "0",
-                null,
-                "Iphone",
-                "Chua xac nhan",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "HaNoi",
-                1,
-                10000000,
-                12000000,
-                null));
-
-        mList.add(new Orders("0",
-                "0",
-                null,
-                "Iphone",
-                "Chua xac nhan",
-                "https://cdn-icons-png.flaticon.com/512/3239/3239958.png",
-                "HaNoi",
-                1,
-                10000000,
-                12000000,
-                null));
-
-        adapter = new ListOrderAdapter(mList,getActivity());
-        binding.rcvList.setAdapter(adapter);
-    }
 }

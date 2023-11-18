@@ -1,58 +1,43 @@
 package com.datn.shopsale.ui.cart;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
+import static android.app.Activity.RESULT_OK;
+
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.OrderActivity;
 import com.datn.shopsale.adapter.CartAdapter;
 import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.Product;
+import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.login.SignUpActivity;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,6 +58,8 @@ public class CartFragment extends Fragment {
     private CheckBox chk_selectAll;
     private  boolean selected = false;
     private List<Cart> listCartSelected;
+    private ListOder listOder;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
     public CartFragment() {
     }
 
@@ -93,7 +80,9 @@ public class CartFragment extends Fragment {
 
 //        cartPresenter.getDataCart(getContext());
         btnCheckout.setOnClickListener(v -> {
-            startActivity(new Intent(getContext(), OrderActivity.class));
+            Intent intent = new Intent(getActivity(),OrderActivity.class);
+            intent.putExtra("listOder",listOder);
+            activityResultLauncher.launch(intent);
         });
         return root;
     }
@@ -104,8 +93,10 @@ public class CartFragment extends Fragment {
         apiService = RetrofitConnection.getApiService();
         initView(view);
         preferenceManager = new PreferenceManager(getActivity());
-
+        listCartSelected = new ArrayList<>();
+        listOder = new ListOder();
         getDataCart();
+        onFragmentResult();
 
 
         chk_selectAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -113,8 +104,12 @@ public class CartFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                    setSelectedItem();
+                   listCartSelected.addAll(cartList);
+                   listOder.setList(listCartSelected);
                 }else {
                     unSelectedItem();
+                    listCartSelected.clear();
+                    listOder.setList(listCartSelected);
                 }
             }
         });
@@ -126,7 +121,6 @@ public class CartFragment extends Fragment {
         btnCheckout = view.findViewById(R.id.btn_checkout);
         Tvsum = view.findViewById(R.id.sum);
         chk_selectAll = view.findViewById(R.id.chk_selectedAll);
-        listCartSelected = new ArrayList<>();
     }
 
     private void showToast(String message) {
@@ -134,8 +128,6 @@ public class CartFragment extends Fragment {
     }
 
     private void setSelectedItem(){
-        listCartSelected.clear();
-        listCartSelected = cartList;
         for (int i = 0; i < cartList.size(); i++) {
             if( cartList.get(i).getStatus()==1){
                 cartList.get(i).setStatus(2);
@@ -148,7 +140,6 @@ public class CartFragment extends Fragment {
         }
     }
     private void unSelectedItem(){
-        listCartSelected.clear();
         for (int i = 0; i < cartList.size(); i++) {
 
             cartList.get(i).setStatus(1);
@@ -175,6 +166,7 @@ public class CartFragment extends Fragment {
                         objCart.setImgCover(item.getImgCover());
                         objCart.setPrice(item.getPrice());
                         objCart.setStatus(1);
+                        objCart.setUserId(preferenceManager.getString("userId"));
                         cartList.add(objCart);
                     }
                     getActivity().runOnUiThread(() -> {
@@ -197,6 +189,7 @@ public class CartFragment extends Fragment {
                                 tong+= (objCart.getPrice()* objCart.getQuantity());
                                 Tvsum.setText(String.valueOf(tong));
                                 listCartSelected.add(objCart);
+                                listOder.setList(listCartSelected);
                             }
 
                             @Override
@@ -440,4 +433,11 @@ public class CartFragment extends Fragment {
 //        });
 //        dialog.show();
 //    }
+private void onFragmentResult(){
+    activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if(result.getResultCode() == RESULT_OK){
+            getDataCart();
+        }
+    });
+}
 }

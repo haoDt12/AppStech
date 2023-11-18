@@ -27,6 +27,8 @@ import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.PreferenceManager;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -43,11 +45,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private RecyclerView recyColorsProduct, recyDungLuong;
     private ContentAdapter contentAdapter;
     private ViewPager2 viewPager2;
-    private ApiService apiService;
+
     private User user = new User();
     private Product product = new Product();
     private ArrayList<String> ramList;
     private PreferenceManager preferenceManager;
+    private ApiService apiService;
     String selectedColors = "";
     String selectedRams = "";
     String id;
@@ -112,7 +115,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         viewPager2.setAdapter(contentAdapter);
 
         tvNameProduct.setText(title);
-        tvPriceProduct.setText(String.valueOf(price));
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
+        formatSymbols.setGroupingSeparator('.');
+        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
+        String formattedNumber = decimalFormat.format(price); // Format the integer directly
+        tvPriceProduct.setText(formattedNumber+" VNĐ");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyColorsProduct.setLayoutManager(layoutManager);
