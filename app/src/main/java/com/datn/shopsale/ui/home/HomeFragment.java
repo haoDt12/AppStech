@@ -29,6 +29,7 @@ import com.datn.shopsale.adapter.SliderAdapter;
 import com.datn.shopsale.databinding.FragmentHomeBinding;
 import com.datn.shopsale.models.Category;
 import com.datn.shopsale.models.Product;
+import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -50,10 +51,12 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment{
     private boolean isLoadProduct = false;
     private boolean isLoadCategory = false;
+    private boolean isLoadBanner = false;
 
     private FragmentHomeBinding binding;
 
     private final ArrayList<Product> dataList = new ArrayList<>();
+    private  ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
 
@@ -64,6 +67,7 @@ public class HomeFragment extends Fragment{
 
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    List<Integer> imageList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -79,20 +83,13 @@ public class HomeFragment extends Fragment{
         preferenceManager = new PreferenceManager(getActivity());
         Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
-        List<Integer> imageList = new ArrayList<>();
-        imageList.add(R.drawable.fist);
-        imageList.add(R.drawable.seco);
-        imageList.add(R.drawable.third);
-        imageList.add(R.drawable.ford);
-        imageList.add(R.drawable.five);
-
-
-        SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), imageList);
-        binding.vpgSlideImage.setAdapter(sliderAdapter);
-        binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
-
-        binding.circleIndicator.setViewPager(binding.vpgSlideImage);
-        sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
+        List<String> imageList = new ArrayList<>();
+        Log.d("TagList", "onCreateView: "+GetListBanner().size());
+//        imageList.add(R.drawable.fist);
+//        imageList.add(R.drawable.seco);
+//        imageList.add(R.drawable.third);
+//        imageList.add(R.drawable.ford);
+//        imageList.add(R.drawable.five);
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -112,6 +109,57 @@ public class HomeFragment extends Fragment{
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
         return root;
     }
+    private List<String> GetListBanner(){
+        List<String> list = new ArrayList<>();
+        listImg.clear();
+        Call<GetBannerResponse.Root> call = apiService.getListBanner(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetBannerResponse.Root>() {
+            @Override
+            public void onResponse(Call<GetBannerResponse.Root> call, Response<GetBannerResponse.Root> response) {
+                Log.d("TAG", "onResponse: "+ response.code()+"zzzzzzzzzzz" + response);
+                Log.d("TAG", "onResponse: "+response.body());
+                if (response.code() == 200) {
+
+                    for (GetBannerResponse.Banner item : response.body().banner) {
+                        listImg.add(new GetBannerResponse.Banner(item._id, item.img));
+                        Log.d("TAG", "run: "+listImg.get(0).getImg());
+                    }
+                    for(int i =0; i < listImg.size(); i++){
+                        list.add(listImg.get(i).getImg());
+                    }
+                    SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
+                    binding.vpgSlideImage.setAdapter(sliderAdapter);
+                    binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
+
+                    binding.circleIndicator.setViewPager(binding.vpgSlideImage);
+                    sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
+                    Log.d("item", "onResponse: "+list.size());
+
+                } else {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
+                        if(isLoadBanner){
+                            LoadingDialog.dismissProgressDialog();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetBannerResponse.Root> call, Throwable t) {
+                getActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    preferenceManager.clear();
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().finish();
+                });
+            }
+
+        });
+
+        return list;
+    }
+
 
     private void displayProduct() {
         dataList.clear();

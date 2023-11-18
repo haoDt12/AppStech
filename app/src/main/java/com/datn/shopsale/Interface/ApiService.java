@@ -6,6 +6,7 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.OderRequest;
+import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
@@ -148,4 +149,8 @@ public interface ApiService {
             @Part("phone_number") RequestBody phoneNumber,
             @Part("userId") RequestBody userId
     );
+    @POST("/api/getListBanner")
+    Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
+    );
+
 }
