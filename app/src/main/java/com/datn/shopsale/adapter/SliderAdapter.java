@@ -1,6 +1,7 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.datn.shopsale.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class SliderAdapter extends PagerAdapter {
     private Context context;
-    private List<Integer> imageList;
-    public SliderAdapter(Context context, List<Integer> imageList) {
+//    private List<Integer> imageList;
+    private List<String> imageList;
+
+    public SliderAdapter(Context context, List<String> imageList) {
         this.context = context;
         this.imageList = imageList;
     }
+
     @Override
     public int getCount() {
         return imageList == null? 0 : imageList.size();
@@ -34,7 +39,8 @@ public class SliderAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
-        imageView.setImageResource(imageList.get(position));
+//        imageView.setImageResource(Integer.parseInt(imageList.get(position)));
+        Picasso.get().load(imageList.get(position).replace("localhost", "192.168.1.8")).into(imageView);
         container.addView(imageView);
         return imageView;
     }

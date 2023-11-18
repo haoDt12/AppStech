@@ -90,7 +90,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            addressAdapter = new AddressAdapter(dataList, new AddressAdapter.Callback() {
+                            addressAdapter = new AddressAdapter(dataList,getApplicationContext(), new AddressAdapter.Callback() {
                                 @Override
                                 public void editAddress(Address address) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(AddressActivity.this,R.style.FullScreenDialogTheme);

@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,7 +23,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private ArrayList<Address> dataList;
     private Callback callback;
 
-    public AddressAdapter(ArrayList<Address> dataList,Callback callback) {
+    public AddressAdapter(ArrayList<Address> dataList, Context applicationContext, Callback callback) {
         this.dataList = dataList;
         this.callback = callback;
         notifyDataSetChanged();
