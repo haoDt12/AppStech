@@ -130,12 +130,12 @@ public class SignUpActivity extends AppCompatActivity {
     private void inutUI() {
         imgLogo = findViewById(R.id.img_logo);
         edEmail = findViewById(R.id.ed_email);
-        edFullname = findViewById(R.id.ed_fullname);
+        edFullname = findViewById(R.id.ed_full_name);
         edPassword = findViewById(R.id.ed_password);
         edConfirmPassword = findViewById(R.id.ed_confirm_password);
         tvLogin = findViewById(R.id.tv_login);
         progressbar = findViewById(R.id.progressbar);
         btnSignUp = findViewById(R.id.btn_sign_up);
-        edPhoneNumber = findViewById(R.id.ed_phoneNumber);
+        edPhoneNumber = findViewById(R.id.ed_phone_number_register);
     }
 }

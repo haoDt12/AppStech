@@ -31,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -47,7 +48,7 @@ public class InformationUserActivity extends AppCompatActivity {
     private TextView tvEmail;
     private TextView tvPhone;
     private ImageView cancelAction;
-    private ImageView imgUser;
+    private CircleImageView imgUser;
     private EditText edName;
     private EditText edEmail;
     private EditText edPhone;
@@ -83,7 +84,7 @@ public class InformationUserActivity extends AppCompatActivity {
     private void FindViewById() {
         imgBack = (ImageButton) findViewById(R.id.img_back);
         imgCamera = (ImageView) findViewById(R.id.img_camera);
-        imgUser = (ImageView) findViewById(R.id.img_user);
+        imgUser = findViewById(R.id.img_user);
         tvName = (TextView) findViewById(R.id.tv_name);
         tvEmail = (TextView) findViewById(R.id.tv_email);
         tvPhone = (TextView) findViewById(R.id.tv_phone);

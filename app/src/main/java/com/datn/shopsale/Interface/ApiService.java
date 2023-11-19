@@ -153,4 +153,9 @@ public interface ApiService {
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
     );
 
+    @FormUrlEncoded
+    @POST("/api/addFCM")
+    Call<ResApi> addFCM(@Header("Authorization") String token,
+                                               @Field("userId") String id,
+                                          @Field("fcm") String fcm);
 }
