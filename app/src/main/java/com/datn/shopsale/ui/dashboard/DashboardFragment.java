@@ -45,6 +45,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,7 +66,7 @@ public class DashboardFragment extends Fragment {
     private TextView tvEmail;
     private PreferenceManager preferenceManager;
     private TextView tvTitle;
-    private ImageView imgAvatarUsers;
+    private CircleImageView imgAvatarUsers;
     private ApiService apiService;
     private GetUserByIdResponse.User user;
     private ActivityResultLauncher<Intent> activityResultLauncher;
@@ -101,7 +102,7 @@ public class DashboardFragment extends Fragment {
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
 
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
-        imgAvatarUsers = (ImageView) view.findViewById(R.id.img_avatarUsers);
+        imgAvatarUsers = view.findViewById(R.id.img_avatarUsers);
         apiService = RetrofitConnection.getApiService();
         getUser();
 

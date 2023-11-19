@@ -20,7 +20,6 @@
         <item name="android:windowEnterAnimation">@anim/dialog_in</item>
         <item name="android:windowExitAnimation">@anim/dialog_out</item>
         <item name="android:activatedBackgroundIndicator">@drawable/navigation_bar_selector</item>
-
     </style>
     <style name="DialogAnimationOption">
         <item name="android:windowExitAnimation">@anim/dialog_out</item>

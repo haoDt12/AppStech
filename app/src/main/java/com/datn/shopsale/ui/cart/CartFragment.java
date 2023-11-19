@@ -137,6 +137,9 @@ public class CartFragment extends Fragment {
 
     private void setSelectedItem(){
         for (int i = 0; i < cartList.size(); i++) {
+            if (cartList.size()==listOder.getList().size()){
+                chk_selectAll.setChecked(true);
+            }
             if( cartList.get(i).getStatus()==1){
                 cartList.get(i).setStatus(2);
                 tong+=  (cartList.get(i).getPrice()*cartList.get(i).getQuantity());

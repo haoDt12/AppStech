@@ -14,6 +14,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -66,7 +67,6 @@ public class HomeFragment extends Fragment{
     private PreferenceManager preferenceManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         setHasOptionsMenu(true);
@@ -111,6 +111,11 @@ public class HomeFragment extends Fragment{
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
     }
 
     private void displayProduct() {
