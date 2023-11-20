@@ -60,31 +60,26 @@
                             android:id="@+id/tv_nameAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="jj"
                             android:textColor="@color/black"
                             android:textStyle="bold"
                             android:textSize="17dp"/>
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" --- "/>
+                            android:layout_height="wrap_content" />
                         <TextView
                             android:id="@+id/tv_phoneAddress"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="jj"/>
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
                     <TextView
                         android:id="@+id/tv_cityAddress"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:text="jjj"/>
+                        android:layout_marginTop="5dp" />
                     <TextView
                         android:id="@+id/tv_streetAddress"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="jjjj"/>
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
             <LinearLayout
@@ -104,7 +99,6 @@
                     android:id="@+id/tv_orderTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="21000000"
                     android:textSize="20dp"
                     android:textColor="@color/red"
                     android:textStyle="bold"

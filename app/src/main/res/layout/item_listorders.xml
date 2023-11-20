@@ -20,8 +20,7 @@
                 android:id="@+id/img_product"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/iphone_14_128gb"/>
+                android:layout_centerVertical="true"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,7 +38,6 @@
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Iphone 14 Pro max"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -47,7 +45,6 @@
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="13.000.000 VNĐ"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold" />

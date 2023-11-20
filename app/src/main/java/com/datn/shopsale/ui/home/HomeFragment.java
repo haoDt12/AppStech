@@ -227,6 +227,7 @@ public class HomeFragment extends Fragment{
         call.enqueue(new Callback<GetListCategoryResponse.Root>() {
             @Override
             public void onResponse(Call<GetListCategoryResponse.Root> call, Response<GetListCategoryResponse.Root> response) {
+                Log.d("zzzz", "onResponse: " + response);
                 if (response.body().getCode() == 1) {
                     for (GetListCategoryResponse.Category item : response.body().getCategory()) {
                         dataCategory.add(new Category(item.get_id(), item.getTitle(), item.getImg(), item.getDate()));
