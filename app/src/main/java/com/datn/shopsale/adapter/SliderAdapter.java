@@ -1,8 +1,6 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,7 +8,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.datn.shopsale.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,7 +37,7 @@ public class SliderAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
 //        imageView.setImageResource(Integer.parseInt(imageList.get(position)));
-        Picasso.get().load(imageList.get(position).replace("localhost", "192.168.1.8")).into(imageView);
+        Picasso.get().load(imageList.get(position)).into(imageView);
         container.addView(imageView);
         return imageView;
     }
