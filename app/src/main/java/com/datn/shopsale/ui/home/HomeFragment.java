@@ -70,43 +70,15 @@ public class HomeFragment extends Fragment{
     private PreferenceManager preferenceManager;
     List<Integer> imageList = new ArrayList<>();
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        setHasOptionsMenu(true);
-        AppCompatActivity activity= (AppCompatActivity) getActivity();
-        activity.setSupportActionBar(binding.toolbarHome);
-
-        binding.lnlSearch.setOnClickListener(view -> {
-            startActivity(new Intent(getActivity(), SearchActivity.class));
-        });
-        preferenceManager = new PreferenceManager(getActivity());
-        Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
-        apiService = RetrofitConnection.getApiService();
-        List<String> imageList = new ArrayList<>();
-        Log.d("TagList", "onCreateView: "+GetListBanner().size());
-//        imageList.add(R.drawable.fist);
-//        imageList.add(R.drawable.seco);
-//        imageList.add(R.drawable.third);
-//        imageList.add(R.drawable.ford);
-//        imageList.add(R.drawable.five);
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                getActivity().runOnUiThread(() -> {
-                    int currentItem = binding.vpgSlideImage.getCurrentItem();
-                    int totalItems = binding.vpgSlideImage.getAdapter().getCount();
-                    int nextItem = (currentItem + 1) % totalItems;
-                    binding.vpgSlideImage.setCurrentItem(nextItem);
-                });
-            }
-        }, 2000, 2000);
-        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
-        displayCategory();
-        displayProduct();
-        Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
         return root;
     }
     private List<String> GetListBanner(){
@@ -118,23 +90,24 @@ public class HomeFragment extends Fragment{
             public void onResponse(Call<GetBannerResponse.Root> call, Response<GetBannerResponse.Root> response) {
                 Log.d("TAG", "onResponse: "+ response.code()+"zzzzzzzzzzz" + response);
                 Log.d("TAG", "onResponse: "+response.body());
-                if (response.code() == 200) {
+                if (response.body().code == 1) {
+                    getActivity().runOnUiThread(()->{
+                        for (GetBannerResponse.Banner item : response.body().banner) {
+                            listImg.add(new GetBannerResponse.Banner(item._id, item.img));
+                            Log.d("TAG", "run: "+listImg.get(0).getImg());
+                        }
+                        for(int i =0; i < listImg.size(); i++){
+                            list.add(listImg.get(i).getImg());
+                        }
+                        SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
+                        binding.vpgSlideImage.setAdapter(sliderAdapter);
+                        binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
 
-                    for (GetBannerResponse.Banner item : response.body().banner) {
-                        listImg.add(new GetBannerResponse.Banner(item._id, item.img));
-                        Log.d("TAG", "run: "+listImg.get(0).getImg());
-                    }
-                    for(int i =0; i < listImg.size(); i++){
-                        list.add(listImg.get(i).getImg());
-                    }
-                    SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
-                    binding.vpgSlideImage.setAdapter(sliderAdapter);
-                    binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
+                        binding.circleIndicator.setViewPager(binding.vpgSlideImage);
+                        sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
+                        Log.d("item", "onResponse: "+list.size());
 
-                    binding.circleIndicator.setViewPager(binding.vpgSlideImage);
-                    sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
-                    Log.d("item", "onResponse: "+list.size());
-
+                    });
                 } else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
@@ -163,7 +136,35 @@ public class HomeFragment extends Fragment{
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        AppCompatActivity activity= (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(binding.toolbarHome);
 
+        binding.lnlSearch.setOnClickListener(view1 -> {
+            startActivity(new Intent(getActivity(), SearchActivity.class));
+        });
+        preferenceManager = new PreferenceManager(getActivity());
+        Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
+        apiService = RetrofitConnection.getApiService();
+        List<String> imageList = new ArrayList<>();
+        Log.d("TagList", "onCreateView: "+GetListBanner().size());
+
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(() -> {
+                    int currentItem = binding.vpgSlideImage.getCurrentItem();
+                    int totalItems = binding.vpgSlideImage.getAdapter().getCount();
+                    int nextItem = (currentItem + 1) % totalItems;
+                    binding.vpgSlideImage.setCurrentItem(nextItem);
+                });
+            }
+        }, 2000, 2000);
+        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
+        displayCategory();
+        displayProduct();
+        Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
     }
 
     private void displayProduct() {
