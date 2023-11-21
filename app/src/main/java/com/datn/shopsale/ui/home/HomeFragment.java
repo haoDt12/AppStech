@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment{
                         }
                         SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
                         binding.vpgSlideImage.setAdapter(sliderAdapter);
-                        binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
+//                        binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
 
                         binding.circleIndicator.setViewPager(binding.vpgSlideImage);
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
@@ -154,10 +154,14 @@ public class HomeFragment extends Fragment{
             @Override
             public void run() {
                 getActivity().runOnUiThread(() -> {
-                    int currentItem = binding.vpgSlideImage.getCurrentItem();
-                    int totalItems = binding.vpgSlideImage.getAdapter().getCount();
-                    int nextItem = (currentItem + 1) % totalItems;
-                    binding.vpgSlideImage.setCurrentItem(nextItem);
+                    try {
+                        int currentItem = binding.vpgSlideImage.getCurrentItem();
+                        int totalItems = binding.vpgSlideImage.getAdapter().getCount();
+                        int nextItem = (currentItem + 1) % totalItems;
+                        binding.vpgSlideImage.setCurrentItem(nextItem);
+                    }catch (Exception exception){
+                        Log.d("TAGzz: ", exception.getMessage());
+                    }
                 });
             }
         }, 2000, 2000);
