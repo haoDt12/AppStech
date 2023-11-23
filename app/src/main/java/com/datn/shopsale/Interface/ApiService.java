@@ -10,6 +10,7 @@ import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
@@ -152,6 +153,11 @@ public interface ApiService {
     @POST("/api/getListBanner")
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
     );
+
+    @POST("/api/getPublicNotification")
+    Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
+    );
+
 
     @FormUrlEncoded
     @POST("/api/addFCM")

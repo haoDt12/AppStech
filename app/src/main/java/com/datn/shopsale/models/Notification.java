@@ -1,14 +1,6 @@
 package com.datn.shopsale.models;
 
 public class Notification {
-    public Notification(String _id, String userId, String title, String image, String time, String typeNotification) {
-        this._id = _id;
-        this.userId = userId;
-        this.title = title;
-        this.image = image;
-        this.time = time;
-        this.typeNotification = typeNotification;
-    }
 
     private String _id;
     private String userId;
@@ -16,6 +8,14 @@ public class Notification {
     private String image;
     private String time;
     private String typeNotification;
+    public Notification(String _id, String userId, String title,String time, String typeNotification) {
+        this._id = _id;
+        this.userId = userId;
+        this.title = title;
+        this.image = image;
+        this.time = time;
+        this.typeNotification = typeNotification;
+    }
 
     public String get_id() {
         return _id;

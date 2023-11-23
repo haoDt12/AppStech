@@ -25,6 +25,7 @@ import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.text.DecimalFormat;
@@ -115,10 +116,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         viewPager2.setAdapter(contentAdapter);
 
         tvNameProduct.setText(title);
-        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-        formatSymbols.setGroupingSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
-        String formattedNumber = decimalFormat.format(price); // Format the integer directly
+        String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
         tvPriceProduct.setText(formattedNumber+" VNĐ");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
