@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Notification;
+import com.datn.shopsale.utils.DateUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,8 +41,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         if(notification!=null){
             Picasso.get().load(notification.getImage()).into(holder.imgNotification);
             holder.tvMessageNotification.setText(notification.getTypeNotification());
-            holder.tvMonthNotification.setText(notification.getTime());
             holder.tvTitleNotification.setText(notification.getTitle());
+            String formattedDate = DateUtils.formatDate(notification.getTime());
+            holder.tvMonthNotification.setText(formattedDate);
+
         }
     }
 
