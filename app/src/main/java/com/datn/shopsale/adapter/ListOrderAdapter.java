@@ -22,6 +22,7 @@ import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.PreferenceManager;
 
 
@@ -77,7 +78,7 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
                     Log.d("zzzzzzzzzzz", "onResponse: "+response.body().getProduct());
                     holder.tvName.setText(response.body().getProduct().getTitle());
 
-                    holder.tvPrice.setText(formatCurrency(response.body().getProduct().getPrice()));
+                    holder.tvPrice.setText(CurrencyUtils.formatCurrency(response.body().getProduct().getPrice()));
                     Glide.with(context).load(response.body().getProduct().getImg_cover()).into(holder.imgProduct);
 
                 } else {
@@ -109,14 +110,5 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
             itemOrder = (CardView) itemView.findViewById(R.id.item_order);
         }
-    }
-    public String formatCurrency(String price) {
-        // Tạo một đối tượng DecimalFormat với mẫu số mong muốn
-        long number = Long.parseLong(price);
-        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-        formatSymbols.setGroupingSeparator('.'); // Set '.' as the grouping separator
-        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
-        String formattedNumber = decimalFormat.format(number);
-        return formattedNumber;
     }
 }

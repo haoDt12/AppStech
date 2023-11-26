@@ -117,7 +117,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         tvNameProduct.setText(title);
         String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
-        tvPriceProduct.setText(formattedNumber+" VNĐ");
+        tvPriceProduct.setText(formattedNumber);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyColorsProduct.setLayoutManager(layoutManager);
