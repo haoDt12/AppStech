@@ -16,6 +16,11 @@ import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
+import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
+import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
+import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -23,10 +28,13 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     // Register
@@ -158,7 +166,13 @@ public interface ApiService {
     Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
     );
 
+    @GET("/api/p/")
+    Call<List<AddressCDW.City>> getCities();
 
+    @GET("/api/p/{code}")
+    Call<DistrictRespone> getDistrict(@Path("code") int code, @Query("depth") int depth);
+    @GET("/api/d/{code}")
+    Call<WardsRespone> getWard(@Path("code") int code, @Query("depth") int depth);
     @FormUrlEncoded
     @POST("/api/addFCM")
     Call<ResApi> addFCM(@Header("Authorization") String token,
