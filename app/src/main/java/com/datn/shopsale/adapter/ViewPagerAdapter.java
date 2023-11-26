@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.datn.shopsale.ui.dashboard.order.CancelOrderFragment;
 import com.datn.shopsale.ui.dashboard.order.InTransitOrderFragment;
 import com.datn.shopsale.ui.dashboard.order.PayCompleteFragment;
 import com.datn.shopsale.ui.dashboard.order.WaitConfirmFragment;
@@ -32,12 +33,15 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 3:
                 fragment = PayCompleteFragment.newInstance();
                 break;
+            case 4:
+                fragment = CancelOrderFragment.newInstance();
+                break;
         }
         return fragment;
     }
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 }

@@ -40,6 +40,9 @@ public class MyOrderActivity extends AppCompatActivity implements View.OnClickLi
                     case 3:
                         tab.setText("Đã thanh toán");
                         break;
+                    case 4:
+                        tab.setText("Đã hủy");
+                        break;
                 }
             }
         });

@@ -65,7 +65,8 @@
                             android:textSize="17dp"/>
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text=" - "/>
                         <TextView
                             android:id="@+id/tv_phoneAddress"
                             android:layout_width="wrap_content"
@@ -133,6 +134,26 @@
                     android:textColor="@color/black"
                     android:layout_marginLeft="3dp"/>
             </LinearLayout>
+            <Button
+                android:id="@+id/btn_cancelOrder"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hủy đơn hàng"
+                android:textAllCaps="false"
+                android:layout_marginTop="30dp"
+                android:textColor="#fff"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/tv_valueAdressId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+            <TextView
+                android:id="@+id/tv_valueUserId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

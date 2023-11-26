@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -17,6 +18,7 @@ import com.datn.shopsale.databinding.FragmentWaitConfirmBinding;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
@@ -45,11 +47,17 @@ public class WaitConfirmFragment extends Fragment {
 
         binding = FragmentWaitConfirmBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        preferenceManager = new PreferenceManager(getActivity());
-        apiService = RetrofitConnection.getApiService();
-        getListOrderWaitConfirm();
         return root;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        preferenceManager = new PreferenceManager(getActivity());
+        apiService = RetrofitConnection.getApiService();
+        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
+        getListOrderWaitConfirm();
+    }
+
     private void getListOrderWaitConfirm() {
         String token = preferenceManager.getString("token");
         String userId = preferenceManager.getString("userId");
@@ -78,6 +86,7 @@ public class WaitConfirmFragment extends Fragment {
                                 binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
                                 binding.rcvWaitConfirm.setAdapter(adapter);
+                                LoadingDialog.dismissProgressDialog();
                             }
                         });}
                 } else {
@@ -92,4 +101,9 @@ public class WaitConfirmFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getListOrderWaitConfirm();
+    }
 }
