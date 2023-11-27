@@ -11,18 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="10dp">
-        <ImageView
+        android:padding="15dp">
+        <ImageButton
             android:id="@+id/img_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_circle"
             android:src="@drawable/angle_left"/>
         <TextView
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delivery_address"
-            android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </LinearLayout>
@@ -36,14 +37,18 @@
         android:orientation="vertical"
         android:layout_gravity="end"
         android:gravity="center_horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/write_message"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/add_an_address"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textSize="12sp"
+            android:textStyle="normal"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_address"

@@ -74,7 +74,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
         imgBack = (ImageButton) findViewById(R.id.img_back);
         btnDanhgia = (Button) findViewById(R.id.btn_danhgia);
-        btnAddToCart = (Button) findViewById(R.id.btn_addToCart);
+        btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
         recyColorsProduct = findViewById(R.id.recy_colorsProduct);
         recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
         viewPager2 = findViewById(R.id.vpg_product);
@@ -117,7 +117,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         tvNameProduct.setText(title);
         String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
-        tvPriceProduct.setText(formattedNumber+" VNĐ");
+        tvPriceProduct.setText(formattedNumber);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyColorsProduct.setLayoutManager(layoutManager);
@@ -151,7 +151,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             super.onBackPressed();
         } else if (view.getId() == R.id.btn_danhgia) {
             startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
-        } else if (view.getId() == R.id.btn_addToCart) {
+        } else if (view.getId() == R.id.btn_add_to_cart) {
                 if (validate()) {
                     AddToCart();
                 }
