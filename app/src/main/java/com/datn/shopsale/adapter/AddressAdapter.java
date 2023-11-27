@@ -32,7 +32,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private ArrayList<Address> dataList;
     private Callback callback;
     private Context context;
-    private int selectedItemPosition = -1;
     public AddressAdapter(ArrayList<Address> dataList,Context context,Callback callback) {
         this.dataList = dataList;
         this.context = context;
@@ -69,7 +68,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         private TextView tvPhoneNumber;
         private TextView tvAddressCity;
         private TextView tvAddressStreet;
-        private RadioButton rdoAddress;
 
         private View dragLayout;
         private View mainLayout;
@@ -98,16 +96,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             tvPhoneNumber.setText(address.getPhone_number());
             tvAddressCity.setText(address.getCity());
             tvAddressStreet.setText(address.getStreet());
-            mainLayout.setBackgroundResource(selectedItemPosition == position ? R.color.red:R.color.mauve);
-            mainLayout.setOnClickListener(v -> {
-                selectedItemPosition = position;
-                notifyDataSetChanged(); // Notify the adapter that the data set changed
-                saveSelectedAddressToPreferences(address.getName(), address.getPhone_number(), address.getCity(), address.getStreet());
-                Intent intent = new Intent(context, OrderActivity.class);
-                ((Activity) context).setResult(Activity.RESULT_OK, intent);
-                ((Activity) context).finish();
-            });
-
 
 
             tvEdit.setOnClickListener(v->{
@@ -131,14 +119,5 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     public interface Callback{
         void editAddress(Address address);
         void deleteAddress(Address address);
-    }
-    private void saveSelectedAddressToPreferences(String name, String phone, String city, String street) {
-        SharedPreferences preferences = context.getSharedPreferences("SelectedAddress", MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("selectedAddressName", name);
-        editor.putString("selectedAddressPhone", phone);
-        editor.putString("selectedAddressCity", city);
-        editor.putString("selectedAddressStreet", street);
-        editor.apply();
     }
 }

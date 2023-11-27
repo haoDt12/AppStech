@@ -43,7 +43,7 @@ public class NotificationsFragment extends Fragment {
     private List<Notification> notificationList = new ArrayList<>();
 
     private FragmentNotificationsBinding binding;
-    PreferenceManager preferenceManager;
+    private PreferenceManager preferenceManager;
     private ApiService apiService;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,7 +53,6 @@ public class NotificationsFragment extends Fragment {
         View root = binding.getRoot();
         binding.rcvNotification.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 //        customAppbar();
-        //fillRecycleView();
         preferenceManager = new PreferenceManager(getActivity());
         apiService = RetrofitConnection.getApiService();
         GetNotification();

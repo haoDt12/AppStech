@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.datn.shopsale.Interface.ApiService;
+import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.DetailProductActivity;
 import com.datn.shopsale.models.Address;
@@ -21,19 +22,25 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.utils.PreferenceManager;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddAddressActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int REQUEST_ADD_ADDRESS = 1;
+    private static final int REQUEST_CODE_CITY = 123;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private ImageButton imgBack;
     private EditText edName, edPhoneNumber, edCity, edStreet;
     private Button btnSave;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    private  Address address = new Address();
+    private boolean isCurrentLocationSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +61,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
 
         imgBack.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        edCity.setOnClickListener(this);
 
     }
 
@@ -65,24 +73,23 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
             if (validate()) {
                 addAddress();
             }
-
+        }else if(view.getId() == R.id.ed_city){
+            startActivityForResult(new Intent(this, CityActivity.class), REQUEST_CODE_CITY);
         }
     }
 
     private void addAddress() {
         String token = preferenceManager.getString("token");
         String idUser = preferenceManager.getString("userId");
-        Address address = new Address();
+
         String name = edName.getText().toString().trim();
         String phone = edPhoneNumber.getText().toString().trim();
-        String city = edCity.getText().toString().trim();
         String street = edStreet.getText().toString().trim();
 
 
         address.setUserId(idUser);
         address.setPhone_number(phone);
         address.setName(name);
-        address.setCity(city);
         address.setStreet(street);
 
         try {
@@ -128,4 +135,36 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
             return true;
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_CITY && resultCode == Activity.RESULT_OK) {
+            // Nhận dữ liệu từ CityActivity
+            isCurrentLocationSelected = data.getBooleanExtra("isCurrentLocationSelected", false);
+
+            if (isCurrentLocationSelected) {
+                // Nếu đã chọn vị trí hiện tại
+                String currentLocation = data.getStringExtra("currentLocation");
+                edCity.setText(currentLocation);
+                Log.d("TAG", "onActivityResult1: "+currentLocation);
+                address.setCity(currentLocation);
+                // Thực hiện các xử lý khác cho vị trí hiện tại nếu cần
+            } else {
+                // Nếu chọn vị trí từ danh sách
+                String selectedCity = data.getStringExtra("selectedCity");
+                String selectedDistrict = data.getStringExtra("selectedDistrict");
+                String selectedWard = data.getStringExtra("selectedWard");
+
+                // Hiển thị dữ liệu trong EditText
+                if (selectedCity != null && selectedDistrict != null && selectedWard != null) {
+                    String addressText = selectedCity + ", " + selectedDistrict + ", " + selectedWard;
+                    edCity.setText(addressText);
+                    Log.d("TAG", "onActivityResult2: "+addressText);
+                    address.setCity(addressText);
+                }
+            }
+        }
+    }
+
 }
