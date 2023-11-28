@@ -10,7 +10,7 @@ public class CurrencyUtils {
             DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
             formatSymbols.setGroupingSeparator('.');
             DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
-            return decimalFormat.format(number);
+            return decimalFormat.format(number)+" VND";
         } catch (NumberFormatException e) {
             e.printStackTrace();
             return amount; // Trả về nguyên giá trị nếu có lỗi

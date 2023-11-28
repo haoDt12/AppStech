@@ -16,8 +16,8 @@ import android.widget.Toast;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ListOrderAdapter;
+import com.datn.shopsale.databinding.FragmentCancelOrderBinding;
 import com.datn.shopsale.databinding.FragmentPayCompleteBinding;
-import com.datn.shopsale.databinding.FragmentWaitConfirmBinding;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -30,17 +30,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PayCompleteFragment extends Fragment {
+public class CancelOrderFragment extends Fragment {
     private ListOrderAdapter adapter;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
-    private FragmentPayCompleteBinding binding;
-    public PayCompleteFragment() {
+    private FragmentCancelOrderBinding binding;
+    public CancelOrderFragment() {
         // Required empty public constructor
     }
-
-    public static PayCompleteFragment newInstance() {
-        PayCompleteFragment fragment = new PayCompleteFragment();
+    public static CancelOrderFragment newInstance() {
+        CancelOrderFragment fragment = new CancelOrderFragment();
         return fragment;
     }
 
@@ -52,7 +51,8 @@ public class PayCompleteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentPayCompleteBinding.inflate(inflater, container, false);
+        // Inflate the layout for this fragment
+        binding = FragmentCancelOrderBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         return root;
     }
@@ -62,10 +62,9 @@ public class PayCompleteFragment extends Fragment {
         preferenceManager = new PreferenceManager(getActivity());
         apiService = RetrofitConnection.getApiService();
         LoadingDialog.showProgressDialog(getActivity(),"Loading...");
-        getListOrdePayComplete();
+        getListOrdeCancel();
     }
-
-    private void getListOrdePayComplete() {
+    private void getListOrdeCancel() {
         String token = preferenceManager.getString("token");
         String userId = preferenceManager.getString("userId");
         ArrayList<Orders> dataOrder = new ArrayList<>();
@@ -81,7 +80,7 @@ public class PayCompleteFragment extends Fragment {
                         dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
                     }
                     for (Orders item: dataOrder) {
-                        if (item.getStatus().equals("PayComplete")){
+                        if (item.getStatus().equals("Cancel")){
                             dataOrderInTransit.add(item);
                         }
                     }
@@ -89,9 +88,9 @@ public class PayCompleteFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                binding.rcvPayComplete.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                binding.rcvCancel.setLayoutManager(new LinearLayoutManager(getActivity()));
                                 adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
-                                binding.rcvPayComplete.setAdapter(adapter);
+                                binding.rcvCancel.setAdapter(adapter);
                                 LoadingDialog.dismissProgressDialog();
                             }
                         });

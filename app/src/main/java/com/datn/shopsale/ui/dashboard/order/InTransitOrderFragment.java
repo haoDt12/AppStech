@@ -2,6 +2,8 @@ package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -22,6 +24,7 @@ import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
@@ -57,11 +60,15 @@ public class InTransitOrderFragment extends Fragment {
         binding = FragmentInTransitOrderBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         // Inflate the layout for this fragment
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         preferenceManager = new PreferenceManager(getActivity());
         apiService = RetrofitConnection.getApiService();
-
+        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
         getListOrderInTransit();
-        return root;
     }
 
     private void getListOrderInTransit() {
@@ -84,15 +91,17 @@ public class InTransitOrderFragment extends Fragment {
                             dataOrderInTransit.add(item);
                         }
                     }
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            binding.rcvInTransit.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
-                            binding.rcvInTransit.setAdapter(adapter);
-                        }
-                    });
+                    if (getActivity() != null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                binding.rcvInTransit.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
+                                binding.rcvInTransit.setAdapter(adapter);
+                                LoadingDialog.dismissProgressDialog();
+                            }
+                        });
+                    }
                 } else {
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                 }

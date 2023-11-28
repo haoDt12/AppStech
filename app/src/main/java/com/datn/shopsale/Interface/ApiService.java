@@ -129,6 +129,14 @@ public interface ApiService {
                                                   @Field("orderId") String orderId);
 
     @FormUrlEncoded
+    @POST("/api/editOrder")
+    Call<GetOrderResponse.Root> editOrderStatus(@Header("Authorization") String token,
+                                                @Field("orderId") String orderId,
+                                                @Field("userId") String userId,
+                                                @Field("addressId") String addressId,
+                                                @Field("status") String status);
+
+    @FormUrlEncoded
     @POST("/api/getProductById")
     Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
                                                  @Field("productId") String productId);

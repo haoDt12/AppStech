@@ -110,16 +110,38 @@
                 />
 
         <Button
-            android:id="@+id/btn_addToCart"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Thêm vào giỏ hàng"
+            android:id="@+id/btn_buy_now"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
             android:layout_below="@+id/recy_dungLuong"
-            android:layout_marginTop="30dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="7dp"
             android:layout_marginRight="20dp"
-            android:padding="15dp"
-            app:cornerRadius="30dp"
-            />
+            android:text="Mua ngay"
+            android:textSize="12sp"
+            android:backgroundTint="#FF9800"
+            android:textColor="@color/mauve"
+            android:textAllCaps="false"
+            app:cornerRadius="30dp" />
+
+        <Button
+            android:id="@+id/btn_add_to_cart"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_below="@+id/recy_dungLuong"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="95dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="20dp"
+            android:text="Thêm vào
+             giỏ hàng"
+            android:backgroundTint="#EC6940"
+            android:textAllCaps="false"
+            android:textSize="12sp"
+            android:textColor="@color/mauve"
+            app:cornerRadius="30dp" />
     </RelativeLayout>
 </ScrollView>

@@ -1,8 +1,5 @@
 package com.datn.shopsale.ui.dashboard.chat;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +11,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.datn.shopsale.R;
-import com.datn.shopsale.activities.GalleryBottomSheetFragment;
 import com.datn.shopsale.adapter.MessageAdapter;
 import com.datn.shopsale.models.ChatRoomModal;
 import com.datn.shopsale.models.MessageModel;
@@ -45,7 +39,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -85,7 +78,7 @@ public class ChatActivity extends AppCompatActivity {
         rcvChat = (RecyclerView) findViewById(R.id.rcv_chat);
         btnOption = (ImageButton) findViewById(R.id.btn_option);
         edChat = (EditText) findViewById(R.id.ed_chat);
-        imgbtnSend = (ImageButton) findViewById(R.id.imgbtn_send);
+        imgbtnSend = (ImageButton) findViewById(R.id.img_btn_send);
         toolbar = findViewById(R.id.toolbar_chat);
         preferenceManager = new PreferenceManager(this);
         list = new ArrayList<>();
