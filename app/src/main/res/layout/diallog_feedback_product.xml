@@ -5,35 +5,46 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ImageView
-        android:id="@+id/img_back"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/lnl_tool_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="20dp"
-        android:src="@drawable/angle_left"
-        tools:ignore="ContentDescription" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_toEndOf="@+id/img_back"
-        android:text="@string/comment"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="@color/white"
+            android:src="@drawable/angle_left" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/comment"
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="200dp"
+            android:text="@string/submit"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/layout_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/img_back"
+        android:layout_below="@+id/lnl_tool_bar"
         android:layout_margin="10dp">
 
         <ImageView
@@ -260,18 +271,4 @@
         android:textColor="@color/black"
         android:textColorHint="#BBAEAE"
         tools:ignore="Autofill" />
-
-    <Button
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ed_comment"
-        android:layout_margin="20dp"
-        android:background="@drawable/bg_btn_signup"
-        android:text="@string/submit"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
-
-
 </RelativeLayout>

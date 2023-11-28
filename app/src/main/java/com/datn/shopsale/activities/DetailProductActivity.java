@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageButton imgBack;
-    private Button btnDanhgia;
+    private LinearLayout lnlAllFeedBack;
     private Button btnAddToCart;
     private ImageView imgProduct;
     private TextView tvNameProduct;
@@ -73,7 +74,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
         imgBack = (ImageButton) findViewById(R.id.img_back);
-        btnDanhgia = (Button) findViewById(R.id.btn_danhgia);
+        lnlAllFeedBack = (LinearLayout) findViewById(R.id.lnl_all_feed_back);
         btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
         recyColorsProduct = findViewById(R.id.recy_colorsProduct);
         recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
@@ -141,7 +142,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         recyDungLuong.setAdapter(adapter1);
 
         imgBack.setOnClickListener(this);
-        btnDanhgia.setOnClickListener(this);
+        lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
     }
 
@@ -149,7 +150,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         if (view.getId() == R.id.img_back) {
             super.onBackPressed();
-        } else if (view.getId() == R.id.btn_danhgia) {
+        } else if (view.getId() == R.id.lnl_all_feed_back) {
             startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
         } else if (view.getId() == R.id.btn_add_to_cart) {
                 if (validate()) {
