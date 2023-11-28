@@ -5,13 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.OrderActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,6 +68,7 @@
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
             <Button
+                android:id="@+id/btn_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="8sp"
@@ -77,6 +76,7 @@
                 app:cornerRadius="10dp"
                 android:text="@string/cod"/>
             <Button
+                android:id="@+id/btn_e_banking"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="8sp"
@@ -85,8 +85,9 @@
                 app:strokeWidth="1dp"
                 app:cornerRadius="10dp"
                 android:textColor="@color/black"
-                android:text="Momo"/>
+                android:text="@string/e_banking"/>
             <Button
+                android:id="@+id/btn_zalo_pay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="8sp"
@@ -220,6 +221,5 @@
                     android:text="@string/abate"/>
             </LinearLayout>
         </RelativeLayout>
-
     </LinearLayout>
 </ScrollView>

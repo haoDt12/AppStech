@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class OrderActivity extends AppCompatActivity {
+    private final int MONEY = 0;
+    private final int E_BANKING = 1;
+    private final int ZALO_PAY = 2;
+    private int actionPAY;
     private ListOder listOder;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
@@ -48,13 +53,15 @@ public class OrderActivity extends AppCompatActivity {
     private ArrayList<Address> dataList = new ArrayList<>();
     private int sumMoney = 0;
     private String address;
+    private Button btnMoney;
+    private Button btnEBanking;
+    private Button btnZaloPay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
         initView();
         getDataAddress();
-        onClickOder();
     }
     private void initView(){
         spinnerAddress = (Spinner) findViewById(R.id.spinner_address);
@@ -63,6 +70,12 @@ public class OrderActivity extends AppCompatActivity {
         tvShipPrice = (TextView) findViewById(R.id.tv_ship_price);
         tvSumMoney = (TextView) findViewById(R.id.tv_sum_money);
         btnOder = (Button) findViewById(R.id.btn_oder);
+        btnMoney = (Button) findViewById(R.id.btn_money);
+        btnEBanking = (Button) findViewById(R.id.btn_e_banking);
+        btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
+        onMoney();
+        onEBanking();
+        onZaloPay();
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -81,46 +94,6 @@ public class OrderActivity extends AppCompatActivity {
         tvTotal.setText(String.valueOf(sumMoney));
         OrderAdapter adapter = new OrderAdapter(listOder);
         recyclerView.setAdapter(adapter);
-    }
-    private void onClickOder(){
-        btnOder.setOnClickListener(v -> {
-            List<OderRequest.Product> listProduct = new ArrayList<>();
-            for (Cart item: listOder.getList()) {
-                listProduct.add(new OderRequest.Product(item.getProductId(),item.getColor(),item.getRam_rom(),item.getQuantity()));
-            }
-            OderRequest.Root request = new OderRequest.Root();
-            request.setProduct(listProduct);
-            request.setUserId(preferenceManager.getString("userId"));
-            request.setAddress(address);
-            LoadingDialog.showProgressDialog(this, "Đang Tải");
-            Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"),request);
-            call.enqueue(new Callback<ResApi>() {
-                @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if(response.body().code == 1){
-                        runOnUiThread(() -> {
-                            Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                            LoadingDialog.dismissProgressDialog();
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        });
-                    }else {
-                        runOnUiThread(() -> {
-                            Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                            LoadingDialog.dismissProgressDialog();
-                        });
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
-                    });
-                }
-            });
-        });
     }
     private void getDataAddress() {
         String idUser = preferenceManager.getString("userId");
@@ -163,5 +136,66 @@ public class OrderActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+    private void onMoney(){
+        btnMoney.setOnClickListener(v -> {
+            oderMoney();
+        });
+    }
+    private void onEBanking(){
+        btnMoney.setOnClickListener(v -> {
+            orderEBanking();
+        });
+    }
+    private void onZaloPay(){
+        btnMoney.setOnClickListener(v -> {
+            orderZaloPay();
+        });
+    }
+    private void oderMoney(){
+        List<OderRequest.Product> listProduct = new ArrayList<>();
+        for (Cart item: listOder.getList()) {
+            listProduct.add(new OderRequest.Product(item.getProductId(),item.getColor(),item.getRam_rom(),item.getQuantity()));
+        }
+        OderRequest.Root request = new OderRequest.Root();
+        request.setProduct(listProduct);
+        request.setUserId(preferenceManager.getString("userId"));
+        request.setAddress(address);
+        LoadingDialog.showProgressDialog(this, "Đang Tải");
+        Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"),request);
+        call.enqueue(new Callback<ResApi>() {
+            @Override
+            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                assert response.body() != null;
+                if(response.body().code == 1){
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    });
+                }else {
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        LoadingDialog.dismissProgressDialog();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    LoadingDialog.dismissProgressDialog();
+                });
+            }
+        });
+    }
+    private void orderEBanking(){
+        Intent intent = new Intent(this, EBankingPayActivity.class);
+        startActivity(intent);
+    }
+    private void orderZaloPay(){
+
     }
 }
