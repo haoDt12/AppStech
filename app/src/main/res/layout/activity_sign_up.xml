@@ -67,6 +67,7 @@
             android:textColorHint="@color/colorNormal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:errorEnabled="true"
             app:layout_constraintTop_toBottomOf="@+id/icon_app">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -96,6 +97,7 @@
             android:textColorHint="@color/colorNormal"
             app:counterTextColor="@color/black"
             app:endIconTint="@color/black"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/icon_app">
@@ -123,6 +125,7 @@
             app:boxCornerRadiusBottomStart="30dp"
             app:boxCornerRadiusTopEnd="30dp"
             app:boxBackgroundMode="outline"
+            app:errorEnabled="true"
             app:startIconDrawable="@drawable/phone_24"
             app:startIconTint="@color/blur_gray"
             android:textColorHint="@color/colorNormal"
@@ -155,6 +158,7 @@
             app:boxCornerRadiusBottomStart="30dp"
             app:boxCornerRadiusTopEnd="30dp"
             app:boxBackgroundMode="outline"
+            app:errorEnabled="true"
             app:startIconDrawable="@drawable/pass"
             app:startIconTint="@color/blur_gray"
             android:textColorHint="@color/colorNormal"
@@ -191,6 +195,7 @@
             app:boxCornerRadiusBottomStart="30dp"
             app:boxCornerRadiusTopEnd="30dp"
             app:boxBackgroundMode="outline"
+            app:errorEnabled="true"
             app:startIconDrawable="@drawable/pass"
             app:startIconTint="@color/blur_gray"
             android:textColorHint="@color/colorNormal"

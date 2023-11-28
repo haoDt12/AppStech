@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/angle_left"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/bg_circle" />
+            android:background="@color/white" />
         <TextView
             android:layout_gravity="center_vertical"
             android:layout_marginStart="30dp"
@@ -126,6 +126,74 @@
                 android:inputType="textPassword"
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/check_mark"/>
+            <TextView
+                android:layout_marginHorizontal="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Từ 8 ký tự trở lên"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/check_mark"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="Sử dụng cả chữ in hoa và chữ thường"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/check_mark"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="Cần tối thiểu 1 chữ số"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginVertical="5dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/check_mark"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="Cần tối thiểu 1 kí tự đặc biệt"/>
+        </LinearLayout>
     </LinearLayout>
     <Button
         android:id="@+id/btn_send"

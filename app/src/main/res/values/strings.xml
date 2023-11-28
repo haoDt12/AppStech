@@ -71,7 +71,7 @@
     <!--    <string name="place_order">Đặt hàng</string>-->
 
 
-    <string name="delivery_address">Địa chỉ giao hàng</string>
+    <string name="delivery_address">Địa chỉ đã lưu</string>
     <string name="shop">Cửa hàng</string>
     <string name="setting">Cài đặt</string>
     <string name="my_order">Đơn hàng của tôi</string>
