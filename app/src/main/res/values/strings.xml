@@ -143,4 +143,7 @@
     <string name="city">City</string>
     <string name="have_account">Đã có tài khoàn ?</string>
     <string name="e_banking">E-Banking</string>
+    <string name="help">Trung tâm hỗ trợ</string>
+    <string name="clause">Điều khoản và Chính sách</string>
+    <string name="voucher">Mã giảm giá</string>
 </resources>

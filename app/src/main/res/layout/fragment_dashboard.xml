@@ -199,13 +199,15 @@
                             android:layout_height="16dp"
                             android:src="@drawable/angle_right"/>
                 </FrameLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="20dp"
                     android:layout_height="1dp"
                     android:background="@color/color_app" />
+
                 <FrameLayout
-                    android:id="@+id/ln_setting"
+                    android:id="@+id/ln_voucher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -221,7 +223,7 @@
                             android:layout_margin="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/settings"
+                            android:src="@drawable/ticket_24"
                             android:layout_gravity="center"/>
 
                         <TextView
@@ -229,7 +231,7 @@
                             android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/setting"
+                            android:text="@string/voucher"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
                     </LinearLayout>
@@ -240,7 +242,9 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/angle_right"/>
+
                 </FrameLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="20dp"
@@ -277,17 +281,150 @@
                             android:textColor="@color/black"/>
                     </LinearLayout>
 
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center|end"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/angle_right"/>
+
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginVertical="10dp"
+                android:layout_marginHorizontal="15dp"
+                android:background="@drawable/bg_coneradios"
+                android:backgroundTint="@color/mauve">
+
+                <FrameLayout
+                    android:id="@+id/ln_help"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="15dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
                         <ImageView
                             android:layout_margin="5dp"
-                            android:layout_gravity="center|end"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@drawable/angle_right"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/life_ring_24"
+                            android:layout_gravity="center"/>
 
+                        <TextView
+                            android:layout_margin="5dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/help"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center|end"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/angle_right"/>
+                </FrameLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_height="1dp"
+                    android:background="@color/color_app" />
+
+                <FrameLayout
+                    android:id="@+id/ln_clause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="15dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_margin="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ballot_24"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:layout_margin="5dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/clause"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center|end"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/angle_right"/>
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_height="1dp"
+                    android:background="@color/color_app" />
+                <FrameLayout
+                    android:id="@+id/ln_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginVertical="15dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_margin="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/settings"
+                            android:layout_gravity="center"/>
+
+                        <TextView
+                            android:layout_margin="5dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center|end"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/angle_right"/>
                 </FrameLayout>
 
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
