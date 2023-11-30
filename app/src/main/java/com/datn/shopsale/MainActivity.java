@@ -5,13 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.ui.cart.CartPresenter;
-import com.datn.shopsale.ui.cart.ICartView;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,6 +12,12 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.datn.shopsale.databinding.ActivityMainBinding;
+import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.ui.cart.CartPresenter;
+import com.datn.shopsale.ui.cart.ICartView;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 

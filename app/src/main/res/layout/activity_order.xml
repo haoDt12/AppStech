@@ -67,14 +67,19 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/btn_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="8sp"
                 android:layout_marginRight="10dp"
-                app:cornerRadius="10dp"
-                android:text="@string/cod"/>
+                android:text="@string/cod"
+                app:strokeWidth="1dp"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:textSize="8sp"
+                app:cornerRadius="10dp" />
+
             <Button
                 android:id="@+id/btn_e_banking"
                 android:layout_width="wrap_content"
@@ -211,14 +216,17 @@
                     android:textColor="#F10707"
                     android:textSize="15dp"
                     android:textStyle="bold" />
+
                 <Button
                     android:id="@+id/btn_oder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="8sp"
                     android:layout_marginLeft="20dp"
-                    app:cornerRadius="10dp"
-                    android:text="@string/abate"/>
+                    android:text="@string/abate"
+                    android:backgroundTint="@color/black"
+                    android:textColor="@color/white"
+                    android:textSize="8sp"
+                    app:cornerRadius="10dp" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
