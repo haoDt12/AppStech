@@ -2,12 +2,9 @@ package com.datn.shopsale.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,16 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.DetailProductActivity;
 import com.datn.shopsale.models.Product;
-import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.utils.CurrencyUtils;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +44,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             return;
         }
 //        Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
-        Picasso.get().load(product.getImg_cover()).into(holder.imgProduct);
+        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(product.getImg_cover())).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         String price = product.getPrice();
         String formattedAmount = CurrencyUtils.formatCurrency(price);

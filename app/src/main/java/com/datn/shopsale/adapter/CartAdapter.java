@@ -1,24 +1,17 @@
 package com.datn.shopsale.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -27,10 +20,9 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.ui.cart.CartFragment;
 import com.datn.shopsale.ui.cart.IChangeQuantity;
 import com.datn.shopsale.utils.Animation;
+import com.datn.shopsale.utils.GetImgIPAddress;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @SuppressLint("StaticFieldLeak")
@@ -82,7 +74,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         holder.tvPrice.setText(item.getQuantity()* item.getPrice() + " đ");
         holder.tvQuantity.setText(item.getQuantity() + "");
-        Glide.with(mContext).load(item.getImgCover()).into(holder.img_product);
+        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(item.getImgCover())).into(holder.img_product);
         holder.cbCheck.setOnClickListener(v -> {
             boolean isSelected = holder.cbCheck.isChecked();
             if (isSelected) {

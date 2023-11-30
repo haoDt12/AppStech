@@ -2,7 +2,6 @@ package com.datn.shopsale.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ChatRoomModal;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -35,7 +35,7 @@ public class ConversationAdapter extends FirestoreRecyclerAdapter<ChatRoomModal,
     @Override
     protected void onBindViewHolder(@NonNull ConversationViewHolder holder, int position, @NonNull ChatRoomModal model) {
         preferenceManager = new PreferenceManager(mContext);
-        Glide.with(mContext).load(model.getAvatarUser()).into(holder.imgAvt);
+        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(model.getAvatarUser())).into(holder.imgAvt);
         holder.tvNameUser.setText(model.getNameUser());
         if (preferenceManager.getString("userId").equals(model.getIdUserOfLastMessage())) {
             if(model.getLastImage().equals("")){

@@ -11,11 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ListOder;
-import com.datn.shopsale.models.Product;
-import com.datn.shopsale.request.GetProductByIdResponse;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
     private ListOder mList;
@@ -35,7 +32,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder holder, int position) {
         holder.tvName.setText(mList.getList().get(position).getTitle());
         holder.tvPrice.setText(String.valueOf(mList.getList().get(position).getPrice()));
-        Picasso.get().load(mList.getList().get(position).getImgCover()).into(holder.imgProduct);
+        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
         holder.tvColor.setText(mList.getList().get(position).getColor());
         holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }
