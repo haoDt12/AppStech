@@ -1,8 +1,5 @@
 package com.datn.shopsale.ui.dashboard.address;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,19 +10,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.MainActivity;
-import com.datn.shopsale.R;
-import com.datn.shopsale.activities.DetailProductActivity;
-import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.response.ResponseAddress;
-import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
-import com.datn.shopsale.utils.PreferenceManager;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import com.datn.shopsale.Interface.ApiService;
+import com.datn.shopsale.R;
+import com.datn.shopsale.models.Address;
+import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
