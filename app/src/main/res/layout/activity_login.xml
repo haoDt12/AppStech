@@ -37,7 +37,7 @@
             app:boxBackgroundMode="outline"
             app:errorEnabled="true"
             app:startIconTint="@color/blur_gray"
-            app:startIconDrawable="@drawable/email"
+            app:startIconDrawable="@drawable/user"
             android:hint="@string/email_or_phone_number"
             android:textColorHint="@color/gray"
             app:counterTextColor="@color/black"

@@ -8,10 +8,10 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_color"
         android:layout_width="45dp"
-        android:layout_height="52dp"
+        android:layout_height="55dp"
         android:layout_margin="5dp"
-        android:backgroundTint="#5C3C0B"
+        android:backgroundTint="#F4CA89"
         app:cornerRadius="100dp"
         app:strokeColor="@color/colorNormal"
-        app:strokeWidth="3dp" />
+        app:strokeWidth="2dp" />
 </LinearLayout>
