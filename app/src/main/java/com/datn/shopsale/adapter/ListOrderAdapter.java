@@ -23,11 +23,9 @@ import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.CurrencyUtils;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
-
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 import retrofit2.Call;
@@ -79,7 +77,7 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
                     holder.tvName.setText(response.body().getProduct().getTitle());
 
                     holder.tvPrice.setText(CurrencyUtils.formatCurrency(response.body().getProduct().getPrice()));
-                    Glide.with(context).load(response.body().getProduct().getImg_cover()).into(holder.imgProduct);
+                    Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
                 } else {
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();

@@ -15,12 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Product;
-import com.datn.shopsale.response.GetListOrderResponse;
-import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.text.DecimalFormat;
@@ -74,7 +72,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
                     holder.tvTitleProductOfOrder.setText(response.body().getProduct().getTitle());
 
                     holder.tvPriceProductOfOrder.setText(formatCurrency(response.body().getProduct().getPrice()));
-                    Glide.with(context).load(response.body().getProduct().getImg_cover()).into(holder.imgProduct);
+                    Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
                 } else {
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.VideoDetailActivity;
 import com.datn.shopsale.models.Product;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -99,7 +100,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
             holder.playerView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
 
-            Picasso.get().load(contentItem.getList_img().get(0)) // Hiển thị hình ảnh đầu tiên
+            Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(contentItem.getList_img().get(0))) // Hiển thị hình ảnh đầu tiên
                     .into(holder.imageView);
         }
         holder.imgFull.setOnClickListener(new View.OnClickListener() {

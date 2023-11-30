@@ -23,6 +23,7 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -111,7 +112,7 @@ public class InformationUserActivity extends AppCompatActivity {
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
                         ResponseAddress.User user = response.body().getUser();
-                        Glide.with(getApplicationContext()).load(user.getAvatar()).into(imgUser);
+                        Glide.with(getApplicationContext()).load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgUser);
                         tvEmail.setText(user.getEmail());
                         tvName.setText(user.getFull_name());
                         tvPhone.setText(user.getPhone_number());
@@ -253,7 +254,7 @@ public class InformationUserActivity extends AppCompatActivity {
             edEmail.setText(mUser.getEmail());
             edName.setText(mUser.getFull_name());
             edPhone.setText(mUser.getPhone_number());
-            Picasso.get().load(mUser.getAvatar()).into(imgUser);
+            Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mUser.getAvatar())).into(imgUser);
         });
     }
     private void onEdit(){
