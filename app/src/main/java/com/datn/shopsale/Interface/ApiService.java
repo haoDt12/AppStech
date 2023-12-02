@@ -173,6 +173,11 @@ public interface ApiService {
     @POST("/api/getPublicNotification")
     Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
     );
+    @FormUrlEncoded
+    @POST("/api/getPrivateNotification")
+    Call<GetNotificationResponse.Root> getNotificationPrivate(@Header("Authorization") String token,
+                                                                     @Field("userId") String id
+    );
 
     @GET("/api/p/")
     Call<List<AddressCDW.City>> getCities();

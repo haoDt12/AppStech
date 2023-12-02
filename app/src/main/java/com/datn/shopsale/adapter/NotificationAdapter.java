@@ -1,6 +1,7 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationAdapterViewHoller>{
    private List<Notification> notificationList;
+
    private Context context;
 
     public NotificationAdapter(List<Notification> notificationList, Context context) {
@@ -39,12 +41,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull NotificationAdapterViewHoller holder, int position) {
         Notification notification = notificationList.get(position);
         if(notification!=null){
-            Picasso.get().load(notification.getImage()).into(holder.imgNotification);
-            holder.tvMessageNotification.setText(notification.getTypeNotification());
-            holder.tvTitleNotification.setText(notification.getTitle());
-            String formattedDate = DateUtils.formatDate(notification.getTime());
-            holder.tvMonthNotification.setText(formattedDate);
-
+            if(notification.getTypePrivatePublic().equals("Public")){
+                holder.tvMessageNotification.setText(notification.getContent());
+                holder.tvTitleNotification.setText(notification.getTitle());
+                String formattedDate = DateUtils.formatDate(notification.getDate());
+                holder.tvMonthNotification.setText(formattedDate);
+            }else{
+                Picasso.get().load(notification.getImg()).into(holder.imgNotification);
+                holder.tvMessageNotification.setText(notification.getContent());
+                holder.tvTitleNotification.setText(notification.getTitle());
+                String formattedDate = DateUtils.formatDate(notification.getDate());
+                holder.tvMonthNotification.setText(formattedDate);
+            }
         }
     }
 
