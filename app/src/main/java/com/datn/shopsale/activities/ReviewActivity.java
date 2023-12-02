@@ -1,6 +1,7 @@
 package com.datn.shopsale.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReviewActivity extends AppCompatActivity {
+    private Toolbar toolbarReview;
     private TextView TBC;
     private RatingBar ratingBar;
     private TextView tvReview;
@@ -160,6 +162,12 @@ public class ReviewActivity extends AppCompatActivity {
         progress1 = (ProgressBar) findViewById(R.id.progress1);
         tv1 = (TextView) findViewById(R.id.tv1);
         recyReview = (RecyclerView) findViewById(R.id.recy_review);
-
+        toolbarReview = (Toolbar) findViewById(R.id.toolbar_review);
+        setSupportActionBar(toolbarReview);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarReview.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 }

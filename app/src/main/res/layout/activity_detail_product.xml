@@ -1,139 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.DetailProductActivity">
 
-    <RelativeLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_detail_pro"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <androidx.appcompat.widget.SearchView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:background="@drawable/bg_search_view"
+            android:iconifiedByDefault="false"
+            android:layout_gravity="center"
+            android:queryBackground="@android:color/transparent"
+            android:queryHint="@string/search" />
+        <ImageView
+            android:id="@+id/img_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_gravity="end"
+            android:src="@drawable/cart"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/lnl_tool_bar"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageButton
-                android:id="@+id/img_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/angle_left"
-                android:background="@color/white"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"/>
-        </LinearLayout>
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_below="@+id/lnl_tool_bar"
-            android:id="@+id/lnl_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/vpg_product"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:src="@drawable/img_iphone"
-                android:layout_margin="10dp"
-                android:layout_centerHorizontal="true" />
-            <TextView
-                android:id="@+id/tv_nameProduct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Iphone 13 Promax"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="20dp" />
-            <TextView
-                android:id="@+id/tv_priceProduct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="11.500.000đ"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="#E10808"
-                android:layout_marginTop="5dp" />
-
-            <TextView
-                android:id="@+id/tv_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Màu"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp" />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recy_colorsProduct"
+            <LinearLayout
+                android:id="@+id/lnl_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal" />
-            <TextView
-                android:id="@+id/tv_dungLuong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Dung lượng"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="5dp" />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recy_dungLuong"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/vpg_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:src="@drawable/img_iphone"
+                    android:layout_margin="10dp"
+                    android:layout_centerHorizontal="true" />
+                <TextView
+                    android:id="@+id/tv_nameProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Iphone 13 Promax"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="20dp" />
+                <TextView
+                    android:id="@+id/tv_priceProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="11.500.000đ"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#E10808"
+                    android:layout_marginTop="5dp" />
+
+                <TextView
+                    android:id="@+id/tv_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Màu"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="5dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recy_colorsProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal" />
+                <TextView
+                    android:id="@+id/tv_dungLuong"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dung lượng"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="5dp" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recy_dungLuong"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_below="@+id/lnl_product"
+                android:id="@+id/lnl_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:weightSum="5"
+                android:padding="10dp"
+                android:gravity="center">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/chat"
+                    android:layout_weight="4"
+                    android:background="@color/mauve"/>
+                <Button
+                    android:id="@+id/btn_buy_now"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:text="Mua ngay"
+                    android:textSize="12sp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="0.5"
+                    android:backgroundTint="#FF9800"
+                    android:textColor="@color/mauve"
+                    android:textAllCaps="false"
+                    app:cornerRadius="30dp" />
 
-        <LinearLayout
-            android:layout_below="@+id/lnl_product"
-            android:id="@+id/lnl_action"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="5"
-            android:padding="10dp"
-            android:gravity="center">
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/chat"
-                android:layout_weight="4"
-                android:background="@color/mauve"/>
-            <Button
-                android:id="@+id/btn_buy_now"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:text="Mua ngay"
-                android:textSize="12sp"
-                android:layout_margin="5dp"
-                android:layout_weight="0.5"
-                android:backgroundTint="#FF9800"
-                android:textColor="@color/mauve"
-                android:textAllCaps="false"
-                app:cornerRadius="30dp" />
-
-            <Button
-                android:id="@+id/btn_add_to_cart"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:backgroundTint="#EC6940"
-                android:text="Thêm vào giỏ hàng"
-                android:textAllCaps="false"
-                android:layout_weight="0.5"
-                android:layout_margin="5dp"
-                android:textColor="@color/mauve"
-                android:textSize="12sp"
-                app:cornerRadius="30dp" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_add_to_cart"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="#EC6940"
+                    android:text="Thêm vào giỏ hàng"
+                    android:textAllCaps="false"
+                    android:layout_weight="0.5"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/mauve"
+                    android:textSize="12sp"
+                    app:cornerRadius="30dp" />
+            </LinearLayout>
 
         <LinearLayout
             android:layout_below="@+id/lnl_action"
@@ -156,7 +168,6 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
                     <TextView
-                        android:id="@+id/tv_TBC"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
@@ -165,49 +176,49 @@
                         android:layout_margin="5dp"
                         android:text="4.5/5" />
 
-                    <TextView
-                        android:id="@+id/tv_review"
-                        android:layout_margin="5dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="100 Review" />
+                        <TextView
+                            android:id="@+id/tv_review"
+                            android:layout_margin="5dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="100 Review" />
 
-                    <RatingBar
-                        android:id="@+id/ratingBar"
+                        <RatingBar
+                            android:id="@+id/ratingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:rating="4.3"
+                            android:layout_margin="5dp"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
+                            android:numStars="5"
+                            android:transformPivotX="0dp"
+                            android:transformPivotY="0dp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/lnl_all_feed_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:rating="4.3"
-                        android:layout_margin="5dp"
-                        style="@style/Widget.AppCompat.RatingBar.Small"
-                        android:numStars="5"
-                        android:transformPivotX="0dp"
-                        android:transformPivotY="0dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/lnl_all_feed_back"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                        android:layout_margin="20dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_margin="2dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Xem tất cả"/>
-                    <ImageButton
-                        android:layout_margin="3dp"
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/angle_right"
-                        android:background="@color/white"/>
+                        <TextView
+                            android:layout_margin="2dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Xem tất cả"/>
+                        <ImageButton
+                            android:layout_margin="3dp"
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/angle_right"
+                            android:background="@color/white"/>
+                    </LinearLayout>
                 </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recy_cmt"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-    </RelativeLayout>
-</ScrollView>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

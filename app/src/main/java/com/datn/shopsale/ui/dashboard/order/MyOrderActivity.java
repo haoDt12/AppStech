@@ -47,13 +47,15 @@ public class MyOrderActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
         tabLayoutMediator.attach();
-        binding.imgBackToDashboard.setOnClickListener(this);
+        setSupportActionBar(binding.toolbarMyOder);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        binding.toolbarMyOder.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.img_backToDashboard){
-            finish();
-        }
     }
 }

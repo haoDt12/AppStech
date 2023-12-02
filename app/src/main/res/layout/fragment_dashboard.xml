@@ -486,16 +486,17 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:maxLines="2"
                 android:ellipsize="end"
+                android:gravity="center"
                 android:scrollHorizontally="true"
                 android:layout_marginHorizontal="5dp"
                 android:text="Stech Company - System 20042 v1.0 - Build:7"
                 android:textColor="@color/colorNormal"
-                android:textSize="10sp"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
             <com.facebook.login.widget.LoginButton
@@ -510,15 +511,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
             <Button
                 android:id="@+id/btn_log_out"
-                android:layout_width="250dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:paddingVertical="10dp"
                 android:text="@string/log_out"
                 android:textAllCaps="false"
                 android:textSize="16dp"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_button"
-                android:backgroundTint="@color/black"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:backgroundTint="@color/mauve"
                 android:layout_marginTop="20dp"
+                app:cornerRadius="15dp"
                 android:layout_gravity="center"/>
         </LinearLayout>
     </FrameLayout>

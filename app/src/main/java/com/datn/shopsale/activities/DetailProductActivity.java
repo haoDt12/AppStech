@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -45,10 +46,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
-    private ImageButton imgBack;
     private LinearLayout lnlAllFeedBack;
     private Button btnAddToCart;
     private ImageView imgProduct;
+    private Toolbar toolbarDetailPro;
     private TextView tvNameProduct;
     private TextView tvPriceProduct;
     private RecyclerView recyColorsProduct, recyDungLuong;
@@ -145,12 +146,19 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
-        imgBack = (ImageButton) findViewById(R.id.img_back);
+        toolbarDetailPro = (Toolbar) findViewById(R.id.toolbar_detail_pro);
         lnlAllFeedBack = (LinearLayout) findViewById(R.id.lnl_all_feed_back);
         btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
         recyColorsProduct = findViewById(R.id.recy_colorsProduct);
         recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
         viewPager2 = findViewById(R.id.vpg_product);
+
+        setSupportActionBar(toolbarDetailPro);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarDetailPro.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
 
 
         title = getIntent().getStringExtra("title");
@@ -220,6 +228,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
+        if (view.getId() == R.id.lnl_all_feed_back) {
+            startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
         if (view.getId() == R.id.img_back) {
             super.onBackPressed();
         } else if (view.getId() == R.id.lnl_all_feed_back) {
@@ -228,9 +238,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         } else if (view.getId() == R.id.btn_add_to_cart) {
-            if (validate()) {
-                AddToCart();
-            }
+                if (validate()) {
+                    AddToCart();
+                }
         }
     }
 

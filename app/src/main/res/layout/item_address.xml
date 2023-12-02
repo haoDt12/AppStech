@@ -4,12 +4,14 @@
     android:id="@+id/layout_swipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="15dp"
+    android:layout_marginHorizontal="15dp"
+    android:layout_marginVertical="10dp"
     app:drag_edge="right">
 
     <LinearLayout
         android:id="@+id/dragLayout"
         android:layout_width="150dp"
+        android:background="@drawable/bg_coneradios"
         android:layout_height="match_parent"
         android:orientation="horizontal">
         <TextView
@@ -46,12 +48,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp">
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/img_location"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerVertical="true"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_location" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

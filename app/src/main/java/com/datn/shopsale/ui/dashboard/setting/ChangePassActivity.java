@@ -2,6 +2,7 @@ package com.datn.shopsale.ui.dashboard.setting;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,8 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class ChangePassActivity extends AppCompatActivity {
     private TextInputEditText edPass,edPassNew,edRepassNew;
     private TextView tvError;
-    private ImageButton imgBack;
-
+    private Toolbar toolbarChangePass;
     private Button btnSend;
 
     @Override
@@ -76,7 +76,7 @@ public class ChangePassActivity extends AppCompatActivity {
         }
     }
     private void init(){
-        imgBack = (ImageButton) findViewById(R.id.img_back);
+        toolbarChangePass = (Toolbar) findViewById(R.id.toolbar_change_pass);
         edPass = (TextInputEditText) findViewById(R.id.ed_pass);
         edPassNew = (TextInputEditText) findViewById(R.id.ed_passNew);
         edRepassNew = (TextInputEditText) findViewById(R.id.ed_RepassNew);
@@ -88,8 +88,11 @@ public class ChangePassActivity extends AppCompatActivity {
                 changePassword();
             }
         });
-        imgBack.setOnClickListener(view -> {
-            super.onBackPressed();
+        setSupportActionBar(toolbarChangePass);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarChangePass.setNavigationOnClickListener(v -> {
+            onBackPressed();
         });
     }
     // check rỗng
