@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +35,7 @@ import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
@@ -56,11 +57,11 @@ public class DashboardFragment extends Fragment {
     private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
     private Button btnLogOut;
-    private LinearLayout lnChat;
-    private LinearLayout lnLocation;
-    private LinearLayout lnSetting;
-    private LinearLayout lnOrder;
-    private LinearLayout lnStore;
+    private FrameLayout lnChat;
+    private FrameLayout lnLocation;
+    private FrameLayout lnSetting;
+    private FrameLayout lnOrder;
+    private FrameLayout lnStore;
     private LinearLayout lnlProfile;
     private TextView tvName;
     private TextView tvEmail;
@@ -221,7 +222,7 @@ public class DashboardFragment extends Fragment {
                 if(response.body().getCode() == 1){
                     getActivity().runOnUiThread(() -> {
                         user = response.body().getUser();
-                        Picasso.get().load(user.getAvatar()).into(imgAvatarUsers);
+                        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgAvatarUsers);
                         tvName.setText(user.getFull_name());
                         tvEmail.setText(user.getEmail());
                         LoadingDialog.dismissProgressDialog();

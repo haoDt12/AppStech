@@ -1,26 +1,24 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.MessageModel;
-
 import com.datn.shopsale.utils.Constants;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class MessageAdapter extends FirestoreRecyclerAdapter<MessageModel, MessageAdapter.MessageViewHolder> {
@@ -45,7 +43,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<MessageModel, Messa
                 holder.imgRight.setVisibility(View.GONE);
             }else {
                 holder.rightChatLayout.setBackgroundResource(R.drawable.bg_custom_chat_white);
-                Glide.with(mContext).load(model.getImage()).into(holder.imgRight);
+                Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(model.getImage())).into(holder.imgRight);
             }
             if(model.getMessage().equals("")){
                 holder.rightChat.setVisibility(View.GONE);
@@ -66,7 +64,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<MessageModel, Messa
                 holder.leftChat.setVisibility(View.GONE);
             }
             holder.timeLeft.setText(Constants.timestamptoString(model.getTimestamp()));
-            Glide.with(mContext).load(model.getImage()).into(holder.imgLeft);
+            Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(model.getImage())).into(holder.imgLeft);
         }
     }
 

@@ -94,6 +94,10 @@ public class ChatActivity extends AppCompatActivity {
         }
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+//        toolbar.setNavigationOnClickListener(v -> {
+//            onBackPressed();
+//        });
         // tạo room chat
         getOrCreateChatRoomModel();
         // lấy data chat

@@ -1,10 +1,12 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Product;
-import com.datn.shopsale.response.GetListOrderResponse;
-import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.activities.DetailProductActivity;
+import com.datn.shopsale.activities.add_review_activity;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.text.DecimalFormat;
@@ -37,10 +39,12 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
     private Context context;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    private String status;
 
-    public ListProductOfOrderAdapter(ArrayList<GetOrderResponse.Product> dataProduct, Context context) {
+    public ListProductOfOrderAdapter(ArrayList<GetOrderResponse.Product> dataProduct, Context context,String status) {
         this.dataProduct = dataProduct;
         this.context = context;
+        this.status = status;
         notifyDataSetChanged();
     }
 
@@ -74,7 +78,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
                     holder.tvTitleProductOfOrder.setText(response.body().getProduct().getTitle());
 
                     holder.tvPriceProductOfOrder.setText(formatCurrency(response.body().getProduct().getPrice()));
-                    Glide.with(context).load(response.body().getProduct().getImg_cover()).into(holder.imgProduct);
+                    Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
                 } else {
                     Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -86,10 +90,22 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
                 Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
+        if(status.equals("PayComplete")){
+            holder.btn_danhgia.setVisibility(View.VISIBLE);
+        }
         holder.tvColorProductOfOrder.setText(pro.color);
         holder.tvNumProductOfOrder.setText("Số lượng: "+pro.quantity+"");
         holder.tvRamRomProductOfOrder.setText("Ram-Rom"+pro.ram_rom);
+        holder.btn_danhgia.setOnClickListener(view -> {
+            Intent intent = new Intent(context, add_review_activity.class);
+            intent.putExtra("id",pro.productId);
+            intent.putExtra("image",pro.img_cover);
+            intent.putExtra("name",pro.title);
+            intent.putExtra("color",pro.color);
+            intent.putExtra("ram",""+pro.ram_rom);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -104,6 +120,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         private TextView tvNumProductOfOrder;
         private TextView tvRamRomProductOfOrder;
         private ImageView imgProduct;
+        private Button btn_danhgia;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +130,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             tvColorProductOfOrder = (TextView) itemView.findViewById(R.id.tv_colorProductOfOrder);
             tvNumProductOfOrder = (TextView) itemView.findViewById(R.id.tv_numProductOfOrder);
             tvRamRomProductOfOrder = (TextView) itemView.findViewById(R.id.tv_ramRomProductOfOrder);
+            btn_danhgia = itemView.findViewById(R.id.btn_danhgia);
         }
     }
     public String formatCurrency(String price) {

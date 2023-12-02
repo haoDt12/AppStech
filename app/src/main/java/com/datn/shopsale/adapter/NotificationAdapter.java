@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.utils.DateUtils;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

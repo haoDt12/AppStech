@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
@@ -23,6 +24,7 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -42,7 +44,7 @@ import retrofit2.Response;
 public class InformationUserActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_PICKER = 100;
     private Uri imageUri;
-    private ImageButton imgBack;
+    private Toolbar toolbarInfoUser;
     private ImageView imgCamera;
     private TextView tvName;
     private TextView tvEmail;
@@ -71,10 +73,6 @@ public class InformationUserActivity extends AppCompatActivity {
         apiService = RetrofitConnection.getApiService();
         FindViewById();
         getDataUser();
-        imgBack.setOnClickListener(view -> {
-            setResult(Activity.RESULT_OK);
-            finish();
-        });
         onEdit();
         onCancel();
         openCamera();
@@ -82,7 +80,7 @@ public class InformationUserActivity extends AppCompatActivity {
     }
 
     private void FindViewById() {
-        imgBack = (ImageButton) findViewById(R.id.img_back);
+        toolbarInfoUser = (Toolbar) findViewById(R.id.toolbar_info_user);
         imgCamera = (ImageView) findViewById(R.id.img_camera);
         imgUser = findViewById(R.id.img_user);
         tvName = (TextView) findViewById(R.id.tv_name);
@@ -97,6 +95,12 @@ public class InformationUserActivity extends AppCompatActivity {
         lnlLayoutText = (LinearLayout) findViewById(R.id.lnl_layout_text);
         lnlLayoutEdit = (LinearLayout) findViewById(R.id.lnl_layout_edit);
 
+        setSupportActionBar(toolbarInfoUser);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarInfoUser.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 
     private void getDataUser() {
@@ -111,7 +115,7 @@ public class InformationUserActivity extends AppCompatActivity {
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
                         ResponseAddress.User user = response.body().getUser();
-                        Glide.with(getApplicationContext()).load(user.getAvatar()).into(imgUser);
+                        Glide.with(getApplicationContext()).load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgUser);
                         tvEmail.setText(user.getEmail());
                         tvName.setText(user.getFull_name());
                         tvPhone.setText(user.getPhone_number());
@@ -253,7 +257,7 @@ public class InformationUserActivity extends AppCompatActivity {
             edEmail.setText(mUser.getEmail());
             edName.setText(mUser.getFull_name());
             edPhone.setText(mUser.getPhone_number());
-            Picasso.get().load(mUser.getAvatar()).into(imgUser);
+            Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mUser.getAvatar())).into(imgUser);
         });
     }
     private void onEdit(){

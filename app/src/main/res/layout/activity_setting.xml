@@ -6,27 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.dashboard.setting.SettingActivity"
     android:orientation="vertical">
-    <LinearLayout
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_setting"
+        app:title="@string/setting"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="20dp">
-        <ImageButton
-            android:id="@+id/img_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/angle_left"
-            android:background="@color/white"
-            android:layout_marginTop="10dp"/>
-        <TextView
-            android:layout_marginLeft="30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cài đặt"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"/>
+
     <LinearLayout
         android:id="@+id/id_change_pass"
         android:layout_width="350dp"

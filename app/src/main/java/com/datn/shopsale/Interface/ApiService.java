@@ -2,10 +2,13 @@ package com.datn.shopsale.Interface;
 
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.OderRequest;
+import com.datn.shopsale.request.OrderVnPayRequest;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
@@ -16,6 +19,7 @@ import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
+import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
@@ -191,4 +195,14 @@ public interface ApiService {
     Call<ResApi> addFCM(@Header("Authorization") String token,
                                                @Field("userId") String id,
                                           @Field("fcm") String fcm);
+    @POST("/api/createPaymentUrl")
+    Call<VnPayResponse> createOrderVnPay(@Header("Authorization") String token, @Body OrderVnPayRequest.Root request);
+    @POST("/api/addFeedBack")
+    Call<ResApi> addCmt(@Header("Authorization") String token, @Body FeedBack objFeedBack);
+    @FormUrlEncoded
+    @POST("/api/getFeedBackByProductId")
+    Call<ResponeFeedBack> getFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
+    @FormUrlEncoded
+    @POST("/api/getAllFeedBackByProductId")
+    Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
 }
