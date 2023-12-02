@@ -139,7 +139,6 @@ public class HomeFragment extends Fragment{
         setHasOptionsMenu(true);
         AppCompatActivity activity= (AppCompatActivity) getActivity();
         activity.setSupportActionBar(binding.toolbarHome);
-
         binding.lnlSearch.setOnClickListener(view1 -> {
             startActivity(new Intent(getActivity(), SearchActivity.class));
         });

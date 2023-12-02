@@ -1,7 +1,9 @@
 package com.datn.shopsale.ui.dashboard.address;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddressActivity extends AppCompatActivity implements View.OnClickListener {
-    private ImageView imgBack;
+    private Toolbar toolbarAddress;
     private static final int REQUEST_CODE_EDIT_CITY = 1;
     private LinearLayout lnlAddAddress;
     private RecyclerView rcvAddress;
@@ -65,22 +68,24 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         apiService = RetrofitConnection.getApiService();
         init();
         getDataAddress();
-
     }
 
     private void init() {
-        imgBack = findViewById(R.id.img_back);
+        toolbarAddress = (Toolbar) findViewById(R.id.toolbar_address);
         rcvAddress = (RecyclerView) findViewById(R.id.rcv_address);
         lnlAddAddress = findViewById(R.id.lnl_add_address);
-        imgBack.setOnClickListener(this);
         lnlAddAddress.setOnClickListener(this);
+        setSupportActionBar(toolbarAddress);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarAddress.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.img_back) {
-            super.onBackPressed();
-        } else if (view.getId() == R.id.lnl_add_address) {
+        if (view.getId() == R.id.lnl_add_address) {
             startActivityForResult(new Intent(getApplicationContext(), AddAddressActivity.class), REQUEST_ADD_ADDRESS);
         }
     }
@@ -110,16 +115,17 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
 
                                     final AlertDialog dialog = builder.create();
                                     dialog.show();
-                                    ImageButton imgBack = (ImageButton) dialog.findViewById(R.id.img_back);
-                                    TextView add_adr = dialog.findViewById(R.id.add_adr);
+                                    Toolbar toolbarCreAddress = (Toolbar) dialog.findViewById(R.id.toolbar_cre_address);
                                     EditText edName = (EditText) dialog.findViewById(R.id.ed_name);
                                     EditText edPhoneNumber = (EditText) dialog.findViewById(R.id.ed_phone_number);
                                     edCity = (EditText) dialog.findViewById(R.id.ed_city);
                                     EditText edStreet = (EditText) dialog.findViewById(R.id.ed_street);
                                     Button btnSave = (Button) dialog.findViewById(R.id.btn_save);
-
+                                    setSupportActionBar(toolbarCreAddress);
+                                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                                    getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
                                     btnSave.setText("Sửa");
-                                    add_adr.setText("Sửa địa chỉ");
+                                    toolbarCreAddress.setTitle("Sửa địa chỉ");
                                     edName.setText(address.getName());
                                     edPhoneNumber.setText(address.getPhone_number());
                                     edCity.setText(address.getCity());
@@ -139,7 +145,8 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                                             dialog.dismiss();
                                         }
                                     });
-                                    imgBack.setOnClickListener(v -> {
+
+                                    toolbarCreAddress.setNavigationOnClickListener(v -> {
                                         dialog.dismiss();
                                     });
                                 }
