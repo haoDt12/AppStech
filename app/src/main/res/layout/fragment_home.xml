@@ -72,8 +72,8 @@
                 android:id="@+id/rcv_list_categories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="10dp"
                 android:padding="10dp" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_listitem"
+                android:id="@+id/rcv_list_item_pro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"

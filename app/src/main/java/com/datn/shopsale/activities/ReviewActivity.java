@@ -45,7 +45,6 @@ public class ReviewActivity extends AppCompatActivity {
     private ProgressBar progress1;
     private TextView tv1;
     private RecyclerView recyReview;
-    private ImageView img_back;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
     private List<FeedBack> listFb;
@@ -70,9 +69,6 @@ public class ReviewActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         apiService = RetrofitConnection.getApiService();
         id = getIntent().getStringExtra("id");
-        img_back.setOnClickListener(view -> {
-            finish();
-        });
         getCmt();
     }
 
@@ -146,7 +142,6 @@ public class ReviewActivity extends AppCompatActivity {
     }
 
     private void initUi() {
-        img_back = findViewById(R.id.img_back);
         TBC = (TextView) findViewById(R.id.TBC);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         tvReview = (TextView) findViewById(R.id.tv_review);

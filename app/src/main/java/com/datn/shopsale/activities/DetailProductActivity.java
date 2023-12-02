@@ -136,12 +136,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void init() {
-
-
         tvTBC = (TextView) findViewById(R.id.tv_TBC);
         tvReview = (TextView) findViewById(R.id.tv_review);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-
         recy_cmt = findViewById(R.id.recy_cmt);
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
@@ -221,7 +218,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         RamAdapter adapter1 = new RamAdapter(ramList, ramItemClickListener);
         recyDungLuong.setAdapter(adapter1);
 
-        imgBack.setOnClickListener(this);
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
     }
@@ -230,8 +226,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         if (view.getId() == R.id.lnl_all_feed_back) {
             startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
-        if (view.getId() == R.id.img_back) {
-            super.onBackPressed();
         } else if (view.getId() == R.id.lnl_all_feed_back) {
             Intent i = new Intent(this, ReviewActivity.class);
             i.putExtra("id",id);

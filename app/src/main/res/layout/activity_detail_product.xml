@@ -168,6 +168,7 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
                     <TextView
+                        android:id="@+id/tv_TBC"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
@@ -216,6 +217,7 @@
                     </LinearLayout>
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recy_cmt"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </LinearLayout>

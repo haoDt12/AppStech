@@ -186,8 +186,8 @@ public class HomeFragment extends Fragment{
                         @Override
                         public void run() {
                             productAdapter = new ProductAdapter(dataList,getActivity());
-                            binding.rcvListitem.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                            binding.rcvListitem.setAdapter(productAdapter);
+                            binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                            binding.rcvListItemPro.setAdapter(productAdapter);
                             isLoadProduct = true;
                             if(isLoadCategory){
                                 LoadingDialog.dismissProgressDialog();
@@ -240,10 +240,9 @@ public class HomeFragment extends Fragment{
                         public void run() {
                             if (dataCategory.size() > 12) {
                                 if (!dataCategory.get(11).getTitle().equals("Xem thêm")) {
-                                    String temp1 = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
-                                    String temp2 = "https://cdn-icons-png.flaticon.com/512/5602/5602211.png";
-                                    Category viewMore = new Category("-1", "Xem thêm", temp1, "---");
-                                    Category viewLess = new Category("-1", "Ẩn bớt", temp1, "---");
+                                    String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
+                                    Category viewMore = new Category("-1", "Xem thêm", temp, "---");
+                                    Category viewLess = new Category("-1", "Ẩn bớt", temp, "---");
                                     Log.d("zzzz", "run: " + dataCategory);
                                     if (isDisableItem) {
 //                    setAnimationRecyclerview(R.anim.layout_animation_down_to_up);
