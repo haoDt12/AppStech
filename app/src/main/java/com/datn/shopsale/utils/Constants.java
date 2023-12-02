@@ -24,6 +24,7 @@ public class Constants {
     public static final String btnReduce = "reduce";
     public static final String idUserAdmin = "654b1ca8a39405e39cad703b";
     public static final String btnIncrease = "increase";
+    public static final String URL_DUCTUNG = "http://192.168.0.101:3000";
     public static final String URL_API = "http://192.168.1.9:3000";
     public static final String HEX_CHAR = "0123456789ABCDEF";
     public static final String KEY_PREFERENCE_ACC = "logged_acc";

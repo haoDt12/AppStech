@@ -137,7 +137,7 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             binding.rcvProductOfOrder.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            adapter = new ListProductOfOrderAdapter(dataProduct,getApplicationContext());
+                            adapter = new ListProductOfOrderAdapter(dataProduct,getApplicationContext(),response.body().order.status);
                             binding.rcvProductOfOrder.setAdapter(adapter);
                         }
                     });
