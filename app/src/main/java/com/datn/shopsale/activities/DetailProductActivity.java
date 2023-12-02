@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,17 +22,23 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ColorAdapter;
 import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.RamAdapter;
+import com.datn.shopsale.adapter.ReviewAdapter;
 import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.models.ResponeFeedBack;
+import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.CurrencyUtils;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -47,6 +54,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private RecyclerView recyColorsProduct, recyDungLuong;
     private ContentAdapter contentAdapter;
     private ViewPager2 viewPager2;
+    private ReviewAdapter adapterRV;
 
     private User user = new User();
     private Product product = new Product();
@@ -59,6 +67,13 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     String imgCover;
     String title;
     int price;
+    RecyclerView recy_cmt;
+    List<FeedBack> listFb;
+    private TextView tvTBC;
+    private TextView tvReview;
+    private RatingBar ratingBar;
+    private float TBC;
+    private float rating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +82,66 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         preferenceManager = new PreferenceManager(getApplicationContext());
         apiService = RetrofitConnection.getApiService();
         init();
+        getCmt();
+    }
+
+    private void getCmt() {
+        listFb = new ArrayList<>();
+        Call<ResponeFeedBack> call = apiService.getFeedBackByProductId(preferenceManager.getString("token"), id);
+        call.enqueue(new Callback<ResponeFeedBack>() {
+            @Override
+            public void onResponse(Call<ResponeFeedBack> call, Response<ResponeFeedBack> response) {
+                if (response.body().getCode() == 1) {
+                    for (FeedBack objFeedBack : response.body().getListFeedBack()) {
+                        FeedBack feedBack = new FeedBack(
+                                objFeedBack.getUserId(),
+                                objFeedBack.getProductId(),
+                                objFeedBack.getRating(),
+                                objFeedBack.getComment(),
+                                objFeedBack.getNameUser(),
+                                objFeedBack.getAvtUser(),
+                                objFeedBack.getDate()
+
+                        );
+                        listFb.add(feedBack);
+                    }
+                    runOnUiThread(() -> {
+                        float tong = 0;
+                        for (FeedBack objFeedBack : listFb) {
+                            tong += objFeedBack.getRating();
+                        }
+                        TBC = tong / listFb.size();
+                        rating = tong / listFb.size();
+                        tvTBC.setText(TBC + "/5");
+                        tvReview.setText(listFb.size() + " Review");
+                        ratingBar.setRating(rating);
+                        adapterRV = new ReviewAdapter(listFb, getApplicationContext());
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+                        recy_cmt.setLayoutManager(linearLayoutManager);
+                        recy_cmt.setAdapter(adapterRV);
+
+                    });
+                } else {
+                    Toast.makeText(DetailProductActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponeFeedBack> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void init() {
+
+
+        tvTBC = (TextView) findViewById(R.id.tv_TBC);
+        tvReview = (TextView) findViewById(R.id.tv_review);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+
+        recy_cmt = findViewById(R.id.recy_cmt);
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
@@ -151,11 +223,14 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         if (view.getId() == R.id.img_back) {
             super.onBackPressed();
         } else if (view.getId() == R.id.lnl_all_feed_back) {
-            startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
+            Intent i = new Intent(this, ReviewActivity.class);
+            i.putExtra("id",id);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
         } else if (view.getId() == R.id.btn_add_to_cart) {
-                if (validate()) {
-                    AddToCart();
-                }
+            if (validate()) {
+                AddToCart();
+            }
         }
     }
 
