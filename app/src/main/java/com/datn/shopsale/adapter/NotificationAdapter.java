@@ -1,7 +1,6 @@
 package com.datn.shopsale.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.utils.DateUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 

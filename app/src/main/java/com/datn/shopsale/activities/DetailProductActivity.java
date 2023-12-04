@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -29,15 +28,12 @@ import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
-import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.CurrencyUtils;
-import com.datn.shopsale.utils.LoadingDialog;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,7 +163,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         ramList = getIntent().getStringArrayListExtra("ram_rom");
 
         ArrayList<String> listImg = getIntent().getStringArrayListExtra("list_img");
-        final String video = getIntent().getStringExtra("video");
+        final String video = GetImgIPAddress.convertLocalhostToIpAddress(getIntent().getStringExtra("video"));
 
 
         ArrayList<Product> contentItems = new ArrayList<>();

@@ -1,15 +1,15 @@
 package com.datn.shopsale.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.datn.shopsale.R;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 public class VideoDetailActivity extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class VideoDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
-        String videoUrl = getIntent().getStringExtra("video_url");
+        String videoUrl = GetImgIPAddress.convertLocalhostToIpAddress(getIntent().getStringExtra("video_url"));
 
         playerView = (PlayerView) findViewById(R.id.playerView);
         imgBack = (ImageView) findViewById(R.id.img_back);
