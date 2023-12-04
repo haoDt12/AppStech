@@ -2,7 +2,9 @@ package com.datn.shopsale.Interface;
 
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.OderRequest;
@@ -175,6 +177,11 @@ public interface ApiService {
     @POST("/api/getPublicNotification")
     Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
     );
+    @FormUrlEncoded
+    @POST("/api/getPrivateNotification")
+    Call<GetNotificationResponse.Root> getNotificationPrivate(@Header("Authorization") String token,
+                                                                     @Field("userId") String id
+    );
 
     @GET("/api/p/")
     Call<List<AddressCDW.City>> getCities();
@@ -190,4 +197,12 @@ public interface ApiService {
                                           @Field("fcm") String fcm);
     @POST("/api/createPaymentUrl")
     Call<VnPayResponse> createOrderVnPay(@Header("Authorization") String token, @Body OrderVnPayRequest.Root request);
+    @POST("/api/addFeedBack")
+    Call<ResApi> addCmt(@Header("Authorization") String token, @Body FeedBack objFeedBack);
+    @FormUrlEncoded
+    @POST("/api/getFeedBackByProductId")
+    Call<ResponeFeedBack> getFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
+    @FormUrlEncoded
+    @POST("/api/getAllFeedBackByProductId")
+    Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
 }

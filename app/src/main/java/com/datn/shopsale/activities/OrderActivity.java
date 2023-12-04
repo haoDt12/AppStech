@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -47,6 +48,7 @@ public class OrderActivity extends AppCompatActivity {
     private ListOder listOder;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    private Toolbar toolbarOder;
     private TextView tvQuantity;
     private TextView tvTotal;
     private TextView tvShipPrice;
@@ -68,6 +70,7 @@ public class OrderActivity extends AppCompatActivity {
         getDataAddress();
     }
     private void initView(){
+        toolbarOder = (Toolbar) findViewById(R.id.toolbar_oder);
         spinnerAddress = (Spinner) findViewById(R.id.spinner_address);
         tvQuantity = (TextView) findViewById(R.id.tv_quantity);
         tvTotal = (TextView) findViewById(R.id.tv_total);
@@ -78,6 +81,12 @@ public class OrderActivity extends AppCompatActivity {
         btnEBanking = (Button) findViewById(R.id.btn_e_banking);
         btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
+        setSupportActionBar(toolbarOder);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarOder.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         apiService = RetrofitConnection.getApiService();

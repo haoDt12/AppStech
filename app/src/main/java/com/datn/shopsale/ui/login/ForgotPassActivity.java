@@ -2,6 +2,7 @@ package com.datn.shopsale.ui.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ForgotPassActivity extends AppCompatActivity {
     private TextInputEditText edEmail;
     private Button btnSend;
-    private ImageButton imgBack;
+    private Toolbar toolbarForgotPass;
     private ProgressBar progressBar;
     private static final int PROGRESS_DELAY = 5000; // Thời gian đặt trước 5 giây
     @Override
@@ -62,7 +63,7 @@ public class ForgotPassActivity extends AppCompatActivity {
                 });
     }
     private void init(){
-        imgBack = (ImageButton) findViewById(R.id.img_back);
+        toolbarForgotPass = (Toolbar) findViewById(R.id.toolbar_forgot_pass);
         edEmail = (TextInputEditText) findViewById(R.id.ed_email);
         btnSend = (Button) findViewById(R.id.btn_send);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -75,8 +76,11 @@ public class ForgotPassActivity extends AppCompatActivity {
                 resetUserPassword(email);
             }
         });
-        imgBack.setOnClickListener(view -> {
-            super.onBackPressed();
+        setSupportActionBar(toolbarForgotPass);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarForgotPass.setNavigationOnClickListener(v -> {
+            onBackPressed();
         });
     }
 }

@@ -61,7 +61,10 @@ public class SearchActivity extends AppCompatActivity{
         rcvFoyyou = (RecyclerView) findViewById(R.id.rcv_foyyou);
         idSearch = (SearchView) findViewById(R.id.id_search);
 
-        binding.imgBack.setOnClickListener(view -> {
+        setSupportActionBar(binding.toolbarSearch);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        binding.toolbarSearch.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
         preferenceManager = new PreferenceManager(this);

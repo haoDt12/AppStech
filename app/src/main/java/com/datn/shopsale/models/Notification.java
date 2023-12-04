@@ -1,20 +1,26 @@
 package com.datn.shopsale.models;
 
-public class Notification {
+public  class Notification{
 
     private String _id;
-    private String userId;
     private String title;
-    private String image;
-    private String time;
-    private String typeNotification;
-    public Notification(String _id, String userId, String title,String time, String typeNotification) {
+    private String date;
+    private String content;
+    private String img;
+    private String userId;
+    private String typePrivatePublic;
+
+    public Notification() {
+    }
+
+    public Notification(String _id, String title, String date, String content, String img, String userId, String typePrivatePublic) {
         this._id = _id;
-        this.userId = userId;
         this.title = title;
-        this.image = image;
-        this.time = time;
-        this.typeNotification = typeNotification;
+        this.date = date;
+        this.content = content;
+        this.img = img;
+        this.userId = userId;
+        this.typePrivatePublic = typePrivatePublic;
     }
 
     public String get_id() {
@@ -25,13 +31,6 @@ public class Notification {
         this._id = _id;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getTitle() {
         return title;
@@ -41,27 +40,44 @@ public class Notification {
         this.title = title;
     }
 
-    public String getImage() {
-        return image;
+    public String getDate() {
+        return date;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getTime() {
-        return time;
+    public String getContent() {
+        return content;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getTypeNotification() {
-        return typeNotification;
+    public String getImg() {
+        return img;
     }
 
-    public void setTypeNotification(String typeNotification) {
-        this.typeNotification = typeNotification;
+    public void setImg(String img) {
+        this.img = img;
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getTypePrivatePublic() {
+        return typePrivatePublic;
+    }
+
+    public void setTypePrivatePublic(String typePrivatePublic) {
+        this.typePrivatePublic = typePrivatePublic;
+    }
+
 }

@@ -71,7 +71,7 @@
     <!--    <string name="place_order">Đặt hàng</string>-->
 
 
-    <string name="delivery_address">Địa chỉ giao hàng</string>
+    <string name="delivery_address">Địa chỉ đã lưu</string>
     <string name="shop">Cửa hàng</string>
     <string name="setting">Cài đặt</string>
     <string name="my_order">Đơn hàng của tôi</string>
@@ -143,4 +143,7 @@
     <string name="city">City</string>
     <string name="have_account">Đã có tài khoàn ?</string>
     <string name="e_banking">E-Banking</string>
+    <string name="help">Trung tâm hỗ trợ</string>
+    <string name="clause">Điều khoản và Chính sách</string>
+    <string name="voucher">Mã giảm giá</string>
 </resources>

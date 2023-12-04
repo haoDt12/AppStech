@@ -9,37 +9,26 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/lnl"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_search"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_alignParentTop="true"
-            android:padding="20dp">
-            <ImageButton
-                android:id="@+id/img_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/angle_left"
-                android:background="@color/white"
-                android:layout_marginTop="10dp"/>
-
+            android:layout_height="?attr/actionBarSize">
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/id_search"
-                android:layout_width="300sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:background="@drawable/bg_search_view"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Nhập từ khóa tìm kiếm" />
-        </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
         <LinearLayout
             android:id="@+id/lnl_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@+id/lnl">
+            android:layout_below="@+id/toolbar_search">
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"

@@ -43,16 +43,19 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityShowDetailOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        setSupportActionBar(binding.toolbarDetailOder);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        binding.toolbarDetailOder.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
 
         String orderId = getIntent().getStringExtra("orderId");
 
         getOrder(orderId);
-        binding.imgBack.setOnClickListener(view -> {
-            finish();
-        });
+
         binding.btnCancelOrder.setOnClickListener(view -> {
             editOrder();
         });
@@ -137,7 +140,7 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             binding.rcvProductOfOrder.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            adapter = new ListProductOfOrderAdapter(dataProduct,getApplicationContext());
+                            adapter = new ListProductOfOrderAdapter(dataProduct,getApplicationContext(),response.body().order.status);
                             binding.rcvProductOfOrder.setAdapter(adapter);
                         }
                     });

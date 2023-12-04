@@ -2,6 +2,7 @@ package com.datn.shopsale.ui.dashboard.setting;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
@@ -13,7 +14,7 @@ import android.widget.LinearLayout;
 import com.datn.shopsale.R;
 
 public class SettingActivity extends AppCompatActivity {
-    private ImageButton imgBack;
+    private Toolbar toolbarSetting;
     private LinearLayout idChangePass;
     private CardView imgLock;
     private LinearLayout idNotification;
@@ -35,7 +36,7 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        imgBack = (ImageButton) findViewById(R.id.img_back);
+        toolbarSetting = (Toolbar) findViewById(R.id.toolbar_setting);
         idChangePass = (LinearLayout) findViewById(R.id.id_change_pass);
         imgLock = (CardView) findViewById(R.id.img_lock);
         idNotification = (LinearLayout) findViewById(R.id.id_notification);
@@ -48,6 +49,12 @@ public class SettingActivity extends AppCompatActivity {
         imgMode = (CardView) findViewById(R.id.img_mode);
         swbtnMode = (SwitchCompat) findViewById(R.id.swbtn_mode);
 
+        setSupportActionBar(toolbarSetting);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarSetting.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
         swbtnNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -62,9 +69,6 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             }
-        });
-        imgBack.setOnClickListener(view -> {
-            super.onBackPressed();
         });
         idChangePass.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(),ChangePassActivity.class));
