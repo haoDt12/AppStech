@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,6 +40,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
     private String OTP;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    private EditText[] inputs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +126,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
         return true;
     }
     private void fillInputOTP() {
+
         edNumber1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

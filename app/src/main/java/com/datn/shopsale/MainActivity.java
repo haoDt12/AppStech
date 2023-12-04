@@ -1,6 +1,8 @@
 package com.datn.shopsale;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -52,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements ICartView {
 
         cartPresenter = new CartPresenter(this);
 //        cartPresenter.getDataCart(this);
+
+//        Intent intent = new Intent();
+//        intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+//        intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+//        startActivity(intent);
     }
 
     @Override

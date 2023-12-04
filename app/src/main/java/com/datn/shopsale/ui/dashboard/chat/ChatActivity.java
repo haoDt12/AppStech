@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -105,6 +106,11 @@ public class ChatActivity extends AppCompatActivity {
         getDataMessage();
 
 //
+//        if (edChat.getText().toString().trim().isEmpty()){
+//            imgbtnSend.setVisibility(View.GONE);
+//        }else{
+//            imgbtnSend.setVisibility(View.VISIBLE);
+//        }
         imgbtnSend.setOnClickListener(view -> {
             sendMessage();
         });
@@ -135,9 +141,7 @@ public class ChatActivity extends AppCompatActivity {
             });
             dialog.show();
         });
-
     }
-
     private void getDataMessage() {
         Query query = FirebaseFirestore.getInstance().collection("chatrooms").document(chatRoomId)
                 .collection("chats").orderBy("timestamp", Query.Direction.ASCENDING);
@@ -159,8 +163,6 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     private void sendMessage() {
