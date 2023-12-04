@@ -1,6 +1,8 @@
 package com.datn.shopsale.activities;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -107,7 +109,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         for (FeedBack objFeedBack : listFb) {
                             tong += objFeedBack.getRating();
                         }
-                        TBC = tong / listFb.size();
+                        if (listFb.size() == 0){
+                            TBC = 0;
+                        }else {
+                            TBC = tong / listFb.size();
+                        }
                         rating = tong / listFb.size();
                         tvTBC.setText(TBC + "/5");
                         tvReview.setText(listFb.size() + " Review");
@@ -152,6 +158,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         toolbarDetailPro.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
+        LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
+        starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        starsDrawable.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
 
 
         title = getIntent().getStringExtra("title");
@@ -221,8 +230,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.lnl_all_feed_back) {
-            startActivity(new Intent(getApplicationContext(), ReviewActivity.class));
-        } else if (view.getId() == R.id.lnl_all_feed_back) {
             Intent i = new Intent(this, ReviewActivity.class);
             i.putExtra("id",id);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -262,7 +269,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         Toast.makeText(DetailProductActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-
                     }
                 }
 

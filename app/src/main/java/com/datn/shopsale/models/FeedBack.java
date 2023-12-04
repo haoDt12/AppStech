@@ -3,7 +3,7 @@ package com.datn.shopsale.models;
 public class FeedBack {
     private String userId;
     private String productId;
-    private int rating;
+    private double rating;
     private String nameUser;
     private String avtUser;
     private String comment;
@@ -12,7 +12,7 @@ public class FeedBack {
     public FeedBack() {
     }
 
-    public FeedBack(String userId, String productId, int rating, String comment,String nameUser,String avtUser,String date) {
+    public FeedBack(String userId, String productId, double rating, String comment,String nameUser,String avtUser,String date) {
         this.userId = userId;
         this.productId = productId;
         this.rating = rating;
@@ -62,7 +62,7 @@ public class FeedBack {
         this.productId = productId;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 

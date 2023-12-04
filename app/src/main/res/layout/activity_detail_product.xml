@@ -187,10 +187,10 @@
                         <RatingBar
                             android:id="@+id/ratingBar"
                             android:layout_width="wrap_content"
-                            android:layout_height="30dp"
+                            android:layout_height="wrap_content"
                             android:numStars="5"
-                            android:progressDrawable="@drawable/rating_bar_color"
-                            android:rating="4.3"
+                            android:rating="0"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:transformPivotX="0dp"
                             android:transformPivotY="0dp" />
                     </LinearLayout>

@@ -100,8 +100,8 @@
     <string name="abate">Thanh toán</string>
     <string name="submit">Submit</string>
     <string name="leave_a_comment">Để lại bình luận</string>
-    <string name="comment_for_product">Bình luận cho sản phẩm</string>
-    <string name="comment">Comment</string>
+    <string name="comment_for_product">Nhận xét - góp ý</string>
+    <string name="comment">Đánh giá</string>
     <string name="feedback_product">Đánh giá sản phẩm</string>
     <string name="contact">Liên hệ</string>
     <string name="tag_address">Tỉnh/ Thành phố, Quận/ Huyện, Phường/ Xã</string>
@@ -146,4 +146,5 @@
     <string name="help">Trung tâm hỗ trợ</string>
     <string name="clause">Điều khoản và Chính sách</string>
     <string name="voucher">Mã giảm giá</string>
+    <string name="comment_mess">Đánh giá và góp ý của bạn giúp ích rất nhiều cho chúng tôi.\n\tRất mong nhận được phản hồi của bạn.</string>
 </resources>
