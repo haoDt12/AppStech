@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.VoucherActivity;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
@@ -58,6 +59,7 @@ public class DashboardFragment extends Fragment {
     private LoginButton btnLoginWithFacebook;
     private Button btnLogOut;
     private FrameLayout lnChat;
+    private FrameLayout lnVoucher;
     private FrameLayout lnLocation;
     private FrameLayout lnSetting;
     private FrameLayout lnOrder;
@@ -114,6 +116,8 @@ public class DashboardFragment extends Fragment {
         lnOrder = view.findViewById(R.id.ln_order);
         lnStore = view.findViewById(R.id.ln_store);
         tvName = view.findViewById(R.id.tv_name);
+        lnVoucher = view.findViewById(R.id.ln_voucher);
+
         tvEmail = view.findViewById(R.id.tv_email);
         tvEmail.setText("");
         tvName.setText("");
@@ -135,6 +139,9 @@ public class DashboardFragment extends Fragment {
         });
         lnStore.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), StoreActivity.class));
+        });
+        lnVoucher.setOnClickListener(view1 -> {
+            startActivity(new Intent(getContext(), VoucherActivity.class));
         });
 
         accessToken = AccessToken.getCurrentAccessToken();

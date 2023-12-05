@@ -71,4 +71,5 @@ public class MainActivity extends AppCompatActivity implements ICartView {
     public void getDataCartFail(String message) {
 
     }
+
 }

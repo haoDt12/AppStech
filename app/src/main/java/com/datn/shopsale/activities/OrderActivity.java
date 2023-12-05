@@ -1,11 +1,14 @@
 package com.datn.shopsale.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,8 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.ui.dashboard.address.AddressActivity;
+import com.datn.shopsale.ui.dashboard.address.OrderAddressActivity;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -53,7 +58,7 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvTotal;
     private TextView tvShipPrice;
     private TextView tvSumMoney;
-    private Spinner spinnerAddress;
+//    private Spinner spinnerAddress;
     private Button btnOder;
     private ArrayList<Address> dataList = new ArrayList<>();
     private int sumMoney = 0;
@@ -62,6 +67,12 @@ public class OrderActivity extends AppCompatActivity {
     private Button btnEBanking;
     private Button btnZaloPay;
     private static final int REQUEST_CODE = 111;
+    private LinearLayout lnlAddressOrder;
+    private LinearLayout lnlVoucher;
+
+    private RecyclerView recyclerView;
+    private TextView tvName,tvPhone,tvCity,tvStreet;
+    private static final int REQUEST_SELECT_ADDRESS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +82,12 @@ public class OrderActivity extends AppCompatActivity {
     }
     private void initView(){
         toolbarOder = (Toolbar) findViewById(R.id.toolbar_oder);
-        spinnerAddress = (Spinner) findViewById(R.id.spinner_address);
+        lnlAddressOrder = (LinearLayout) findViewById(R.id.lnl_order_address);
+        recyclerView = findViewById(R.id.rcv_order);
+        tvName = (TextView) findViewById(R.id.tv_name);
+        tvPhone = (TextView) findViewById(R.id.tv_phone);
+        tvCity = (TextView) findViewById(R.id.tv_city);
+        tvStreet = (TextView) findViewById(R.id.tv_street);
         tvQuantity = (TextView) findViewById(R.id.tv_quantity);
         tvTotal = (TextView) findViewById(R.id.tv_total);
         tvShipPrice = (TextView) findViewById(R.id.tv_ship_price);
@@ -80,6 +96,7 @@ public class OrderActivity extends AppCompatActivity {
         btnMoney = (Button) findViewById(R.id.btn_money);
         btnEBanking = (Button) findViewById(R.id.btn_e_banking);
         btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
+        lnlVoucher = (LinearLayout) findViewById(R.id.lnl_voucher);
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         setSupportActionBar(toolbarOder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -109,6 +126,13 @@ public class OrderActivity extends AppCompatActivity {
         onEBanking();
         onZaloPay();
         onPay();
+        lnlAddressOrder.setOnClickListener(v->{
+            Intent intent1 = new Intent(this, OrderAddressActivity.class);
+            startActivityForResult(intent1, REQUEST_SELECT_ADDRESS);
+        });
+        lnlVoucher.setOnClickListener(v->{
+            startActivity(new Intent(this, VoucherActivity.class));
+        });
     }
     private void getDataAddress() {
         String idUser = preferenceManager.getString("userId");
@@ -122,21 +146,21 @@ public class OrderActivity extends AppCompatActivity {
                         for (ResponseAddress.Address item : response.body().getUser().getAddress()) {
                             dataList.add(new Address(item.get_id(),item.getUserId() ,item.getName(), item.getCity(), item.getStreet(), item.getPhone_number()));
                         }
-                        SpinnerAddressAdapter adapter = new SpinnerAddressAdapter(OrderActivity.this, android.R.layout.simple_spinner_item, dataList);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerAddress.setAdapter(adapter);
-                        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                                Address selectedItem = dataList.get(position);
-                                address = selectedItem.get_id();
-                                preferenceManager.putString("addressOrder",address);
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parentView) {
-                            }
-                        });
+//                        SpinnerAddressAdapter adapter = new SpinnerAddressAdapter(OrderActivity.this, android.R.layout.simple_spinner_item, dataList);
+//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                        spinnerAddress.setAdapter(adapter);
+//                        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//                            @Override
+//                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+//                                Address selectedItem = dataList.get(position);
+//                                address = selectedItem.get_id();
+//                                preferenceManager.putString("addressOrder",address);
+//                            }
+//
+//                            @Override
+//                            public void onNothingSelected(AdapterView<?> parentView) {
+//                            }
+//                        });
                     });
 
                 } else {
@@ -263,6 +287,21 @@ public class OrderActivity extends AppCompatActivity {
                     finish();
                 }
             }
+        } else if (requestCode == REQUEST_SELECT_ADDRESS && resultCode == RESULT_OK) {
+            String name = data.getStringExtra("nameAddress");
+            String phone = data.getStringExtra("phoneAddress");
+            String city = data.getStringExtra("cityAddress");
+            String street = data.getStringExtra("streetAddress");
+
+            tvName.setVisibility(View.VISIBLE);
+            tvPhone.setVisibility(View.VISIBLE);
+            tvCity.setVisibility(View.VISIBLE);
+            tvStreet.setVisibility(View.VISIBLE);
+
+            tvName.setText(name);
+            tvPhone.setText(phone);
+            tvCity.setText(city);
+            tvStreet.setText(street);
+            }
         }
-    }
 }

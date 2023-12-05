@@ -5,15 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.VoucherActivity">
+    tools:context=".ui.dashboard.address.AddressActivity">
+
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_voucher"
-        app:title="Voucher"
+        android:id="@+id/toolbar_address"
+        app:title="@string/delivery_address"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_my_voucher"
+        android:id="@+id/rcv_Orderaddress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+
 </LinearLayout>
