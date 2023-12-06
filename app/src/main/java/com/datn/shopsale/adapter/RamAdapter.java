@@ -4,28 +4,25 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 
 public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
     private ArrayList<String> ramList;
-    private String selectedPosition = null;
+    private String selectedRam;
     private OnRamItemClickListener listener; // Define a listener interface
-
     public RamAdapter(ArrayList<String> ramList,OnRamItemClickListener listener) {
         this.ramList = ramList;
         this.listener= listener;
+        selectedRam=null;
     }
     public interface OnRamItemClickListener {
         void onRamItemClick(String ram);
@@ -34,37 +31,47 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
     @NonNull
     @Override
     public RamAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ramrom, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ram, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RamAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         final String ram = ramList.get(position);
-        holder.tvRam.setText(ram);
-        holder.rdoRam.setChecked(ram.equals(selectedPosition));
+        holder.btnRam.setText(ram);
+        if (ram.equals(selectedRam)) {
+            holder.btnRam.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
+        } else {
+            holder.btnRam.setStrokeColorResource(R.color.colorNormal); // Đặt viền trong suốt khi màu không được chọn
+        }
 
-        holder.rdoRam.setOnClickListener(v -> {
-            String clickedRam = ramList.get(holder.getAdapterPosition());
-            selectedPosition = ram;
-            notifyDataSetChanged();
-            listener.onRamItemClick(clickedRam);
+        holder.btnRam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String clickedRam = ramList.get(holder.getAdapterPosition());
+
+                if (selectedRam != null && selectedRam.equals(clickedRam)) {
+                    selectedRam = null;
+                } else {
+                    selectedRam = clickedRam;
+                }
+                notifyDataSetChanged();
+                listener.onRamItemClick(clickedRam);
+            }
         });
     }
 
     @Override
     public int getItemCount() {
-        return ramList.size();
+        return ramList==null?0: ramList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private RadioButton rdoRam;
-        private TextView tvRam;
+        private MaterialButton btnRam;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rdoRam = (RadioButton) itemView.findViewById(R.id.rdo_ram);
-            tvRam = (TextView) itemView.findViewById(R.id.tv_ram);
+            btnRam = itemView.findViewById(R.id.btn_ram);
         }
     }
 }
