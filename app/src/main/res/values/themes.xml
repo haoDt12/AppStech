@@ -11,6 +11,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:fontFamily">@font/font_family</item>
     </style>
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/dialog_in</item>

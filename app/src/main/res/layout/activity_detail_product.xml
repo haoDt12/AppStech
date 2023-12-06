@@ -188,10 +188,9 @@
                             android:id="@+id/ratingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:rating="4.3"
-                            android:layout_margin="5dp"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:numStars="5"
+                            android:rating="0"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:transformPivotX="0dp"
                             android:transformPivotY="0dp" />
                     </LinearLayout>

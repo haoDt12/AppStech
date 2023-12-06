@@ -70,6 +70,7 @@ public class ReviewActivity extends AppCompatActivity {
         apiService = RetrofitConnection.getApiService();
         id = getIntent().getStringExtra("id");
         getCmt();
+        Toast.makeText(this, ""+id, Toast.LENGTH_SHORT).show();
     }
 
     private void getCmt() {

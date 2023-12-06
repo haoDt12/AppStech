@@ -2,6 +2,8 @@ package com.datn.shopsale.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +59,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         FeedBack objFeedBack = list.get(position);
         holder.cmt.setText(objFeedBack.getComment());
         holder.nameUser.setText(objFeedBack.getNameUser());
-        holder.ratingBar.setRating(objFeedBack.getRating());
+        holder.ratingBar.setRating((float) objFeedBack.getRating());
         Glide.with(mContext).load(objFeedBack.getAvtUser()).into(holder.imgDoctor);
+        LayerDrawable starsDrawable = (LayerDrawable) holder.ratingBar.getProgressDrawable();
+        starsDrawable.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        starsDrawable.getDrawable(0).setColorFilter(mContext.getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
 
 
     }

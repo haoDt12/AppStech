@@ -44,26 +44,10 @@
                     android:layout_marginTop="25dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="50.000"
-                        android:textColor="#04D5C1"
-                        android:textSize="20sp"
-                        android:layout_margin="5dp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_top_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="300.000 đ"
-                        android:textColor="#04D5C1"
-                        android:textSize="10sp"
-                        android:textStyle="normal" />
-
+                   <ImageView
+                       android:layout_width="60dp"
+                       android:layout_height="60dp"
+                       android:src="@drawable/logo"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -76,7 +60,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_name"
+                        android:id="@+id/tv_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mã vận chuyển"
