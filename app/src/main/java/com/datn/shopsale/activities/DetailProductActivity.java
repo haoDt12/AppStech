@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -25,6 +27,7 @@ import com.datn.shopsale.adapter.ColorAdapter;
 import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.RamAdapter;
 import com.datn.shopsale.adapter.ReviewAdapter;
+import com.datn.shopsale.adapter.RomAdapter;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.Product;
@@ -37,6 +40,7 @@ import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -50,18 +54,19 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private Toolbar toolbarDetailPro;
     private TextView tvNameProduct;
     private TextView tvPriceProduct;
-    private RecyclerView recyColorsProduct, recyDungLuong;
+    private RecyclerView recyColorsProduct, recyDungLuong,recyRom;
     private ContentAdapter contentAdapter;
+
     private ViewPager2 viewPager2;
     private ReviewAdapter adapterRV;
 
     private User user = new User();
     private Product product = new Product();
-    private ArrayList<String> ramList;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
     String selectedColors = "";
     String selectedRams = "";
+    String selectedRoms = "";
     String id;
     String imgCover;
     String title;
@@ -150,6 +155,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
         recyColorsProduct = findViewById(R.id.recy_colorsProduct);
         recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
+        recyRom = (RecyclerView) findViewById(R.id.recy_rom);
         viewPager2 = findViewById(R.id.vpg_product);
 
         setSupportActionBar(toolbarDetailPro);
@@ -168,12 +174,15 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         id = getIntent().getStringExtra("id");
         imgCover = getIntent().getStringExtra("imgCover");
 
-        ArrayList<String> colorList = getIntent().getStringArrayListExtra("color");
-        ramList = getIntent().getStringArrayListExtra("ram_rom");
+        ArrayList<String> romList = new ArrayList<>(Arrays.asList("4GB", "8GB", "12GB", "16GB","24gb"));
+        ArrayList<String> ramList = new ArrayList<>(Arrays.asList("4GB", "8GB", "12GB", "16GB","24gb"));
+        ArrayList<String> colorList = new ArrayList<>(Arrays.asList("Xanh", "Đỏ", "Tím", "Vàng","Hồng"));
+
+//        ArrayList<String> colorList = getIntent().getStringArrayListExtra("color");
+//          ArrayList<String> ramList = getIntent().getStringArrayListExtra("ram");
 
         ArrayList<String> listImg = getIntent().getStringArrayListExtra("list_img");
         final String video = GetImgIPAddress.convertLocalhostToIpAddress(getIntent().getStringExtra("video"));
-
 
         ArrayList<Product> contentItems = new ArrayList<>();
 
@@ -202,10 +211,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
         tvPriceProduct.setText(formattedNumber);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyColorsProduct.setLayoutManager(layoutManager);
-        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyDungLuong.setLayoutManager(layoutManager1);
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        recyColorsProduct.setLayoutManager(layoutManager);
+//        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        recyDungLuong.setLayoutManager(layoutManager1);
+//        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+//        recyRom.setLayoutManager(layoutManager2);
         ColorAdapter.OnColorItemClickListener colorItemClickListener = new ColorAdapter.OnColorItemClickListener() {
             @Override
             public void onColorItemClick(String color) {
@@ -218,10 +229,18 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 selectedRams = ram;
             }
         };
+        RomAdapter.OnRomItemClickListener romItemClickListener = new RomAdapter.OnRomItemClickListener() {
+            @Override
+            public void onRomItemClick(String rom) {
+                selectedRoms=rom;
+            }
+        };
         ColorAdapter adapter = new ColorAdapter(colorList, colorItemClickListener);
         recyColorsProduct.setAdapter(adapter);
         RamAdapter adapter1 = new RamAdapter(ramList, ramItemClickListener);
         recyDungLuong.setAdapter(adapter1);
+        RomAdapter adapter2 = new RomAdapter(romList, romItemClickListener);
+        recyRom.setAdapter(adapter2);
 
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
@@ -291,8 +310,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         if (selectedColors.equals("")) {
             Toast.makeText(this, "Vui lòng chọn màu", Toast.LENGTH_SHORT).show();
             return false;
-        } else if (ramList.size() == 0) {
-            return true;
         } else if (selectedRams.equals("")) {
             Toast.makeText(this, "Vui lòng chọn Dung lượng", Toast.LENGTH_SHORT).show();
             return false;

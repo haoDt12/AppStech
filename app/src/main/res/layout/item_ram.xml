@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_color"
+        android:id="@+id/btn_ram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="8sp"
@@ -14,5 +14,5 @@
         app:cornerRadius="10dp"
         android:textColor="@color/black"
         app:strokeColor="@color/colorNormal"
-        android:text="Đỏ"/>
+        android:text="8GB"/>
 </LinearLayout>
