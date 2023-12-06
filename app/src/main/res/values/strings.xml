@@ -146,4 +146,6 @@
     <string name="help">Trung tâm hỗ trợ</string>
     <string name="clause">Điều khoản và Chính sách</string>
     <string name="voucher">Mã giảm giá</string>
+    <string name="hrt_hang">Hết hàng</string>
+    <string name="con_hang">Còn Hàng</string>
 </resources>

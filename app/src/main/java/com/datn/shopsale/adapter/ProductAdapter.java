@@ -49,7 +49,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         String price = product.getPrice();
         String formattedAmount = CurrencyUtils.formatCurrency(price);
         holder.tvPrice.setText(formattedAmount);
-
+        holder.tvQuantity.setText(product.getQuantity());
+        if(product.getQuantity().equals("0")){
+            holder.tvStatus.setText(context.getText(R.string.hrt_hang));
+        }else {
+            holder.tvStatus.setText(context.getText(R.string.con_hang));
+        }
         holder.rltProduct.setOnClickListener(v->{
             Intent intent = new Intent(context, DetailProductActivity.class);
             intent.putExtra("list_img",product.getList_img());
@@ -73,7 +78,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvName;
+        private TextView tvName, tvStatus, tvQuantity;
         private TextView tvPrice;
         private ImageView imgProduct;
         private RelativeLayout rltProduct;
@@ -83,6 +88,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            tvStatus = (TextView) itemView.findViewById(R.id.tv_status);
+            tvQuantity = (TextView) itemView.findViewById(R.id.tv_quantity);
             imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
             rltProduct = (RelativeLayout) itemView.findViewById(R.id.rlt_product);
         }

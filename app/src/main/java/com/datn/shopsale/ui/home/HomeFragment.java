@@ -168,6 +168,7 @@ public class HomeFragment extends Fragment{
         displayCategory();
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
+        Log.d("fcm", "onViewCreated: " + preferenceManager.getString("fcm"));
     }
 
     private void displayProduct() {
