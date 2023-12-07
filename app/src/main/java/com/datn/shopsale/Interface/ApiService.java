@@ -76,6 +76,11 @@ public interface ApiService {
     @POST("/api/getListProduct")
     Call<GetListProductResponse.Root> getListProduct(@Header("Authorization") String token);
 
+    @FormUrlEncoded
+    @POST("/api/getProductByIdCate")
+    Call<GetListProductResponse.Root> getListProductByIdCate(@Header("Authorization") String token,
+                                                             @Field("categoryId") String categoryId);
+
     @POST("/api/addCart")
     Call<ResApi> addToCart(@Header("Authorization") String token,
                            @Body Cart objCart
@@ -161,6 +166,7 @@ public interface ApiService {
             @Part MultipartBody.Part file,
             @Part("userId") RequestBody userId
     );
+
     @Multipart
     @POST("/api/editUser")
     Call<ResApi> editUser(
@@ -170,6 +176,7 @@ public interface ApiService {
             @Part("phone_number") RequestBody phoneNumber,
             @Part("userId") RequestBody userId
     );
+
     @POST("/api/getListBanner")
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
     );
@@ -177,10 +184,11 @@ public interface ApiService {
     @POST("/api/getPublicNotification")
     Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
     );
+
     @FormUrlEncoded
     @POST("/api/getPrivateNotification")
     Call<GetNotificationResponse.Root> getNotificationPrivate(@Header("Authorization") String token,
-                                                                     @Field("userId") String id
+                                                              @Field("userId") String id
     );
 
     @GET("/api/p/")
@@ -188,21 +196,27 @@ public interface ApiService {
 
     @GET("/api/p/{code}")
     Call<DistrictRespone> getDistrict(@Path("code") int code, @Query("depth") int depth);
+
     @GET("/api/d/{code}")
     Call<WardsRespone> getWard(@Path("code") int code, @Query("depth") int depth);
+
     @FormUrlEncoded
     @POST("/api/addFCM")
     Call<ResApi> addFCM(@Header("Authorization") String token,
-                                               @Field("userId") String id,
-                                          @Field("fcm") String fcm);
+                        @Field("userId") String id,
+                        @Field("fcm") String fcm);
+
     @POST("/api/createPaymentUrl")
     Call<VnPayResponse> createOrderVnPay(@Header("Authorization") String token, @Body OrderVnPayRequest.Root request);
+
     @POST("/api/addFeedBack")
     Call<ResApi> addCmt(@Header("Authorization") String token, @Body FeedBack objFeedBack);
+
     @FormUrlEncoded
     @POST("/api/getFeedBackByProductId")
-    Call<ResponeFeedBack> getFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
+    Call<ResponeFeedBack> getFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
+
     @FormUrlEncoded
     @POST("/api/getAllFeedBackByProductId")
-    Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId")String productId);
+    Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
 }
