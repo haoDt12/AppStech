@@ -1,65 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="15dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="10dp">
+
         <ImageView
             android:id="@+id/img_product"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/iphone_14_128gb"/>
+            android:src="@drawable/iphone_14_128gb" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/tv_titleProductOfOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Iphone 15 pro max"
                 android:textColor="@color/black"
-                android:textSize="17dp"/>
+                android:textSize="17dp" />
+
             <TextView
                 android:id="@+id/tv_priceProductOfOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="21.000.000"/>
+                android:text="21.000.000" />
+
             <TextView
                 android:id="@+id/tv_colorProductOfOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Colo: mau dep"/>
+                android:text="Colo: mau dep" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/tv_numProductOfOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số lượng: 2"
-                    android:layout_marginRight="20dp"/>
+                    android:layout_marginRight="20dp"
+                    android:text="Số lượng: 2" />
+
                 <TextView
                     android:id="@+id/tv_ramRomProductOfOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ram_Rom: 8Gb/ 128Gb"/>
+                    android:text="Ram_Rom: 8Gb/ 128Gb" />
             </LinearLayout>
+
             <Button
-                android:layout_marginTop="5dp"
-                android:layout_gravity="right"
                 android:id="@+id/btn_danhgia"
-                android:text="Đánh giá"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="5dp"
+                android:text="Đánh giá"
+                android:visibility="gone" />
         </LinearLayout>
 
     </LinearLayout>

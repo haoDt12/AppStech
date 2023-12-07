@@ -1,21 +1,15 @@
 package com.datn.shopsale.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
@@ -39,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchActivity extends AppCompatActivity{
+public class SearchActivity extends AppCompatActivity {
 
     private HistoryInfoAdapter adapter;
     private ActivitySearchBinding binding;
@@ -87,6 +81,7 @@ public class SearchActivity extends AppCompatActivity{
         showSearchHistory();
 
     }
+
     private void displayProduct() {
         productList.clear();
         Call<GetListProductResponse.Root> call = apiService.getListProduct(preferenceManager.getString("token"));
@@ -102,7 +97,7 @@ public class SearchActivity extends AppCompatActivity{
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            productAdapter = new ProductAdapter(productList, SearchActivity.this);
+                            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
                             binding.rcvFoyyou.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
                             binding.rcvFoyyou.setAdapter(productAdapter);
                             LoadingDialog.dismissProgressDialog();
@@ -115,13 +110,15 @@ public class SearchActivity extends AppCompatActivity{
                     });
                 }
             }
+
             @Override
             public void onFailure(Call<GetListProductResponse.Root> call, Throwable t) {
                 Toast.makeText(new SearchActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-    public void search(){
+
+    public void search() {
         idSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -131,21 +128,22 @@ public class SearchActivity extends AppCompatActivity{
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("zzzzzz", "onQueryTextChange: "+newText);
+                Log.d("zzzzzz", "onQueryTextChange: " + newText);
                 List<Product> suggestions = new ArrayList<>();
-                for (int i = 0; i < productList.size() ; i++){
-                    if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())){
+                for (int i = 0; i < productList.size(); i++) {
+                    if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())) {
                         suggestions.add(productList.get(i));
                         Log.d("zzz", "onQueryTextChange: " + productList.get(i));
                     }
                 }
-                productAdapter = new ProductAdapter((ArrayList<Product>) suggestions, SearchActivity.this);
+                productAdapter = new ProductAdapter((ArrayList<Product>) suggestions, SearchActivity.this, R.layout.item_product);
                 binding.rcvFoyyou.setAdapter(productAdapter);
 
                 return false;
             }
         });
     }
+
     private void saveSearchHistory(String query) {
         SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);
         Set<String> searchSet = sharedPreferences.getStringSet("history", new HashSet<>());
@@ -159,8 +157,8 @@ public class SearchActivity extends AppCompatActivity{
         Set<String> searchSet = sharedPreferences.getStringSet("history", new HashSet<>());
         // Hiển thị danh sách lịch sử tìm kiếm trong giao diện người dùng
         // Ví dụ: Hiển thị danh sách lịch sử tìm kiếm trong một RecyclerView hoặc ListView
-         adapter.setData(new ArrayList<>(searchSet));
-         adapter.notifyDataSetChanged();
+        adapter.setData(new ArrayList<>(searchSet));
+        adapter.notifyDataSetChanged();
     }
 
 }
@@ -171,6 +169,6 @@ public class SearchActivity extends AppCompatActivity{
 //        getMenuInflater().
 //        return true;
 //    }
-    //    private void Search(){
+//    private void Search(){
 //
 //    }

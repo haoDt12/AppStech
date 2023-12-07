@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ListProductActivity"
     android:orientation="vertical"
-    android:padding="10dp">
+    tools:context=".activities.ListProductActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_list_pro"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
+
         <androidx.appcompat.widget.SearchView
             android:layout_width="240dp"
             android:layout_height="wrap_content"
@@ -19,22 +20,36 @@
             android:iconifiedByDefault="false"
             android:queryBackground="@android:color/transparent"
             android:queryHint="@string/search" />
+
         <ImageView
             android:id="@+id/img_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:src="@drawable/cart"/>
+            android:src="@drawable/cart"
+            tools:ignore="ContentDescription" />
+
         <ImageView
             android:id="@+id/img_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:src="@drawable/menu_dots_24"/>
+            android:src="@drawable/menu_dots_24"
+            tools:ignore="ContentDescription" />
     </androidx.appcompat.widget.Toolbar>
 
+    <ImageView
+        android:id="@+id/img_change_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="15dp"
+        android:layout_marginHorizontal="10dp"
+        android:src="@drawable/icon_grid_view_24"
+        tools:ignore="ContentDescription" />
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcv_list_product"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="16dp" />
+        android:layout_height="match_parent" />
 </LinearLayout>

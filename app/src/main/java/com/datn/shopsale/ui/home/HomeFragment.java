@@ -23,6 +23,7 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.ChatScreenAdminActivity;
+import com.datn.shopsale.activities.ListProductActivity;
 import com.datn.shopsale.activities.SearchActivity;
 import com.datn.shopsale.adapter.CategoriesAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
@@ -49,7 +50,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment{
+public class HomeFragment extends Fragment {
     private boolean isLoadProduct = false;
     private boolean isLoadCategory = false;
     private boolean isLoadBanner = false;
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment{
     private FragmentHomeBinding binding;
 
     private final ArrayList<Product> dataList = new ArrayList<>();
-    private  ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
+    private ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
 
@@ -74,6 +75,7 @@ public class HomeFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,22 +83,23 @@ public class HomeFragment extends Fragment{
         View root = binding.getRoot();
         return root;
     }
-    private List<String> GetListBanner(){
+
+    private List<String> GetListBanner() {
         List<String> list = new ArrayList<>();
         listImg.clear();
         Call<GetBannerResponse.Root> call = apiService.getListBanner(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetBannerResponse.Root>() {
             @Override
             public void onResponse(Call<GetBannerResponse.Root> call, Response<GetBannerResponse.Root> response) {
-                Log.d("TAG", "onResponse: "+ response.code()+"zzzzzzzzzzz" + response);
-                Log.d("TAG", "onResponse: "+response.body());
+                Log.d("TAG", "onResponse: " + response.code() + "zzzzzzzzzzz" + response);
+                Log.d("TAG", "onResponse: " + response.body());
                 if (response.body().code == 1) {
-                    getActivity().runOnUiThread(()->{
+                    getActivity().runOnUiThread(() -> {
                         for (GetBannerResponse.Banner item : response.body().banner) {
                             listImg.add(new GetBannerResponse.Banner(item._id, item.img));
-                            Log.d("TAG", "run: "+listImg.get(0).getImg());
+                            Log.d("TAG", "run: " + listImg.get(0).getImg());
                         }
-                        for(int i =0; i < listImg.size(); i++){
+                        for (int i = 0; i < listImg.size(); i++) {
                             list.add(listImg.get(i).getImg());
                         }
                         SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
@@ -105,13 +108,13 @@ public class HomeFragment extends Fragment{
 
                         binding.circleIndicator.setViewPager(binding.vpgSlideImage);
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
-                        Log.d("item", "onResponse: "+list.size());
+                        Log.d("item", "onResponse: " + list.size());
 
                     });
                 } else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
-                        if(isLoadBanner){
+                        if (isLoadBanner) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
@@ -137,7 +140,7 @@ public class HomeFragment extends Fragment{
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        AppCompatActivity activity= (AppCompatActivity) getActivity();
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(binding.toolbarHome);
         binding.lnlSearch.setOnClickListener(view1 -> {
             startActivity(new Intent(getActivity(), SearchActivity.class));
@@ -146,7 +149,7 @@ public class HomeFragment extends Fragment{
         Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
         List<String> imageList = new ArrayList<>();
-        Log.d("TagList", "onCreateView: "+GetListBanner().size());
+        Log.d("TagList", "onCreateView: " + GetListBanner().size());
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -158,13 +161,13 @@ public class HomeFragment extends Fragment{
                         int totalItems = binding.vpgSlideImage.getAdapter().getCount();
                         int nextItem = (currentItem + 1) % totalItems;
                         binding.vpgSlideImage.setCurrentItem(nextItem);
-                    }catch (Exception exception){
+                    } catch (Exception exception) {
                         Log.d("TAGzz: ", exception.getMessage());
                     }
                 });
             }
         }, 2000, 2000);
-        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
+        LoadingDialog.showProgressDialog(getActivity(), "Loading...");
         displayCategory();
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
@@ -176,33 +179,33 @@ public class HomeFragment extends Fragment{
         call.enqueue(new Callback<GetListProductResponse.Root>() {
             @Override
             public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
-                if(response.body().getCode() == 1){
-                    for (GetListProductResponse.Product item: response.body().getProduct()) {
-                        dataList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(),item.getDescription(),
-                                item.getColor(), item.getPrice(),item.getQuantity(),item.getSold(),item.getList_img(),
-                                item.getDate(),item.getRam_rom(),item.getImg_cover(),item.getVideo()));
+                if (response.body().getCode() == 1) {
+                    for (GetListProductResponse.Product item : response.body().getProduct()) {
+                        dataList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(), item.getDescription(),
+                                item.getColor(), item.getPrice(), item.getQuantity(), item.getSold(), item.getList_img(),
+                                item.getDate(), item.getRam_rom(), item.getImg_cover(), item.getVideo()));
                     }
                     getActivity().runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            productAdapter = new ProductAdapter(dataList,getActivity());
+                            productAdapter = new ProductAdapter(dataList, getActivity(), R.layout.item_product);
                             binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                             binding.rcvListItemPro.setAdapter(productAdapter);
                             isLoadProduct = true;
-                            if(isLoadCategory){
+                            if (isLoadCategory) {
                                 LoadingDialog.dismissProgressDialog();
                             }
                         }
                     });
-                }else {
+                } else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if(isLoadCategory){
+                        if (isLoadCategory) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
                 }
-                if(response.body().getMessage().equals("wrong token")){
+                if (response.body().getMessage().equals("wrong token")) {
                     getActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
                         preferenceManager.clear();
@@ -216,7 +219,7 @@ public class HomeFragment extends Fragment{
             public void onFailure(Call<GetListProductResponse.Root> call, Throwable t) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if(isLoadCategory){
+                    if (isLoadCategory) {
                         LoadingDialog.dismissProgressDialog();
                     }
                 });
@@ -261,14 +264,17 @@ public class HomeFragment extends Fragment{
                                         isDisableItem = !isDisableItem;
                                         displayCategory();
                                     } else {
-                                        Toast.makeText(getActivity(), "" + category, Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getActivity(), category.getId(), Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getActivity(), ListProductActivity.class);
+                                        intent.putExtra("categoryId", category.getId());
+                                        startActivity(intent);
                                     }
                                 }
                             });
                             binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                             binding.rcvListCategories.setAdapter(categoriesAdapter);
                             isLoadCategory = true;
-                            if(isLoadProduct){
+                            if (isLoadProduct) {
                                 LoadingDialog.dismissProgressDialog();
                             }
                         }
@@ -276,7 +282,7 @@ public class HomeFragment extends Fragment{
                 } else {
                     getActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if(isLoadProduct){
+                        if (isLoadProduct) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
@@ -287,7 +293,7 @@ public class HomeFragment extends Fragment{
             public void onFailure(Call<GetListCategoryResponse.Root> call, Throwable t) {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if(isLoadProduct){
+                    if (isLoadProduct) {
                         LoadingDialog.dismissProgressDialog();
                     }
                 });
@@ -298,21 +304,21 @@ public class HomeFragment extends Fragment{
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_home,menu);
+        inflater.inflate(R.menu.menu_home, menu);
 
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id==R.id.chat){
-            if(preferenceManager.getString("userId").equals(Constants.idUserAdmin)){
+        if (id == R.id.chat) {
+            if (preferenceManager.getString("userId").equals(Constants.idUserAdmin)) {
                 startActivity(new Intent(getActivity(), ChatScreenAdminActivity.class));
-            }else {
+            } else {
                 startActivity(new Intent(getActivity(), ChatActivity.class));
 
             }
-            return  true;
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
