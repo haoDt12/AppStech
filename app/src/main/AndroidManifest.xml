@@ -27,7 +27,7 @@
             android:name=".ui.dashboard.address.OrderAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.add_review_activity"
+            android:name=".activities.AddReviewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.EBankingPayActivity"

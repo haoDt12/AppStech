@@ -4,12 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.datn.shopsale.R;
@@ -70,11 +75,32 @@ public class ForgotPassActivity extends AppCompatActivity {
 
         btnSend.setOnClickListener(v->{
             String email = edEmail.getText().toString().trim();
-            if(email.isEmpty()){
-                Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
-            }else{
-                resetUserPassword(email);
-            }
+//            if(email.isEmpty()){
+//                Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
+//            }else{
+//                resetUserPassword(email);
+//            }
+            Dialog dialog = new Dialog(v.getContext());
+            dialog.setContentView(R.layout.dialog_check_email);
+            Window window = dialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(v.getContext().getDrawable(R.drawable.dialog_bg));
+            window.getAttributes().windowAnimations = R.style.DialogAnimation;
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            window.setAttributes(windowAttributes);
+            windowAttributes.gravity = Gravity.BOTTOM;
+            TextView tvContent = dialog.findViewById(R.id.tv_content);
+            Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
+            ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+            btnCancel.setOnClickListener(view -> {
+                dialog.dismiss();
+            });
+            btnConfirm.setOnClickListener(view -> {
+//                dialog.show();
+//                btnSendOtp.setEnabled(false);
+                dialog.dismiss();
+            });
+            dialog.show();
         });
         setSupportActionBar(toolbarForgotPass);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

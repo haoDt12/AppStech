@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.activities.DetailProductActivity;
-import com.datn.shopsale.activities.add_review_activity;
+import com.datn.shopsale.activities.AddReviewActivity;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -97,7 +96,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         holder.tvNumProductOfOrder.setText("Số lượng: "+pro.quantity+"");
         holder.tvRamRomProductOfOrder.setText("Ram-Rom"+pro.ram_rom);
         holder.btn_danhgia.setOnClickListener(view -> {
-            Intent intent = new Intent(context, add_review_activity.class);
+            Intent intent = new Intent(context, AddReviewActivity.class);
             intent.putExtra("id",pro.productId);
             intent.putExtra("image",pro.img_cover);
             intent.putExtra("name",pro.title);

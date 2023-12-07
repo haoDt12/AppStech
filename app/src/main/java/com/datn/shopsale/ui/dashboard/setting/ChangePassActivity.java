@@ -4,9 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +30,9 @@ public class ChangePassActivity extends AppCompatActivity {
     private TextView tvError;
     private Toolbar toolbarChangePass;
     private Button btnSend;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +90,32 @@ public class ChangePassActivity extends AppCompatActivity {
         edRepassNew = (TextInputEditText) findViewById(R.id.ed_RepassNew);
         btnSend = (Button) findViewById(R.id.btn_send);
         btnSend.setOnClickListener(v->{
-            if(isFieldEmpty(edPass) || isFieldEmpty(edPassNew) || isFieldEmpty(edRepassNew)){
-                Toast.makeText(this, "Không được để trống", Toast.LENGTH_SHORT).show();
-            }else{
-                changePassword();
-            }
+//            if(isFieldEmpty(edPass) || isFieldEmpty(edPassNew) || isFieldEmpty(edRepassNew)){
+//                Toast.makeText(this, "Không được để trống", Toast.LENGTH_SHORT).show();
+//            }else{
+//                changePassword();
+//            }
+            Dialog dialog = new Dialog(v.getContext());
+            dialog.setContentView(R.layout.dialog_otp_change_password);
+            Window window = dialog.getWindow();
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(v.getContext().getDrawable(R.drawable.dialog_bg));
+            window.getAttributes().windowAnimations = R.style.DialogAnimation;
+            WindowManager.LayoutParams windowAttributes = window.getAttributes();
+            window.setAttributes(windowAttributes);
+            windowAttributes.gravity = Gravity.BOTTOM;
+            TextInputEditText edOtp = dialog.findViewById(R.id.ed_otp);
+            Button btnSendOtp = dialog.findViewById(R.id.btn_sendOtp);
+            ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+            btnCancel.setOnClickListener(view -> {
+                dialog.dismiss();
+            });
+            btnSendOtp.setOnClickListener(view -> {
+//                dialog.show();
+//                btnSendOtp.setEnabled(false);
+                dialog.dismiss();
+            });
+            dialog.show();
         });
         setSupportActionBar(toolbarChangePass);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
