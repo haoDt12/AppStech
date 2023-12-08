@@ -13,15 +13,20 @@
             android:id="@+id/toolbar_search"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
-            <androidx.appcompat.widget.SearchView
+            <EditText
                 android:id="@+id/id_search"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:background="@drawable/bg_search_view"
-                android:iconifiedByDefault="false"
-                android:queryBackground="@android:color/transparent"
-                android:queryHint="Nhập từ khóa tìm kiếm" />
+                android:layout_height="50dp"
+                android:paddingHorizontal="10dp"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/bg_coneradios"
+                android:hint="@string/search_hint" />
+
+            <ImageButton
+                android:id="@+id/img_btn_search"
+                android:src="@drawable/search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </androidx.appcompat.widget.Toolbar>
         <LinearLayout
             android:id="@+id/lnl_history"

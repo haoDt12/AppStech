@@ -9,25 +9,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/videoView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:use_controller="false"
-            android:layout_weight="1" >
+            android:layout_height="556dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            app:use_controller="false">
 
             <ImageView
-                android:src="@drawable/ic_exo_play"
                 android:id="@+id/img_play"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/play" />
+
             <ImageView
-                android:src="@drawable/baseline_fullscreen_24"
                 android:id="@+id/img_full"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end|bottom" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|bottom"
+                android:src="@drawable/baseline_fullscreen_24" />
 
         </com.google.android.exoplayer2.ui.PlayerView>
     </LinearLayout>
