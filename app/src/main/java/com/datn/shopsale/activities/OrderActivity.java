@@ -1,15 +1,12 @@
 package com.datn.shopsale.activities;
 
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.OrderAdapter;
-import com.datn.shopsale.adapter.SpinnerAddressAdapter;
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
@@ -33,7 +29,6 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.ui.dashboard.address.OrderAddressActivity;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -58,7 +53,7 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvTotal;
     private TextView tvShipPrice;
     private TextView tvSumMoney;
-//    private Spinner spinnerAddress;
+    //    private Spinner spinnerAddress;
     private Button btnOder;
     private ArrayList<Address> dataList = new ArrayList<>();
     private int sumMoney = 0;
@@ -71,8 +66,9 @@ public class OrderActivity extends AppCompatActivity {
     private LinearLayout lnlVoucher;
 
     private RecyclerView recyclerView;
-    private TextView tvName,tvPhone,tvCity,tvStreet;
+    private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +76,8 @@ public class OrderActivity extends AppCompatActivity {
         initView();
         getDataAddress();
     }
-    private void initView(){
+
+    private void initView() {
         toolbarOder = (Toolbar) findViewById(R.id.toolbar_oder);
         lnlAddressOrder = (LinearLayout) findViewById(R.id.lnl_order_address);
         recyclerView = findViewById(R.id.rcv_order);
@@ -114,8 +111,8 @@ public class OrderActivity extends AppCompatActivity {
         }
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
         tvShipPrice.setText("0đ");
-        for (Cart item: listOder.getList()) {
-            sumMoney = sumMoney +  item.getPrice() * item.getQuantity();
+        for (Cart item : listOder.getList()) {
+            sumMoney = sumMoney + item.getPrice() * item.getQuantity();
         }
         tvSumMoney.setText(String.valueOf(sumMoney));
         tvTotal.setText(String.valueOf(sumMoney));
@@ -126,14 +123,15 @@ public class OrderActivity extends AppCompatActivity {
         onEBanking();
         onZaloPay();
         onPay();
-        lnlAddressOrder.setOnClickListener(v->{
+        lnlAddressOrder.setOnClickListener(v -> {
             Intent intent1 = new Intent(this, OrderAddressActivity.class);
             startActivityForResult(intent1, REQUEST_SELECT_ADDRESS);
         });
-        lnlVoucher.setOnClickListener(v->{
+        lnlVoucher.setOnClickListener(v -> {
             startActivity(new Intent(this, VoucherActivity.class));
         });
     }
+
     private void getDataAddress() {
         String idUser = preferenceManager.getString("userId");
 
@@ -144,23 +142,8 @@ public class OrderActivity extends AppCompatActivity {
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
                         for (ResponseAddress.Address item : response.body().getUser().getAddress()) {
-                            dataList.add(new Address(item.get_id(),item.getUserId() ,item.getName(), item.getCity(), item.getStreet(), item.getPhone_number()));
+                            dataList.add(new Address(item.get_id(), item.getUserId(), item.getName(), item.getCity(), item.getStreet(), item.getPhone_number()));
                         }
-//                        SpinnerAddressAdapter adapter = new SpinnerAddressAdapter(OrderActivity.this, android.R.layout.simple_spinner_item, dataList);
-//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                        spinnerAddress.setAdapter(adapter);
-//                        spinnerAddress.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                            @Override
-//                            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-//                                Address selectedItem = dataList.get(position);
-//                                address = selectedItem.get_id();
-//                                preferenceManager.putString("addressOrder",address);
-//                            }
-//
-//                            @Override
-//                            public void onNothingSelected(AdapterView<?> parentView) {
-//                            }
-//                        });
                     });
 
                 } else {
@@ -169,6 +152,7 @@ public class OrderActivity extends AppCompatActivity {
                     });
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseAddress.Root> call, Throwable t) {
                 runOnUiThread(() -> {
@@ -177,27 +161,31 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
     }
-    private void onMoney(){
+
+    private void onMoney() {
         btnMoney.setOnClickListener(v -> {
             actionPAY = MONEY;
             onSelectPayAction(btnMoney);
         });
     }
-    private void onEBanking(){
+
+    private void onEBanking() {
         btnEBanking.setOnClickListener(v -> {
             actionPAY = E_BANKING;
             onSelectPayAction(btnEBanking);
         });
     }
-    private void onZaloPay(){
+
+    private void onZaloPay() {
         btnZaloPay.setOnClickListener(v -> {
             actionPAY = ZALO_PAY;
             onSelectPayAction(btnZaloPay);
         });
     }
-    private void onPay(){
+
+    private void onPay() {
         btnOder.setOnClickListener(v -> {
-            switch (actionPAY){
+            switch (actionPAY) {
                 case MONEY:
                     oderMoney();
                     break;
@@ -211,29 +199,33 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
-    private void oderMoney(){
+    private void oderMoney() {
         List<OderRequest.Product> listProduct = new ArrayList<>();
-        for (Cart item: listOder.getList()) {
-            listProduct.add(new OderRequest.Product(item.getProductId(),item.getColor(),item.getRam_rom(),item.getQuantity()));
+        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
+        for (Cart item : listOder.getList()) {
+            for (Cart.Option option : item.getOption()) {
+                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+            }
+            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
         OderRequest.Root request = new OderRequest.Root();
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
         LoadingDialog.showProgressDialog(this, "Đang Tải");
-        Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"),request);
+        Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<ResApi>() {
             @Override
             public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
                 assert response.body() != null;
-                if(response.body().code == 1){
+                if (response.body().code == 1) {
                     runOnUiThread(() -> {
                         Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
                         setResult(Activity.RESULT_OK);
                         finish();
                     });
-                }else {
+                } else {
                     runOnUiThread(() -> {
                         Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
@@ -250,15 +242,31 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
     }
-    private void orderEBanking(){
-        Intent intent = new Intent(this, EBankingPayActivity.class);
-        intent.putExtra("listOder",listOder);
-        startActivityForResult(intent,REQUEST_CODE);
+
+    private void orderEBanking() {
+        if (address == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Noification");
+            builder.setMessage("Vui lòng chọn địa chỉ");
+
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                dialog.dismiss();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }else {
+            Intent intent = new Intent(this, EBankingPayActivity.class);
+            intent.putExtra("listOder",listOder);
+            preferenceManager.putString("addressOrder",address);
+            startActivityForResult(intent,REQUEST_CODE);
+        }
     }
-    private void orderZaloPay(){
+
+    private void orderZaloPay() {
 
     }
-    private void onSelectPayAction(Button btn){
+
+    private void onSelectPayAction(Button btn) {
         int backgroundColor = ContextCompat.getColor(this, R.color.white);
         int textColor = ContextCompat.getColor(this, R.color.black);
 
@@ -282,16 +290,18 @@ public class OrderActivity extends AppCompatActivity {
                 assert data != null;
                 String resultValue = data.getStringExtra("action");
                 assert resultValue != null;
-                if(resultValue.equals("1")){
+                if (resultValue.equals("1")) {
                     setResult(Activity.RESULT_OK);
                     finish();
                 }
             }
         } else if (requestCode == REQUEST_SELECT_ADDRESS && resultCode == RESULT_OK) {
+            assert data != null;
             String name = data.getStringExtra("nameAddress");
             String phone = data.getStringExtra("phoneAddress");
             String city = data.getStringExtra("cityAddress");
             String street = data.getStringExtra("streetAddress");
+            address = data.getStringExtra("addressId");
 
             tvName.setVisibility(View.VISIBLE);
             tvPhone.setVisibility(View.VISIBLE);
@@ -302,6 +312,6 @@ public class OrderActivity extends AppCompatActivity {
             tvPhone.setText(phone);
             tvCity.setText(city);
             tvStreet.setText(street);
-            }
         }
+    }
 }

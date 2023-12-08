@@ -60,7 +60,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         holder.cmt.setText(objFeedBack.getComment());
         holder.nameUser.setText(objFeedBack.getNameUser());
         holder.ratingBar.setRating((float) objFeedBack.getRating());
-        Glide.with(mContext).load(objFeedBack.getAvtUser()).into(holder.imgDoctor);
+        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(objFeedBack.getAvtUser())).into(holder.imgDoctor);
         LayerDrawable starsDrawable = (LayerDrawable) holder.ratingBar.getProgressDrawable();
         starsDrawable.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
         starsDrawable.getDrawable(0).setColorFilter(mContext.getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);

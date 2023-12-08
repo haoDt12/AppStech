@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.login.LoginActivity;
@@ -49,7 +48,7 @@ public class ListProductActivity extends AppCompatActivity {
     private boolean isGirdView = true;
     private int layoutItemProduct = R.layout.item_product;
 
-    private ArrayList<Product> dataList;
+    private ArrayList<GetListProductResponse.Product> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +119,7 @@ public class ListProductActivity extends AppCompatActivity {
         rcvProduct.setLayoutAnimation(animationController);
     }
 
-    private void displayProduct(ArrayList<Product> dataList) {
+    private void displayProduct(ArrayList<GetListProductResponse.Product> dataList) {
         if (isLoadProduct) {
             LoadingDialog.dismissProgressDialog();
         }
@@ -150,11 +149,7 @@ public class ListProductActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        for (GetListProductResponse.Product item : response.body().getProduct()) {
-                            dataList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(), item.getDescription(),
-                                    item.getColor(), item.getPrice(), item.getQuantity(), item.getSold(), item.getList_img(),
-                                    item.getDate(), item.getRam_rom(), item.getImg_cover(), item.getVideo()));
-                        }
+                        dataList = response.body().getProduct();
                         runOnUiThread(new TimerTask() {
                             @Override
                             public void run() {

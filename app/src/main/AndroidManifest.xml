@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.USE_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" tools:node="remove"/>
 
     <application
         android:allowBackup="true"
@@ -26,7 +27,7 @@
             android:name=".ui.dashboard.address.OrderAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.add_review_activity"
+            android:name=".activities.AddReviewActivity"
             android:exported="false" />
         <activity
             android:name=".activities.EBankingPayActivity"

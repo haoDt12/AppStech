@@ -1,13 +1,19 @@
 package com.datn.shopsale.request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OderRequest {
     public static class Product{
         private String productId;
-        private String color;
-        private String ram_rom;
+        private ArrayList<Option> option;
         private int quantity;
+
+        public Product(String productId, ArrayList<Option> option, int quantity) {
+            this.productId = productId;
+            this.option = option;
+            this.quantity = quantity;
+        }
 
         public String getProductId() {
             return productId;
@@ -15,22 +21,6 @@ public class OderRequest {
 
         public void setProductId(String productId) {
             this.productId = productId;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public void setColor(String color) {
-            this.color = color;
-        }
-
-        public String getRam_rom() {
-            return ram_rom;
-        }
-
-        public void setRam_rom(String ram_rom) {
-            this.ram_rom = ram_rom;
         }
 
         public int getQuantity() {
@@ -41,11 +31,12 @@ public class OderRequest {
             this.quantity = quantity;
         }
 
-        public Product(String productId, String color, String ram_rom, int quantity) {
-            this.productId = productId;
-            this.color = color;
-            this.ram_rom = ram_rom;
-            this.quantity = quantity;
+        public ArrayList<Option> getOption() {
+            return option;
+        }
+
+        public void setOption(ArrayList<Option> option) {
+            this.option = option;
         }
     }
 
@@ -76,6 +67,51 @@ public class OderRequest {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+    }
+    public static class Option{
+        private String type;
+        private String title;
+        private String content;
+        private String feesArise;
+
+        public Option(String type, String title, String content, String feesArise) {
+            this.type = type;
+            this.title = title;
+            this.content = content;
+            this.feesArise = feesArise;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getFeesArise() {
+            return feesArise;
+        }
+
+        public void setFeesArise(String feesArise) {
+            this.feesArise = feesArise;
         }
     }
 }

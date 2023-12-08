@@ -10,6 +10,7 @@ import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
 import com.datn.shopsale.response.GetBannerResponse;
+import com.datn.shopsale.response.GetListCartResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
@@ -219,4 +220,9 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getAllFeedBackByProductId")
     Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
+    @FormUrlEncoded
+    @POST("/api/getCartByCartIdUser")
+    Call<GetListCartResponse.Root> getDataCartV2(@Header("Authorization") String token,
+                                            @Field("id") String id
+    );
 }

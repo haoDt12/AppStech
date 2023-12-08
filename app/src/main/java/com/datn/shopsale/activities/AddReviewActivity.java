@@ -3,18 +3,13 @@ package com.datn.shopsale.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +19,14 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.login.SignUpActivity;
-import com.datn.shopsale.ui.login.VerifyOTPActivity;
+import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class add_review_activity extends AppCompatActivity{
+public class AddReviewActivity extends AppCompatActivity{
     private Toolbar toolbarFeedback;
     private TextView tvSubmit;
     private ImageView imgProduct;
@@ -53,7 +47,8 @@ public class add_review_activity extends AppCompatActivity{
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
         idProduct = getIntent().getStringExtra("id");
-        Glide.with(this).load(getIntent().getStringExtra("image")).into(imgProduct);
+        String url = getIntent().getStringExtra("image");
+        Glide.with(this).load(GetImgIPAddress.convertLocalhostToIpAddress(url)).into(imgProduct);
         tvName.setText(getIntent().getStringExtra("name"));
         tvDescription.setText(getIntent().getStringExtra("color")+"    "+ getIntent().getStringExtra("ram"));
         Toast.makeText(this, ""+getIntent().getStringExtra("name"), Toast.LENGTH_SHORT).show();
@@ -84,16 +79,16 @@ public class add_review_activity extends AppCompatActivity{
             @Override
             public void onResponse(Call<ResApi> call, Response<ResApi> response) {
                 if (response.body().code ==1){
-                    Toast.makeText(add_review_activity.this, "FeedBack thanh cong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddReviewActivity.this, "FeedBack thanh cong", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(add_review_activity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddReviewActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResApi> call, Throwable t) {
                 Log.e("Error", "onFailure: " + t);
-                Toast.makeText(add_review_activity.this, "error: "+t, Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddReviewActivity.this, "error: "+t, Toast.LENGTH_SHORT).show();
             }
         });
     }

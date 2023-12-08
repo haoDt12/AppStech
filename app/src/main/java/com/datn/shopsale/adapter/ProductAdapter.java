@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.DetailProductActivity;
-import com.datn.shopsale.models.Product;
+import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.squareup.picasso.Picasso;
@@ -24,10 +24,10 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    private List<Product> dataList;
+    private List<GetListProductResponse.Product> dataList;
     private Context context;
     private int itemLayout;
-    public ProductAdapter(ArrayList<Product> dataList,Context context, int itemLayout){
+    public ProductAdapter(ArrayList<GetListProductResponse.Product> dataList, Context context, int itemLayout){
         this.dataList = dataList;
         this.context = context;
         this.itemLayout = itemLayout;
@@ -41,27 +41,29 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product product = dataList.get(position);
+        GetListProductResponse.Product product = dataList.get(position);
         if (product == null){
             return;
         }
-//        Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(product.getImg_cover())).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         String price = product.getPrice();
         String formattedAmount = CurrencyUtils.formatCurrency(price);
         holder.tvPrice.setText(formattedAmount);
-
+        if(product.getQuantity().equals("0")){
+            holder.tvStatus.setText(context.getText(R.string.hrt_hang));
+        }else {
+            holder.tvStatus.setText(context.getText(R.string.con_hang));
+        }
         holder.rltProduct.setOnClickListener(v->{
             Intent intent = new Intent(context, DetailProductActivity.class);
             intent.putExtra("list_img",product.getList_img());
             intent.putExtra("video",product.getVideo());
             intent.putExtra("title",product.getTitle());
-            intent.putExtra("price",product.getPrice()+"");
-            intent.putExtra("color",product.getColor());
-            intent.putExtra("ram_rom",product.getRam_rom());
+            intent.putExtra("price",product.getPrice());
             intent.putExtra("id",product.get_id());
             intent.putExtra("imgCover",product.getImg_cover());
+            intent.putExtra("product",product);
             context.startActivity(intent);
         });
 
@@ -75,7 +77,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvName;
+        private TextView tvName, tvStatus;
         private TextView tvPrice;
         private ImageView imgProduct;
         private RelativeLayout rltProduct;
@@ -85,6 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            tvStatus = (TextView) itemView.findViewById(R.id.tv_status);
             imgProduct = (ImageView) itemView.findViewById(R.id.img_product);
             rltProduct = (RelativeLayout) itemView.findViewById(R.id.rlt_product);
         }

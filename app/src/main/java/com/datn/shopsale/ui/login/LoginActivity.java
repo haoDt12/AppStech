@@ -81,7 +81,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         initView();
         apiService = RetrofitConnection.getApiService();
         tvForgotPass.setOnClickListener(view -> {
@@ -97,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
-        }else {
+        } else {
             edEmail.setText(preferenceManager.getString(Constants.KEY_EMAIL));
         }
 
@@ -160,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
             thread.start();
         });
     }
+
     private void initView() {
         edEmail = findViewById(R.id.ed_email);
         edPass = findViewById(R.id.ed_pass);
@@ -219,11 +219,11 @@ public class LoginActivity extends AppCompatActivity {
                 preferenceManager.putString(Constants.KEY_EMAIL, username);
                 preferenceManager.putString(Constants.KEY_PASS, pass);
                 preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
-            }else {
+            } else {
                 preferenceManager.putString(Constants.KEY_EMAIL, username);
             }
             try {
-                LoadingDialog.showProgressDialog(this,"Đang Tải...");
+                LoadingDialog.showProgressDialog(this, "Đang Tải...");
                 Call<ResApi> call = apiService.signin(username, pass);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
@@ -302,15 +302,15 @@ public class LoginActivity extends AppCompatActivity {
         Pattern patternPhone = Pattern.compile(phonePattern);
         Matcher matcherPhone = patternPhone.matcher(username);
 
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
             Toast.makeText(this, R.string.re_enter_email_or_phone_number, Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (pass.isEmpty()){
+        if (pass.isEmpty()) {
             Toast.makeText(this, R.string.re_enter_password, Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(!matcherPhone.matches() && !matcherEmail.matches()){
+        if (!matcherPhone.matches() && !matcherEmail.matches()) {
             Toast.makeText(this, R.string.email_or_phone_number_wong, Toast.LENGTH_SHORT).show();
             return false;
         }
