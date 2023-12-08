@@ -1,5 +1,6 @@
 package com.datn.shopsale.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GetListProductResponse.Product product = dataList.get(position);
@@ -55,6 +57,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         }else {
             holder.tvStatus.setText(context.getText(R.string.con_hang));
         }
+        holder.tvSold.setText("Đã bán: "+product.getSold());
         holder.rltProduct.setOnClickListener(v->{
             Intent intent = new Intent(context, DetailProductActivity.class);
             intent.putExtra("list_img",product.getList_img());
@@ -77,7 +80,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvName, tvStatus;
+        private TextView tvName, tvStatus, tvSold;
         private TextView tvPrice;
         private ImageView imgProduct;
         private RelativeLayout rltProduct;
@@ -86,6 +89,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            tvSold = (TextView) itemView.findViewById(R.id.tv_sold);
             tvPrice = (TextView) itemView.findViewById(R.id.tv_price);
             tvStatus = (TextView) itemView.findViewById(R.id.tv_status);
             imgProduct = (ImageView) itemView.findViewById(R.id.img_product);

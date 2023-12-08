@@ -38,7 +38,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private HistoryInfoAdapter adapter;
     private ActivitySearchBinding binding;
-    private ArrayList<Product> productList = new ArrayList<>();
+    private ArrayList<GetListProductResponse.Product> productList = new ArrayList<>();
     private ArrayList<Product> newList = new ArrayList<>();
     ProductAdapter productAdapter;
     SearchAdapter searchAdapter;
@@ -90,11 +90,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
                 if (response.body().getCode() == 1) {
-                    for (GetListProductResponse.Product item : response.body().getProduct()) {
-                        productList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(), item.getDescription(),
-                                item.getColor(), item.getPrice(), item.getQuantity(), item.getSold(), item.getList_img(),
-                                item.getDate(), item.getRam_rom(), item.getImg_cover(), item.getVideo()));
-                    }
+                    productList = response.body().getProduct();
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
