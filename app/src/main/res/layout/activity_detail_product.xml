@@ -47,7 +47,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vpg_product"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="350dp"
                     android:src="@drawable/img_iphone"
                     android:layout_margin="10dp"
                     android:layout_centerHorizontal="true" />

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,7 +43,7 @@ public class SearchActivity extends AppCompatActivity {
     ProductAdapter productAdapter;
     SearchAdapter searchAdapter;
     private RecyclerView rcvFoyyou;
-    private SearchView idSearch;
+    private EditText idSearch;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
 
@@ -53,7 +54,7 @@ public class SearchActivity extends AppCompatActivity {
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         rcvFoyyou = (RecyclerView) findViewById(R.id.rcv_foyyou);
-        idSearch = (SearchView) findViewById(R.id.id_search);
+        idSearch = findViewById(R.id.id_search);
 
         setSupportActionBar(binding.toolbarSearch);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -77,7 +78,7 @@ public class SearchActivity extends AppCompatActivity {
         binding.rcvHistory.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
         rcvFoyyou.setAdapter(productAdapter);
         displayProduct();
-        search();
+//        search();
         showSearchHistory();
 
     }
@@ -114,31 +115,31 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    public void search() {
-        idSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                saveSearchHistory(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.d("zzzzzz", "onQueryTextChange: " + newText);
-                List<GetListProductResponse.Product> suggestions = new ArrayList<>();
-                for (int i = 0; i < productList.size(); i++) {
-                    if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())) {
-                        suggestions.add(productList.get(i));
-                        Log.d("zzz", "onQueryTextChange: " + productList.get(i));
-                    }
-                }
-                productAdapter = new ProductAdapter((ArrayList<GetListProductResponse.Product>) suggestions, SearchActivity.this, R.layout.item_product);
-                binding.rcvFoyyou.setAdapter(productAdapter);
-
-                return false;
-            }
-        });
-    }
+//    public void search() {
+//        idSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                saveSearchHistory(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                Log.d("zzzzzz", "onQueryTextChange: " + newText);
+//                List<Product> suggestions = new ArrayList<>();
+//                for (int i = 0; i < productList.size(); i++) {
+//                    if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())) {
+//                        suggestions.add(productList.get(i));
+//                        Log.d("zzz", "onQueryTextChange: " + productList.get(i));
+//                    }
+//                }
+//                productAdapter = new ProductAdapter((ArrayList<Product>) suggestions, SearchActivity.this, R.layout.item_product);
+//                binding.rcvFoyyou.setAdapter(productAdapter);
+//
+//                return false;
+//            }
+//        });
+//    }
 
     private void saveSearchHistory(String query) {
         SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);

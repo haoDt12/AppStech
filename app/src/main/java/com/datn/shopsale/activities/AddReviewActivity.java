@@ -36,6 +36,7 @@ public class AddReviewActivity extends AppCompatActivity{
     private EditText edComment;
     private String idProduct;
     private ApiService apiService;
+    private TextView tvRating;
     PreferenceManager preferenceManager ;
     private double rating_result;
     @Override
@@ -60,6 +61,7 @@ public class AddReviewActivity extends AppCompatActivity{
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 // Xử lý sự kiện khi giá trị đánh giá thay đổi
                 rating_result = ratingBar.getRating();
+                tvRating.setText((int) rating_result);
             }
         });
     }
@@ -97,6 +99,7 @@ public class AddReviewActivity extends AppCompatActivity{
         tvSubmit = (TextView) findViewById(R.id.tv_submit);
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvName = (TextView) findViewById(R.id.tv_name);
+        tvRating = (TextView) findViewById(R.id.tv_rating);
         tvDescription = (TextView) findViewById(R.id.tv_description);
         edComment = (EditText) findViewById(R.id.ed_comment);
 

@@ -11,8 +11,8 @@
 
            <de.hdodenhof.circleimageview.CircleImageView
                android:id="@+id/img_doctor"
-               android:layout_width="50dp"
-               android:layout_height="50dp"
+               android:layout_width="40dp"
+               android:layout_height="40dp"
                android:src="@drawable/ic_user" />
 
                <TextView
@@ -23,7 +23,7 @@
                    android:layout_height="wrap_content"
                    android:hint="Em Túng"
                    android:layout_toRightOf="@+id/img_doctor"
-                   android:textSize="15sp"
+                   android:textSize="13sp"
                    android:textStyle="bold"/>
                <RatingBar
                    android:layout_marginLeft="7dp"
@@ -42,23 +42,26 @@
                android:layout_alignParentEnd="true"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:hint="2 ngày trước"
+               android:hint=""
                android:textSize="15sp"
                android:layout_gravity="center_vertical"
                android:textStyle="bold"/>
 
        <TextView
-           android:layout_alignParentEnd="true"
-           android:layout_below="@+id/img_doctor"
            android:id="@+id/cmt"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="15dp"
+           android:layout_below="@+id/img_doctor"
+           android:layout_alignParentEnd="true"
+           android:layout_marginStart="15dp"
+           android:layout_marginTop="9dp"
+           android:layout_marginEnd="0dp"
+           android:layout_marginBottom="15dp"
+           android:background="@drawable/bg_tv"
            android:padding="10dp"
            android:text="Đánh giá rất tốt. Ứng dụng hoạt động mượt mà và hữu ích. Tôi rất hài lòng với nó. Qúa là tuyệt vời, khi mình gặp nhau"
-           android:background="@drawable/bg_tv"
-           android:textStyle="bold"
            android:textColor="@color/black"
-           android:textSize="16sp" />
+           android:textSize="16sp"
+           android:textStyle="bold" />
    </RelativeLayout>
 </LinearLayout>
