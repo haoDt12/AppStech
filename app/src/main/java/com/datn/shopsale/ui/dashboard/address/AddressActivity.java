@@ -44,6 +44,7 @@ import retrofit2.Response;
 public class AddressActivity extends AppCompatActivity implements View.OnClickListener {
     private Toolbar toolbarAddress;
     private static final int REQUEST_CODE_EDIT_CITY = 1;
+    private static final int REQUEST_SELECT_ADDRESS = 2;
     private LinearLayout lnlAddAddress;
     private RecyclerView rcvAddress;
     private ArrayList<Address> dataList = new ArrayList<>();
@@ -58,6 +59,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     String addressText;
 
     private boolean isCurrentLocationSelected = false;
+
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -78,6 +80,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         setSupportActionBar(toolbarAddress);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+
         toolbarAddress.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
@@ -94,6 +97,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         dataList.clear();
         String idUser = preferenceManager.getString("userId");
 
+
         Call<ResponseAddress.Root> call = apiService.getAddress(preferenceManager.getString("token"), idUser);
         call.enqueue(new Callback<ResponseAddress.Root>() {
             @Override
@@ -105,7 +109,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            addressAdapter = new AddressAdapter(dataList, getApplicationContext(), new AddressAdapter.Callback() {
+                            addressAdapter = new AddressAdapter(dataList, AddressActivity.this, new AddressAdapter.Callback() {
                                 @Override
                                 public void editAddress(Address address) {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(AddressActivity.this, R.style.FullScreenDialogTheme);
@@ -164,8 +168,16 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                                     dialog.show();
                                 }
                             });
+
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AddressActivity.this, RecyclerView.VERTICAL, false);
                             rcvAddress.setLayoutManager(linearLayoutManager);
+                            Intent resultIntent = getIntent();
+                            String value = resultIntent.getStringExtra("select");
+                            if (value != null && value.equals("oke")) {
+                                addressAdapter.setIsAddress(true);
+                            } else {
+                                addressAdapter.setIsAddress(false);
+                            }
                             rcvAddress.setAdapter(addressAdapter);
                         }
                     });

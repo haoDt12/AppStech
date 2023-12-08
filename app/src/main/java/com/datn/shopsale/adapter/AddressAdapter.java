@@ -32,13 +32,17 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private ArrayList<Address> dataList;
     private Callback callback;
     private Context context;
+    private int selectedItemPosition = -1;
+    private boolean isAddressSelect;
     public AddressAdapter(ArrayList<Address> dataList,Context context,Callback callback) {
         this.dataList = dataList;
         this.context = context;
         this.callback = callback;
         notifyDataSetChanged();
     }
-
+    public void setIsAddress(boolean isAddressSelect) {
+        this.isAddressSelect = isAddressSelect;
+    }
     @NonNull
     @Override
     public AddressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -96,7 +100,21 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
             tvPhoneNumber.setText(address.getPhone_number());
             tvAddressCity.setText(address.getCity());
             tvAddressStreet.setText(address.getStreet());
-
+            mainLayout.setBackgroundResource(selectedItemPosition == position ? R.color.red : R.color.mauve);
+            mainLayout.setOnClickListener(v -> {
+                if(isAddressSelect==true) {
+                    selectedItemPosition = position;
+                    notifyDataSetChanged(); // Notify the adapter that the data set changed
+                    Intent intent = new Intent(context, OrderActivity.class);
+                    intent.putExtra("nameAddress", address.getName());
+                    intent.putExtra("phoneAddress", address.getPhone_number());
+                    intent.putExtra("cityAddress", address.getCity());
+                    intent.putExtra("streetAddress", address.getStreet());
+                    intent.putExtra("addressId", address.get_id());
+                    ((Activity) context).setResult(Activity.RESULT_OK, intent);
+                    ((Activity) context).finish();
+                }
+            });
 
             tvEdit.setOnClickListener(v->{
                 callback.editAddress(address);
