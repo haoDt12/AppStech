@@ -19,4 +19,9 @@ public class KeyValue {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public KeyValue(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
 }

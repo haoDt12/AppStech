@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -21,9 +22,10 @@ public class NotificationMessageService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
-        if(message.getData().size() > 0){
+        if (message.getData().size() > 0) {
             String title = message.getData().get("title");
             String body = message.getData().get("body");
+            Log.d("messsss", "onMessageReceived: " + title + " " + body);
             sendNotification(title, body);
         }
     }

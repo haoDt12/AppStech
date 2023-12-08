@@ -4,25 +4,24 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.KeyValue;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
-    private ArrayList<String> ramList;
+    private List<KeyValue> ramList;
     private String selectedRam;
     private OnRamItemClickListener listener; // Define a listener interface
-    public RamAdapter(ArrayList<String> ramList,OnRamItemClickListener listener) {
+    public RamAdapter(List<KeyValue> ramList,OnRamItemClickListener listener) {
         this.ramList = ramList;
         this.listener= listener;
-        selectedRam=null;
+        selectedRam=ramList.get(0).getKey();
     }
     public interface OnRamItemClickListener {
         void onRamItemClick(String ram);
@@ -37,7 +36,7 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RamAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        final String ram = ramList.get(position);
+        final String ram = ramList.get(position).getKey();
         holder.btnRam.setText(ram);
         if (ram.equals(selectedRam)) {
             holder.btnRam.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
@@ -48,7 +47,7 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
         holder.btnRam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String clickedRam = ramList.get(holder.getAdapterPosition());
+                String clickedRam = ramList.get(holder.getAdapterPosition()).getKey();
 
                 if (selectedRam != null && selectedRam.equals(clickedRam)) {
                     selectedRam = null;
