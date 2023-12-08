@@ -1,9 +1,10 @@
 package com.datn.shopsale.response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GetListProductResponse {
-    public class Category{
+    public class Category implements Serializable{
         private String _id;
         private String title;
         private String date;
@@ -42,18 +43,17 @@ public class GetListProductResponse {
         }
     }
 
-    public class Product{
+    public class Product implements Serializable {
         private String _id;
         private Category category;
         private String title;
         private String description;
-        private ArrayList<String> color;
         private String price;
         private String quantity;
         private String sold;
         private ArrayList<String> list_img;
         private String date;
-        private ArrayList<String> ram_rom;
+        private ArrayList<Option> option;
         private String img_cover;
         private String video;
 
@@ -87,14 +87,6 @@ public class GetListProductResponse {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        public ArrayList<String> getColor() {
-            return color;
-        }
-
-        public void setColor(ArrayList<String> color) {
-            this.color = color;
         }
 
         public String getPrice() {
@@ -137,12 +129,12 @@ public class GetListProductResponse {
             this.date = date;
         }
 
-        public ArrayList<String> getRam_rom() {
-            return ram_rom;
+        public ArrayList<Option> getOption() {
+            return option;
         }
 
-        public void setRam_rom(ArrayList<String> ram_rom) {
-            this.ram_rom = ram_rom;
+        public void setOption(ArrayList<Option> option) {
+            this.option = option;
         }
 
         public String getImg_cover() {
@@ -159,6 +151,52 @@ public class GetListProductResponse {
 
         public void setVideo(String video) {
             this.video = video;
+        }
+
+    }
+    public class Option implements Serializable{
+        private String type;
+        private String title;
+        private String content;
+        private String feesArise;
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+        public String getFeesArise() {
+            return feesArise;
+        }
+
+        public void setFeesArise(String feesArise) {
+            this.feesArise = feesArise;
+        }
+        @Override
+        public String toString() {
+            return "Option{" +
+                    "type='" + type + '\'' +
+                    ", title='" + title + '\'' +
+                    ", content='" + content + '\'' +
+                    ", feesArise='" + feesArise + '\'' +
+                    '}';
         }
     }
     public class Root{

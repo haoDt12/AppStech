@@ -53,7 +53,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tv_"
+            android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_price"
@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_price"
             android:layout_marginStart="5dp"
-            android:layout_toEndOf="@+id/tv_"
+            android:layout_toEndOf="@+id/tv_status"
             android:paddingTop="2dp"
             android:text="●"
             android:textColor="@color/black"

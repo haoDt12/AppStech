@@ -1,28 +1,27 @@
 package com.datn.shopsale.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.KeyValue;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
-    private ArrayList<String> romList;
+    private List<KeyValue> romList;
     private OnRomItemClickListener listener; // Define a listener interface
     private String selectedRom; // Define a listener interface
 
-    public RomAdapter(ArrayList<String> romList, OnRomItemClickListener listener) {
+    public RomAdapter(List<KeyValue> romList, OnRomItemClickListener listener) {
         this.romList = romList;
         this.listener = listener;
-        selectedRom = null;
+        selectedRom = romList.get(0).getKey();
     }
 
     public interface OnRomItemClickListener {
@@ -37,7 +36,7 @@ public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RomAdapter.RomViewHolder holder, int position) {
-        final String rom = romList.get(position);
+        final String rom = romList.get(position).getKey();
         holder.btnRom.setText(rom);
         if (rom.equals(selectedRom)) {
             holder.btnRom.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
@@ -48,7 +47,7 @@ public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
         holder.btnRom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String clickedRom = romList.get(holder.getAdapterPosition());
+                String clickedRom = romList.get(holder.getAdapterPosition()).getKey();
 
                 if (selectedRom != null && selectedRom.equals(clickedRom)) {
                     selectedRom = null;

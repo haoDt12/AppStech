@@ -22,18 +22,16 @@ public class Product {
     public Product() {
     }
 
-    public Product(String _id, GetListProductResponse.Category category, String title, String description, ArrayList<String> color, String price, String quantity, String sold, ArrayList<String> list_img, String date, ArrayList<String> ram_rom, String img_cover, String video) {
+    public Product(String _id, GetListProductResponse.Category category, String title, String description, String price, String quantity, String sold, ArrayList<String> list_img, String date, String img_cover, String video) {
         this._id = _id;
         this.category = category;
         this.title = title;
         this.description = description;
-        this.color = color;
         this.price = price;
         this.quantity = quantity;
         this.sold = sold;
         this.list_img = list_img;
         this.date = date;
-        this.ram_rom = ram_rom;
         this.img_cover = img_cover;
         this.video = video;
     }

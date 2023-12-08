@@ -9,8 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +18,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.ChatScreenAdminActivity;
 import com.datn.shopsale.activities.ListProductActivity;
@@ -30,7 +27,6 @@ import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.SliderAdapter;
 import com.datn.shopsale.databinding.FragmentHomeBinding;
 import com.datn.shopsale.models.Category;
-import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
@@ -43,6 +39,7 @@ import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,8 +54,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    private final ArrayList<Product> dataList = new ArrayList<>();
-    private ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
+    private ArrayList<GetListProductResponse.Product> dataList = new ArrayList<>();
+    private final ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
 
@@ -69,7 +66,6 @@ public class HomeFragment extends Fragment {
 
     private ApiService apiService;
     private PreferenceManager preferenceManager;
-    List<Integer> imageList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,8 +76,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        return root;
+        return binding.getRoot();
     }
 
     private List<String> GetListBanner() {
@@ -90,11 +85,13 @@ public class HomeFragment extends Fragment {
         Call<GetBannerResponse.Root> call = apiService.getListBanner(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetBannerResponse.Root>() {
             @Override
-            public void onResponse(Call<GetBannerResponse.Root> call, Response<GetBannerResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetBannerResponse.Root> call, @NonNull Response<GetBannerResponse.Root> response) {
                 Log.d("TAG", "onResponse: " + response.code() + "zzzzzzzzzzz" + response);
                 Log.d("TAG", "onResponse: " + response.body());
+                assert response.body() != null;
                 if (response.body().code == 1) {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
+                        isLoadBanner = true;
                         for (GetBannerResponse.Banner item : response.body().banner) {
                             listImg.add(new GetBannerResponse.Banner(item._id, item.img));
                             Log.d("TAG", "run: " + listImg.get(0).getImg());
@@ -109,12 +106,14 @@ public class HomeFragment extends Fragment {
                         binding.circleIndicator.setViewPager(binding.vpgSlideImage);
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
                         Log.d("item", "onResponse: " + list.size());
-
+                        if (isLoadProduct && isLoadCategory) {
+                            LoadingDialog.dismissProgressDialog();
+                        }
                     });
                 } else {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
-                        if (isLoadBanner) {
+                        if (isLoadProduct && isLoadCategory) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
@@ -122,12 +121,12 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GetBannerResponse.Root> call, Throwable t) {
-                getActivity().runOnUiThread(() -> {
-                    LoadingDialog.dismissProgressDialog();
-                    preferenceManager.clear();
-                    startActivity(new Intent(getActivity(), LoginActivity.class));
-                    getActivity().finish();
+            public void onFailure(@NonNull Call<GetBannerResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (isLoadProduct && isLoadCategory) {
+                        LoadingDialog.dismissProgressDialog();
+                    }
                 });
             }
 
@@ -141,28 +140,26 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
+        assert activity != null;
         activity.setSupportActionBar(binding.toolbarHome);
-        binding.lnlSearch.setOnClickListener(view1 -> {
-            startActivity(new Intent(getActivity(), SearchActivity.class));
-        });
+        binding.lnlSearch.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), SearchActivity.class)));
         preferenceManager = new PreferenceManager(getActivity());
         Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
-        List<String> imageList = new ArrayList<>();
         Log.d("TagList", "onCreateView: " + GetListBanner().size());
 
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(() -> {
+                requireActivity().runOnUiThread(() -> {
                     try {
                         int currentItem = binding.vpgSlideImage.getCurrentItem();
-                        int totalItems = binding.vpgSlideImage.getAdapter().getCount();
+                        int totalItems = Objects.requireNonNull(binding.vpgSlideImage.getAdapter()).getCount();
                         int nextItem = (currentItem + 1) % totalItems;
                         binding.vpgSlideImage.setCurrentItem(nextItem);
                     } catch (Exception exception) {
-                        Log.d("TAGzz: ", exception.getMessage());
+                        Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
                     }
                 });
             }
@@ -179,48 +176,45 @@ public class HomeFragment extends Fragment {
         Call<GetListProductResponse.Root> call = apiService.getListProduct(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetListProductResponse.Root>() {
             @Override
-            public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
+                assert null != response.body();
                 if (response.body().getCode() == 1) {
-                    for (GetListProductResponse.Product item : response.body().getProduct()) {
-                        dataList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(), item.getDescription(),
-                                item.getColor(), item.getPrice(), item.getQuantity(), item.getSold(), item.getList_img(),
-                                item.getDate(), item.getRam_rom(), item.getImg_cover(), item.getVideo()));
-                    }
-                    getActivity().runOnUiThread(new TimerTask() {
+                    dataList = response.body().getProduct();
+                    requireActivity().runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
                             productAdapter = new ProductAdapter(dataList, getActivity(), R.layout.item_product);
                             binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                             binding.rcvListItemPro.setAdapter(productAdapter);
                             isLoadProduct = true;
-                            if (isLoadCategory) {
+                            if (isLoadCategory && isLoadBanner) {
                                 LoadingDialog.dismissProgressDialog();
                             }
                         }
                     });
                 } else {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if (isLoadCategory) {
+                        if (isLoadCategory && isLoadBanner) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
                 }
                 if (response.body().getMessage().equals("wrong token")) {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
                         preferenceManager.clear();
                         startActivity(new Intent(getActivity(), LoginActivity.class));
-                        getActivity().finish();
+                        requireActivity().finish();
                     });
                 }
             }
 
             @Override
-            public void onFailure(Call<GetListProductResponse.Root> call, Throwable t) {
-                getActivity().runOnUiThread(() -> {
+            public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (isLoadCategory) {
+                    if (isLoadCategory && isLoadBanner) {
                         LoadingDialog.dismissProgressDialog();
                     }
                 });
@@ -233,13 +227,14 @@ public class HomeFragment extends Fragment {
         Call<GetListCategoryResponse.Root> call = apiService.getListCategory(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetListCategoryResponse.Root>() {
             @Override
-            public void onResponse(Call<GetListCategoryResponse.Root> call, Response<GetListCategoryResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Response<GetListCategoryResponse.Root> response) {
                 Log.d("zzzz", "onResponse: " + response);
+                assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (GetListCategoryResponse.Category item : response.body().getCategory()) {
                         dataCategory.add(new Category(item.get_id(), item.getTitle(), item.getImg(), item.getDate()));
                     }
-                    getActivity().runOnUiThread(new TimerTask() {
+                    requireActivity().runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
                             if (dataCategory.size() > 12) {
@@ -249,41 +244,35 @@ public class HomeFragment extends Fragment {
                                     Category viewLess = new Category("-1", "Ẩn bớt", temp, "---");
                                     Log.d("zzzz", "run: " + dataCategory);
                                     if (isDisableItem) {
-//                    setAnimationRecyclerview(R.anim.layout_animation_down_to_up);
                                         dataCategory.add(11, viewMore);
                                     } else {
-//                    setAnimationRecyclerview(R.anim.layout_animation_up_to_down);
                                         dataCategory.add(dataCategory.size(), viewLess);
                                     }
 
                                 }
                             }
-                            categoriesAdapter = new CategoriesAdapter(getActivity(), dataCategory, new IActionCate() {
-                                @Override
-                                public void onClick(Category category) {
-                                    if (category.getId().equals("-1")) {
-                                        isDisableItem = !isDisableItem;
-                                        displayCategory();
-                                    } else {
-//                                        Toast.makeText(getActivity(), category.getId(), Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(getActivity(), ListProductActivity.class);
-                                        intent.putExtra("categoryId", category.getId());
-                                        startActivity(intent);
-                                    }
+                            categoriesAdapter = new CategoriesAdapter(getActivity(), dataCategory, category -> {
+                                if (category.getId().equals("-1")) {
+                                    isDisableItem = !isDisableItem;
+                                    displayCategory();
+                                } else {
+                                    Intent intent = new Intent(getActivity(), ListProductActivity.class);
+                                    intent.putExtra("categoryId", category.getId());
+                                    startActivity(intent);
                                 }
                             });
                             binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                             binding.rcvListCategories.setAdapter(categoriesAdapter);
                             isLoadCategory = true;
-                            if (isLoadProduct) {
+                            if (isLoadProduct && isLoadBanner) {
                                 LoadingDialog.dismissProgressDialog();
                             }
                         }
                     });
                 } else {
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if (isLoadProduct) {
+                        if (isLoadProduct && isLoadBanner) {
                             LoadingDialog.dismissProgressDialog();
                         }
                     });
@@ -291,10 +280,10 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<GetListCategoryResponse.Root> call, Throwable t) {
-                getActivity().runOnUiThread(() -> {
+            public void onFailure(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (isLoadProduct) {
+                    if (isLoadProduct && isLoadBanner) {
                         LoadingDialog.dismissProgressDialog();
                     }
                 });
@@ -329,10 +318,5 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
         timer.cancel();
-    }
-
-    private void setAnimationRecyclerview(int animResource) {
-        LayoutAnimationController animationController = AnimationUtils.loadLayoutAnimation(getActivity(), animResource);
-        binding.rcvListCategories.setLayoutAnimation(animationController);
     }
 }

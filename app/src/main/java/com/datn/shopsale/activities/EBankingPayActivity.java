@@ -59,8 +59,12 @@ public class EBankingPayActivity extends AppCompatActivity {
 
     private void onCallApiPay() {
         List<OderRequest.Product> listProduct = new ArrayList<>();
+        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
-            listProduct.add(new OderRequest.Product(item.getProductId(), item.getColor(), item.getRam_rom(), item.getQuantity()));
+            for (Cart.Option option: item.getOption()){
+                optionList.add(new OderRequest.Option(option.getType(),option.getTitle(),option.getContent(),option.getFeesArise()));
+            }
+            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
         OrderVnPayRequest.Root request = new OrderVnPayRequest.Root();
         request.setProduct(listProduct);

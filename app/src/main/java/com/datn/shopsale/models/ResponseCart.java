@@ -1,7 +1,5 @@
 package com.datn.shopsale.models;
 
-import com.datn.shopsale.response.GetListProductResponse;
-
 import java.util.ArrayList;
 
 public class ResponseCart {
