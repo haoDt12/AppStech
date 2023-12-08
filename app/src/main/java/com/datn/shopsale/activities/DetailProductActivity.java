@@ -7,16 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -30,18 +29,21 @@ import com.datn.shopsale.adapter.ReviewAdapter;
 import com.datn.shopsale.adapter.RomAdapter;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.FeedBack;
+import com.datn.shopsale.models.KeyValue;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.User;
+import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,9 +54,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private Button btnAddToCart;
     private ImageView imgProduct;
     private Toolbar toolbarDetailPro;
-    private TextView tvNameProduct;
+    private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
-    private RecyclerView recyColorsProduct, recyDungLuong,recyRom;
+    private RecyclerView recyColorsProduct, recyDungLuong, recyRom;
     private ContentAdapter contentAdapter;
 
     private ViewPager2 viewPager2;
@@ -64,20 +66,24 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private Product product = new Product();
     private PreferenceManager preferenceManager;
     private ApiService apiService;
-    String selectedColors = "";
-    String selectedRams = "";
-    String selectedRoms = "";
-    String id;
-    String imgCover;
-    String title;
-    int price;
-    RecyclerView recy_cmt;
-    List<FeedBack> listFb;
+    private String selectedColors = "";
+    private String selectedRams = "";
+    private String selectedRoms = "";
+    private String id;
+    private String imgCover;
+    private String title;
+    private int price;
+    private RecyclerView recy_cmt;
+    private List<FeedBack> listFb;
     private TextView tvTBC;
     private TextView tvReview;
     private RatingBar ratingBar;
     private float TBC;
     private float rating;
+    private List<KeyValue> romList;
+    private List<KeyValue> ramList;
+    private List<KeyValue> colorList;
+    private List<GetListProductResponse.Option> optionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +120,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         for (FeedBack objFeedBack : listFb) {
                             tong += objFeedBack.getRating();
                         }
-                        if (listFb.size() == 0){
+                        if (listFb.size() == 0) {
                             TBC = 0;
-                        }else {
+                        } else {
                             TBC = tong / listFb.size();
                         }
                         rating = tong / listFb.size();
@@ -124,7 +130,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         tvReview.setText(listFb.size() + " Review");
                         ratingBar.setRating(rating);
                         adapterRV = new ReviewAdapter(listFb, getApplicationContext());
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
                         recy_cmt.setLayoutManager(linearLayoutManager);
                         recy_cmt.setAdapter(adapterRV);
 
@@ -157,6 +163,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
         recyRom = (RecyclerView) findViewById(R.id.recy_rom);
         viewPager2 = findViewById(R.id.vpg_product);
+        tvColor = (TextView) findViewById(R.id.tv_color);
+        tvRam = (TextView) findViewById(R.id.tv_dungLuong);
+        tvRom = (TextView) findViewById(R.id.tv_rom);
+        romList = new ArrayList<>();
+        ramList = new ArrayList<>();
+        colorList = new ArrayList<>();
 
         setSupportActionBar(toolbarDetailPro);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -173,16 +185,27 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         price = Integer.parseInt(getIntent().getStringExtra("price"));
         id = getIntent().getStringExtra("id");
         imgCover = getIntent().getStringExtra("imgCover");
-
-        ArrayList<String> romList = new ArrayList<>(Arrays.asList("4GB", "8GB", "12GB", "16GB","24gb"));
-        ArrayList<String> ramList = new ArrayList<>(Arrays.asList("4GB", "8GB", "12GB", "16GB","24gb"));
-        ArrayList<String> colorList = new ArrayList<>(Arrays.asList("Xanh", "Đỏ", "Tím", "Vàng","Hồng"));
-
-//        ArrayList<String> colorList = getIntent().getStringArrayListExtra("color");
-//          ArrayList<String> ramList = getIntent().getStringArrayListExtra("ram");
-
+        GetListProductResponse.Product getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
+        if (getProduct != null) {
+            optionList = getProduct.getOption();
+            Log.d("zzzzz", "init: " + optionList.toString());
+            if (getProduct.getOption() != null) {
+                for (GetListProductResponse.Option item : getProduct.getOption()
+                ) {
+                    if (item.getType().equals("Color")) {
+                        colorList.add(new KeyValue(item.getTitle(), item.getContent()));
+                    }
+                    if (item.getType().equals("Rom")) {
+                        romList.add(new KeyValue(item.getTitle(), item.getContent()));
+                    }
+                    if (item.getType().equals("Ram")) {
+                        ramList.add(new KeyValue(item.getTitle(), item.getContent()));
+                    }
+                }
+            }
+        }
         ArrayList<String> listImg = getIntent().getStringArrayListExtra("list_img");
-        final String video = GetImgIPAddress.convertLocalhostToIpAddress(getIntent().getStringExtra("video"));
+        final String video = GetImgIPAddress.convertLocalhostToIpAddress(Objects.requireNonNull(getIntent().getStringExtra("video")));
 
         ArrayList<Product> contentItems = new ArrayList<>();
 
@@ -210,38 +233,33 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvNameProduct.setText(title);
         String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
         tvPriceProduct.setText(formattedNumber);
-
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        recyColorsProduct.setLayoutManager(layoutManager);
-//        LinearLayoutManager layoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        recyDungLuong.setLayoutManager(layoutManager1);
-//        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        recyRom.setLayoutManager(layoutManager2);
-        ColorAdapter.OnColorItemClickListener colorItemClickListener = new ColorAdapter.OnColorItemClickListener() {
-            @Override
-            public void onColorItemClick(String color) {
-                selectedColors = color;
-            }
-        };
-        RamAdapter.OnRamItemClickListener ramItemClickListener = new RamAdapter.OnRamItemClickListener() {
-            @Override
-            public void onRamItemClick(String ram) {
-                selectedRams = ram;
-            }
-        };
-        RomAdapter.OnRomItemClickListener romItemClickListener = new RomAdapter.OnRomItemClickListener() {
-            @Override
-            public void onRomItemClick(String rom) {
-                selectedRoms=rom;
-            }
-        };
-        ColorAdapter adapter = new ColorAdapter(colorList, colorItemClickListener);
-        recyColorsProduct.setAdapter(adapter);
-        RamAdapter adapter1 = new RamAdapter(ramList, ramItemClickListener);
-        recyDungLuong.setAdapter(adapter1);
-        RomAdapter adapter2 = new RomAdapter(romList, romItemClickListener);
-        recyRom.setAdapter(adapter2);
-
+        if (!colorList.isEmpty()) {
+            selectedColors = colorList.get(0).getKey();
+            ColorAdapter.OnColorItemClickListener colorItemClickListener = color -> selectedColors = color;
+            ColorAdapter adapter = new ColorAdapter(colorList, colorItemClickListener);
+            recyColorsProduct.setAdapter(adapter);
+        } else {
+            recyColorsProduct.setVisibility(View.GONE);
+            tvColor.setVisibility(View.GONE);
+        }
+        if (!ramList.isEmpty()) {
+            selectedRams = ramList.get(0).getKey();
+            RamAdapter.OnRamItemClickListener ramItemClickListener = ram -> selectedRams = ram;
+            RamAdapter adapter1 = new RamAdapter(ramList, ramItemClickListener);
+            recyDungLuong.setAdapter(adapter1);
+        } else {
+            recyDungLuong.setVisibility(View.GONE);
+            tvRam.setVisibility(View.GONE);
+        }
+        if (!romList.isEmpty()) {
+            selectedRoms = romList.get(0).getKey();
+            RomAdapter.OnRomItemClickListener romItemClickListener = rom -> selectedRoms = rom;
+            RomAdapter adapter2 = new RomAdapter(romList, romItemClickListener);
+            recyRom.setAdapter(adapter2);
+        } else {
+            tvRom.setVisibility(View.GONE);
+            recyRom.setVisibility(View.GONE);
+        }
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
     }
@@ -250,13 +268,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         if (view.getId() == R.id.lnl_all_feed_back) {
             Intent i = new Intent(this, ReviewActivity.class);
-            i.putExtra("id",id);
+            i.putExtra("id", id);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
         } else if (view.getId() == R.id.btn_add_to_cart) {
-                if (validate()) {
-                    AddToCart();
-                }
+            AddToCart();
         }
     }
 
@@ -267,54 +283,64 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void AddToCart() {
+        LoadingDialog.showProgressDialog(this, "Loading...");
+        ArrayList<GetListProductResponse.Option> options = new ArrayList<>();
+        for (GetListProductResponse.Option item : optionList
+        ) {
+            if (item.getTitle().equals(selectedColors) || item.getTitle().equals(selectedRams) || item.getTitle().equals(selectedRoms)) {
+                options.add(item);
+            }
+        }
         String token = preferenceManager.getString("token");
         String idUser = preferenceManager.getString("userId");
         Cart objCart = new Cart();
         objCart.setProductId(id);
         objCart.setUserId(idUser);
         objCart.setTitle(title);
-        objCart.setColor(selectedColors);
-        objCart.setRam_rom(selectedRams);
         objCart.setPrice(price);
         objCart.setQuantity(1);
         objCart.setImgCover(imgCover);
         objCart.setStatus(1);
+        ArrayList<Cart.Option> optionArrayList = new ArrayList<>();
+        for (GetListProductResponse.Option item : options
+        ) {
+            optionArrayList.add(new Cart.Option(item.getType(),item.getTitle(),item.getContent(),item.getFeesArise()));
+        }
+        objCart.setOption(optionArrayList);
         try {
             Call<ResApi> call = apiService.addToCart(token, objCart);
             call.enqueue(new Callback<ResApi>() {
                 @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if (response.body().code == 1) {
-                        Toast.makeText(DetailProductActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                    }
+                public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                    runOnUiThread(() -> {
+                        assert response.body() != null;
+                        if (response.body().code == 1) {
+                            LoadingDialog.dismissProgressDialog();
+                            Toast.makeText(DetailProductActivity.this, "Thêm vào giỏ hàng thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            LoadingDialog.dismissProgressDialog();
+                            Toast.makeText(DetailProductActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
                 @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
-                    Log.e("error", t.getMessage());
-                    Toast.makeText(DetailProductActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-
+                public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        Log.e("error", t.getMessage());
+                        Toast.makeText(DetailProductActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         } catch (Exception e) {
-            Log.e("error", e.getMessage());
-            Toast.makeText(DetailProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> {
+                LoadingDialog.dismissProgressDialog();
+                Log.e("error", e.getMessage());
+                Toast.makeText(DetailProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
         }
 
 
-    }
-
-    private boolean validate() {
-        if (selectedColors.equals("")) {
-            Toast.makeText(this, "Vui lòng chọn màu", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (selectedRams.equals("")) {
-            Toast.makeText(this, "Vui lòng chọn Dung lượng", Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            return true;
-        }
     }
 }

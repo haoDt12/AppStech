@@ -2,33 +2,28 @@ package com.datn.shopsale.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 public class Cart implements Serializable {
     private String productId;
     private String userId;
     private String title;
-    private String color;
-    private String ram_rom;
     private int price;
     private int quantity;
     private String imgCover;
     private int status;
-
+    private ArrayList<Option> option;
     public Cart() {
     }
 
-    public Cart(String productId, String userId, String title, String color, String ram_rom, int price, int quantity, String imgCover, int status) {
+    public Cart(String productId, String userId, String title,ArrayList<Option> option, int price, int quantity, String imgCover, int status) {
         this.productId = productId;
         this.userId = userId;
         this.title = title;
-        this.color = color;
-        this.ram_rom = ram_rom;
         this.price = price;
         this.quantity = quantity;
         this.imgCover = imgCover;
         this.status = status;
+        this.option = option;
     }
 
     public String getProductId() {
@@ -54,23 +49,6 @@ public class Cart implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getRam_rom() {
-        return ram_rom;
-    }
-
-    public void setRam_rom(String ram_rom) {
-        this.ram_rom = ram_rom;
-    }
-
     public int getPrice() {
         return price;
     }
@@ -101,5 +79,59 @@ public class Cart implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public ArrayList<Option> getOption() {
+        return option;
+    }
+
+    public void setOption(ArrayList<Option> option) {
+        this.option = option;
+    }
+
+    public static class Option implements Serializable{
+        private String type;
+        private String title;
+        private String content;
+        private String feesArise;
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getFeesArise() {
+            return feesArise;
+        }
+
+        public void setFeesArise(String feesArise) {
+            this.feesArise = feesArise;
+        }
+
+        public Option(String type, String title, String content, String feesArise) {
+            this.type = type;
+            this.title = title;
+            this.content = content;
+            this.feesArise = feesArise;
+        }
     }
 }

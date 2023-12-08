@@ -37,7 +37,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private HistoryInfoAdapter adapter;
     private ActivitySearchBinding binding;
-    private ArrayList<Product> productList = new ArrayList<>();
+    private ArrayList<GetListProductResponse.Product> productList = new ArrayList<>();
     private ArrayList<Product> newList = new ArrayList<>();
     ProductAdapter productAdapter;
     SearchAdapter searchAdapter;
@@ -89,11 +89,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
                 if (response.body().getCode() == 1) {
-                    for (GetListProductResponse.Product item : response.body().getProduct()) {
-                        productList.add(new Product(item.get_id(), item.getCategory(), item.getTitle(), item.getDescription(),
-                                item.getColor(), item.getPrice(), item.getQuantity(), item.getSold(), item.getList_img(),
-                                item.getDate(), item.getRam_rom(), item.getImg_cover(), item.getVideo()));
-                    }
+                    productList = response.body().getProduct();
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
@@ -129,14 +125,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("zzzzzz", "onQueryTextChange: " + newText);
-                List<Product> suggestions = new ArrayList<>();
+                List<GetListProductResponse.Product> suggestions = new ArrayList<>();
                 for (int i = 0; i < productList.size(); i++) {
                     if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())) {
                         suggestions.add(productList.get(i));
                         Log.d("zzz", "onQueryTextChange: " + productList.get(i));
                     }
                 }
-                productAdapter = new ProductAdapter((ArrayList<Product>) suggestions, SearchActivity.this, R.layout.item_product);
+                productAdapter = new ProductAdapter((ArrayList<GetListProductResponse.Product>) suggestions, SearchActivity.this, R.layout.item_product);
                 binding.rcvFoyyou.setAdapter(productAdapter);
 
                 return false;

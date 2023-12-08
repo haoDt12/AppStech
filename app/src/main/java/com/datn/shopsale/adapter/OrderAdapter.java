@@ -33,7 +33,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         holder.tvName.setText(mList.getList().get(position).getTitle());
         holder.tvPrice.setText(String.valueOf(mList.getList().get(position).getPrice()));
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
-        holder.tvColor.setText(mList.getList().get(position).getColor());
+//        holder.tvColor.setText(mList.getList().get(position).getColor());
         holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }
 
