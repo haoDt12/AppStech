@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
+import com.datn.shopsale.activities.ChatScreenAdminActivity;
 import com.datn.shopsale.activities.VoucherActivity;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -126,7 +127,7 @@ public class DashboardFragment extends Fragment {
             activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class));
         });
         lnChat.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), ListUsersChatActivity.class));
+            startActivity(new Intent(getContext(), ChatScreenAdminActivity.class));
         });
         lnLocation.setOnClickListener(view1 -> {
             startActivity(new Intent(getContext(), AddressActivity.class));

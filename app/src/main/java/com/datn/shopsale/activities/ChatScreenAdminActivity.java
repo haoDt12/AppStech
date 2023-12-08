@@ -31,9 +31,9 @@ public class ChatScreenAdminActivity extends AppCompatActivity {
         setSupportActionBar(toolbarConversation);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-//        toolbarConversation.setNavigationOnClickListener(v -> {
-//            onBackPressed();
-//        });
+        toolbarConversation.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
         getDataConversation();
     }
 

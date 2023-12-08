@@ -120,6 +120,7 @@
     <string name="cancel">Thoát</string>
     <string name="Continue">Tiếp tục</string>
     <string name="date">Ngày</string>
+    <string name="search_hint">Nhập từ khóa tìm kiếm</string>
     <string name="verify_otp">Xác thực OTP</string>
     <string name="m_s">Giây</string>
     <string name="time_check_otp">Thời gian</string>

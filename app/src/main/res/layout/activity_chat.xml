@@ -40,6 +40,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginHorizontal="5dp"
         android:paddingHorizontal="15dp"
+        android:layout_marginBottom="5dp"
         android:layout_toStartOf="@+id/img_btn_send"
         android:layout_toEndOf="@+id/btn_option"
         android:background="@drawable/bg_coneradios"
@@ -52,5 +53,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
+        android:layout_marginBottom="5dp"
         android:src="@drawable/send_color" />
 </RelativeLayout>
