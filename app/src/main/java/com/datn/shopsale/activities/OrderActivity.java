@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
+import com.datn.shopsale.adapter.AddressAdapter;
 import com.datn.shopsale.adapter.OrderAdapter;
 import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
@@ -29,7 +30,7 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.dashboard.address.OrderAddressActivity;
+import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -68,6 +69,7 @@ public class OrderActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
+    private AddressAdapter addressAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +125,10 @@ public class OrderActivity extends AppCompatActivity {
         onEBanking();
         onZaloPay();
         onPay();
+
         lnlAddressOrder.setOnClickListener(v -> {
-            Intent intent1 = new Intent(this, OrderAddressActivity.class);
+            Intent intent1 = new Intent(this, AddressActivity.class);
+            intent1.putExtra("select","oke");
             startActivityForResult(intent1, REQUEST_SELECT_ADDRESS);
         });
         lnlVoucher.setOnClickListener(v -> {
@@ -297,6 +301,7 @@ public class OrderActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_SELECT_ADDRESS && resultCode == RESULT_OK) {
             assert data != null;
+
             String name = data.getStringExtra("nameAddress");
             String phone = data.getStringExtra("phoneAddress");
             String city = data.getStringExtra("cityAddress");
@@ -312,6 +317,7 @@ public class OrderActivity extends AppCompatActivity {
             tvPhone.setText(phone);
             tvCity.setText(city);
             tvStreet.setText(street);
+
         }
     }
 }
