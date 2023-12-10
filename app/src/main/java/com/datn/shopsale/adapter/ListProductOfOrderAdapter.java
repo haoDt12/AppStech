@@ -60,7 +60,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         if (pro == null){
             return;
         }
-        String proId = pro.productId;
+        String proId = pro.productId._id;
 
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(context);
@@ -92,16 +92,35 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         if(status.equals("PayComplete")){
             holder.btn_danhgia.setVisibility(View.VISIBLE);
         }
-        holder.tvColorProductOfOrder.setText(pro.color);
+        for (GetOrderResponse.Option item: pro.option) {
+            if(item.type.equals("Color")){
+                holder.tvColorProductOfOrder.setText(String.format("Màu: %s", item.title));
+            }
+            if (item.type.equals("Rom")){
+                holder.tvRamRomProductOfOrder.setText(String.format("Rom: %s", item.title));
+            }
+            if (item.type.equals("Ram")){
+                holder.tvRamRamProductOfOrder.setText(String.format("Ram: %s", item.title));
+            }
+        }
         holder.tvNumProductOfOrder.setText("Số lượng: "+pro.quantity+"");
-        holder.tvRamRomProductOfOrder.setText("Ram-Rom"+pro.ram_rom);
         holder.btn_danhgia.setOnClickListener(view -> {
             Intent intent = new Intent(context, AddReviewActivity.class);
-            intent.putExtra("id",pro.productId);
-            intent.putExtra("image",pro.img_cover);
-            intent.putExtra("name",pro.title);
-            intent.putExtra("color",pro.color);
-            intent.putExtra("ram",""+pro.ram_rom);
+            intent.putExtra("id",pro.productId._id);
+            intent.putExtra("image",pro.productId.img_cover);
+            intent.putExtra("name",pro.productId.title);
+            intent.putExtra("price",pro.productId.price);
+            for (GetOrderResponse.Option item: pro.option) {
+                if(item.type.equals("Color")){
+                    intent.putExtra("color",item.title);
+                }
+                if (item.type.equals("Rom")){
+                    intent.putExtra("ram",item.title);
+                }
+                if (item.type.equals("Ram")){
+                    intent.putExtra("rom",item.title);
+                }
+            }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
@@ -118,6 +137,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         private TextView tvColorProductOfOrder;
         private TextView tvNumProductOfOrder;
         private TextView tvRamRomProductOfOrder;
+        private TextView tvRamRamProductOfOrder;
         private ImageView imgProduct;
         private Button btn_danhgia;
 
@@ -129,6 +149,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             tvColorProductOfOrder = (TextView) itemView.findViewById(R.id.tv_colorProductOfOrder);
             tvNumProductOfOrder = (TextView) itemView.findViewById(R.id.tv_numProductOfOrder);
             tvRamRomProductOfOrder = (TextView) itemView.findViewById(R.id.tv_ramRomProductOfOrder);
+            tvRamRamProductOfOrder = (TextView) itemView.findViewById(R.id.tv_ramRamProductOfOrder);
             btn_danhgia = itemView.findViewById(R.id.btn_danhgia);
         }
     }

@@ -53,7 +53,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         String formattedAmount = CurrencyUtils.formatCurrency(price);
         holder.tvPrice.setText(formattedAmount);
         if(product.getQuantity().equals("0")){
-            holder.tvStatus.setText(context.getText(R.string.hrt_hang));
+            holder.tvStatus.setText(context.getText(R.string.het_hang));
         }else {
             holder.tvStatus.setText(context.getText(R.string.con_hang));
         }

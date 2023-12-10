@@ -71,12 +71,13 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
         Call<GetProductResponse.Root> call = apiService.getProductById(token, proId);
         call.enqueue(new Callback<GetProductResponse.Root>() {
             @Override
-            public void onResponse(Call<GetProductResponse.Root> call, Response<GetProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetProductResponse.Root> call, @NonNull Response<GetProductResponse.Root> response) {
+                assert response.body() != null;
                 if (response.body().getCode()==1){
                     Log.d("zzzzzzzzzzz", "onResponse: "+response.body().getProduct());
                     holder.tvName.setText(response.body().getProduct().getTitle());
-
-                    holder.tvPrice.setText(CurrencyUtils.formatCurrency(response.body().getProduct().getPrice()));
+                    Log.d("zzzzz", "onResponse: " + order.getTotal());
+                    holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(order.getTotal())));
                     Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
                 } else {
@@ -85,7 +86,7 @@ public class ListOrderAdapter extends RecyclerView.Adapter<ListOrderAdapter.View
             }
 
             @Override
-            public void onFailure(Call<GetProductResponse.Root> call, Throwable t) {
+            public void onFailure(@NonNull Call<GetProductResponse.Root> call, @NonNull Throwable t) {
                 Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

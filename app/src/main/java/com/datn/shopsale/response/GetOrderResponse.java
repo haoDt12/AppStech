@@ -3,53 +3,54 @@ package com.datn.shopsale.response;
 import java.util.ArrayList;
 
 public class GetOrderResponse {
-    public class Order{
-        public String _id;
-        public ArrayList<GetOrderResponse.Product> product;
-        public String userId;
-        public GetOrderResponse.AddressId addressId;
-        public String date_time;
-        public String status;
-        public int total;
-    }
-
-    public class Product{
-        public String productId;
-        public String title;
-        public String color;
-        public String price;
-        public int quantity;
-        public String ram_rom;
-        public String img_cover;
-
-        @Override
-        public String toString() {
-            return "Product{" +
-                    "_id='" + productId + '\'' +
-                    ", title='" + title + '\'' +
-                    ", color='" + color + '\'' +
-                    ", price='" + price + '\'' +
-                    ", quantity=" + quantity +
-                    ", ram_rom='" + ram_rom + '\'' +
-                    ", img_cover='" + img_cover + '\'' +
-                    '}';
-        }
-    }
-
-    public class AddressId{
+    public static class AddressId{
         public String _id;
         public String name;
         public String city;
         public String street;
         public String phone_number;
         public String date;
-        public int __v;
+    }
+    public static class Option{
+        public String type;
+        public String title;
+        public String content;
+        public String _id;
+        public String feesArise;
+    }
+    public static class Order{
+        public String _id;
+        public String userId;
+        public ArrayList<Product> product;
+        public AddressId addressId;
+        public int total;
+        public String status;
+        public String date_time;
+    }
+    public static class Product{
+        public ProductId productId;
+        public ArrayList<Option> option;
+        public int quantity;
+        public String _id;
     }
 
-    public class    Root{
-        public GetOrderResponse.Order order;
+    public static class ProductId{
+        public String _id;
+        public String category;
+        public String title;
+        public String description;
+        public String price;
+        public String quantity;
+        public String sold;
+        public ArrayList<String> list_img;
+        public String date;
+        public ArrayList<Option> option;
+        public String img_cover;
+        public String video;
+    }
+    public static class Root{
+        public Order order;
         public String message;
         public int code;
     }
-
 }
