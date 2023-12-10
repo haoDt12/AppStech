@@ -151,4 +151,5 @@
     <string name="het_hang">Hết hàng</string>
     <string name="con_hang">Còn Hàng</string>
     <string name="vui_long_chon_dia_chi">Vui lòng chọn địa chỉ</string>
+    <string name="thanh_to_n">Đã thanh toán: </string>
 </resources>

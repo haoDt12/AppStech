@@ -11,12 +11,12 @@ public class Orders {
     private ArrayList<GetListOrderResponse.Product> product;
     private String status;
     private GetListOrderResponse.AddressId addressId;
-    private double total;
+    private int total;
     private Date date_time;
     public Orders() {
     }
 
-    public Orders(String id, String userId, ArrayList<GetListOrderResponse.Product> product, String status, GetListOrderResponse.AddressId addressId, double total) {
+    public Orders(String id, String userId, ArrayList<GetListOrderResponse.Product> product, String status, GetListOrderResponse.AddressId addressId, int total) {
         this.id = id;
         this.userId = userId;
         this.product = product;
@@ -65,11 +65,11 @@ public class Orders {
         this.addressId = addressId;
     }
 
-    public double getTotal() {
+    public int getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(int total) {
         this.total = total;
     }
 

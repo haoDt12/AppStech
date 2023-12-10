@@ -67,10 +67,14 @@ public class WaitConfirmFragment extends Fragment {
         Call<GetListOrderResponse.Root> call = apiService.getOrderByUserId(token, userId);
         call.enqueue(new Callback<GetListOrderResponse.Root>() {
             @Override
-            public void onResponse(Call<GetListOrderResponse.Root> call, Response<GetListOrderResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Response<GetListOrderResponse.Root> response) {
+                assert response.body() != null;
                 if (response.body().code == 1) {
+                    ArrayList<GetListOrderResponse.ListOrder> listOrder = response.body().listOrder;
+
                     for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
-                        Log.d("hhhhhhhh", "onResponse: "+response.body().listOrder);
+                        LoadingDialog.dismissProgressDialog();
+                        Log.d("hhhhhhhh", "onResponse: "+listOrder);
                         dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
                     }
                     for (Orders item: dataOrder) {
@@ -80,22 +84,21 @@ public class WaitConfirmFragment extends Fragment {
                     }
 
                     if (getActivity() != null){
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
-                                binding.rcvWaitConfirm.setAdapter(adapter);
-                                LoadingDialog.dismissProgressDialog();
-                            }
+                        getActivity().runOnUiThread(() -> {
+                            binding.rcvWaitConfirm.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
+                            binding.rcvWaitConfirm.setAdapter(adapter);
+                            LoadingDialog.dismissProgressDialog();
                         });}
                 } else {
+                    requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<GetListOrderResponse.Root> call, Throwable t) {
+            public void onFailure(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
                 Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

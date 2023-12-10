@@ -1,23 +1,20 @@
 package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ListOrderAdapter;
 import com.datn.shopsale.databinding.FragmentCancelOrderBinding;
-import com.datn.shopsale.databinding.FragmentPayCompleteBinding;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -76,6 +73,7 @@ public class CancelOrderFragment extends Fragment {
             public void onResponse(Call<GetListOrderResponse.Root> call, Response<GetListOrderResponse.Root> response) {
                 if (response.body().code == 1) {
                     for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
+                        Log.d("zzz", "onResponse: " + order.total);
                         Log.d("hhhhhhhh", "onResponse: "+response.body().listOrder);
                         dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
                     }

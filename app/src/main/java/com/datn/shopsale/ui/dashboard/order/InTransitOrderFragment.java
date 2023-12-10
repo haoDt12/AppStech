@@ -1,28 +1,22 @@
 package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ListOrderAdapter;
-import com.datn.shopsale.adapter.ListProductOfOrderAdapter;
-import com.datn.shopsale.databinding.ActivityShowDetailOrderBinding;
-import com.datn.shopsale.databinding.FragmentHomeBinding;
 import com.datn.shopsale.databinding.FragmentInTransitOrderBinding;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
-import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -80,7 +74,8 @@ public class InTransitOrderFragment extends Fragment {
         Call<GetListOrderResponse.Root> call = apiService.getOrderByUserId(token, userId);
         call.enqueue(new Callback<GetListOrderResponse.Root>() {
             @Override
-            public void onResponse(Call<GetListOrderResponse.Root> call, Response<GetListOrderResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Response<GetListOrderResponse.Root> response) {
+                assert response.body() != null;
                 if (response.body().code == 1) {
                     for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
                         Log.d("hhhhhhhh", "onResponse: "+response.body().listOrder);

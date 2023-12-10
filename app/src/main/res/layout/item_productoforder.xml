@@ -49,17 +49,28 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:layout_gravity="center_vertical"
                     android:id="@+id/tv_numProductOfOrder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="20dp"
                     android:text="Số lượng: 2" />
 
-                <TextView
-                    android:id="@+id/tv_ramRomProductOfOrder"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ram_Rom: 8Gb/ 128Gb" />
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_ramRamProductOfOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ram: 8Gb/ 128Gb" />
+                    <TextView
+                        android:id="@+id/tv_ramRomProductOfOrder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rom: 8Gb/ 128Gb" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </LinearLayout>
 
             <Button
