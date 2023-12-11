@@ -56,6 +56,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private Toolbar toolbarDetailPro;
     private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
+    private LinearLayout lnlSearch;
     private RecyclerView recyColorsProduct, recyDungLuong, recyRom;
     private ContentAdapter contentAdapter;
 
@@ -153,6 +154,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvReview = (TextView) findViewById(R.id.tv_review);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         recy_cmt = findViewById(R.id.recy_cmt);
+        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
         imgProduct = (ImageView) findViewById(R.id.img_product);
         tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
         tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
@@ -175,6 +177,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarDetailPro.setNavigationOnClickListener(v -> {
             onBackPressed();
+        });
+        lnlSearch.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
         });
         LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
         starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);

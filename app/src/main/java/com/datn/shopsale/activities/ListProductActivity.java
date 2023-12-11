@@ -9,6 +9,7 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ public class ListProductActivity extends AppCompatActivity {
     private ImageView imgMore, imgChangeLayout;
 
     private RecyclerView rcvProduct;
+    private LinearLayout lnlSearch;
 
     private ApiService apiService;
     private PreferenceManager preferenceManager;
@@ -60,6 +62,7 @@ public class ListProductActivity extends AppCompatActivity {
 
     private void init() {
         Toolbar toolbarListPro = (Toolbar) findViewById(R.id.toolbar_list_pro);
+        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
         imgCart = (ImageView) findViewById(R.id.img_cart);
         imgMore = (ImageView) findViewById(R.id.img_more);
         imgChangeLayout = findViewById(R.id.img_change_layout);
@@ -70,7 +73,9 @@ public class ListProductActivity extends AppCompatActivity {
         toolbarListPro.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
-
+        lnlSearch.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+        });
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
 
