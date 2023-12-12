@@ -15,6 +15,7 @@ import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetPassResponse;
@@ -232,4 +233,7 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getPassWord")
     Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
+    @FormUrlEncoded
+    @POST("/api/getVoucherByUserId")
+    Call<GetListVoucher.Root> getListVoucher(@Header("Authorization") String token, @Field("userId") String userId);
 }

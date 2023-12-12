@@ -28,6 +28,7 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.OderRequest;
+import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
@@ -54,6 +55,7 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvTotal;
     private TextView tvShipPrice;
     private TextView tvSumMoney;
+    private TextView tvGiamGia;
     //    private Spinner spinnerAddress;
     private Button btnOder;
     private ArrayList<Address> dataList = new ArrayList<>();
@@ -69,6 +71,7 @@ public class OrderActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
+    private static final int REQUEST_SELECT_VOUCHER = 2;
     private AddressAdapter addressAdapter;
 
     @Override
@@ -84,6 +87,7 @@ public class OrderActivity extends AppCompatActivity {
         lnlAddressOrder = (LinearLayout) findViewById(R.id.lnl_order_address);
         recyclerView = findViewById(R.id.rcv_order);
         tvName = (TextView) findViewById(R.id.tv_name);
+        tvGiamGia = (TextView) findViewById(R.id.tv_giam_gia);
         tvPhone = (TextView) findViewById(R.id.tv_phone);
         tvCity = (TextView) findViewById(R.id.tv_city);
         tvStreet = (TextView) findViewById(R.id.tv_street);
@@ -96,6 +100,7 @@ public class OrderActivity extends AppCompatActivity {
         btnEBanking = (Button) findViewById(R.id.btn_e_banking);
         btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
         lnlVoucher = (LinearLayout) findViewById(R.id.lnl_voucher);
+        tvGiamGia.setText(getString(R.string.b_n_c_mu_n_ch_n_voucher));
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         setSupportActionBar(toolbarOder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -132,7 +137,8 @@ public class OrderActivity extends AppCompatActivity {
             startActivityForResult(intent1, REQUEST_SELECT_ADDRESS);
         });
         lnlVoucher.setOnClickListener(v -> {
-            startActivity(new Intent(this, VoucherActivity.class));
+            Intent intent1 = new Intent(this,VoucherActivity.class);
+            startActivityForResult(intent1,REQUEST_SELECT_VOUCHER);
         });
     }
 
@@ -299,7 +305,8 @@ public class OrderActivity extends AppCompatActivity {
                     finish();
                 }
             }
-        } else if (requestCode == REQUEST_SELECT_ADDRESS && resultCode == RESULT_OK) {
+        }
+        if (requestCode == REQUEST_SELECT_ADDRESS && resultCode == RESULT_OK) {
             assert data != null;
 
             String name = data.getStringExtra("nameAddress");
@@ -318,6 +325,14 @@ public class OrderActivity extends AppCompatActivity {
             tvCity.setText(city);
             tvStreet.setText(street);
 
+        }
+        if(requestCode == REQUEST_SELECT_VOUCHER){
+            if(resultCode == RESULT_OK){
+                assert data != null;
+                GetListVoucher.ListVoucher  voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
+                assert voucher != null;
+                tvGiamGia.setText(voucher.getContent());
+            }
         }
     }
 }

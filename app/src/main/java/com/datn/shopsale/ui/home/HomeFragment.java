@@ -134,23 +134,26 @@ public class HomeFragment extends Fragment {
         Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
         Log.d("TagList", "onCreateView: " + GetListBanner().size());
-
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                requireActivity().runOnUiThread(() -> {
-                    try {
-                        int currentItem = binding.vpgSlideImage.getCurrentItem();
-                        int totalItems = Objects.requireNonNull(binding.vpgSlideImage.getAdapter()).getCount();
-                        int nextItem = (currentItem + 1) % totalItems;
-                        binding.vpgSlideImage.setCurrentItem(nextItem);
-                    } catch (Exception exception) {
-                        Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
-                    }
-                });
-            }
-        }, 2000, 2000);
+        if (binding != null && binding.vpgSlideImage.getAdapter() != null) {
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    requireActivity().runOnUiThread(() -> {
+                        try {
+                            int currentItem = binding.vpgSlideImage.getCurrentItem();
+                            int totalItems = Objects.requireNonNull(binding.vpgSlideImage.getAdapter()).getCount();
+                            int nextItem = (currentItem + 1) % totalItems;
+                            binding.vpgSlideImage.setCurrentItem(nextItem);
+                        } catch (Exception exception) {
+                            Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
+                        }
+                    });
+                }
+            }, 2000, 2000);
+        } else {
+            Log.d("zzzzz", "onViewCreated: null binding" );
+        }
         displayCategory();
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
@@ -235,7 +238,7 @@ public class HomeFragment extends Fragment {
                         binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                         binding.rcvListCategories.setAdapter(categoriesAdapter);
                     } else {
-                      AlertDialogUtil.showAlertDialogWithOk(requireActivity(),response.body().getMessage());
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     }
                 });
             }
@@ -243,8 +246,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(),t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
                 });
             }
         });

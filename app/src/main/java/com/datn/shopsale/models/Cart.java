@@ -133,5 +133,8 @@ public class Cart implements Serializable {
             this.content = content;
             this.feesArise = feesArise;
         }
+
+        public Option() {
+        }
     }
 }

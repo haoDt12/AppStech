@@ -1,5 +1,6 @@
 package com.datn.shopsale.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
@@ -29,6 +30,7 @@ import com.datn.shopsale.adapter.ReviewAdapter;
 import com.datn.shopsale.adapter.RomAdapter;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.FeedBack;
+import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.Option;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
@@ -88,6 +90,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private int feesAriseColor = 0;
     private int feesAriseRam = 0;
     private int feesAriseRom = 0;
+    private Button btnBuyNow;
+    private GetListProductResponse.Product getProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,14 +101,17 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         apiService = RetrofitConnection.getApiService();
         init();
         getCmt();
+        onclickByNow();
     }
 
     private void getCmt() {
         listFb = new ArrayList<>();
         Call<ResponeFeedBack> call = apiService.getFeedBackByProductId(preferenceManager.getString("token"), id);
         call.enqueue(new Callback<ResponeFeedBack>() {
+            @SuppressLint("DefaultLocale")
             @Override
-            public void onResponse(Call<ResponeFeedBack> call, Response<ResponeFeedBack> response) {
+            public void onResponse(@NonNull Call<ResponeFeedBack> call, @NonNull Response<ResponeFeedBack> response) {
+                assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (FeedBack objFeedBack : response.body().getListFeedBack()) {
                         FeedBack feedBack = new FeedBack(
@@ -130,8 +137,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                             TBC = tong / listFb.size();
                         }
                         rating = tong / listFb.size();
-                        tvTBC.setText(TBC + "/5");
-                        tvReview.setText(listFb.size() + " Review");
+                        tvTBC.setText(String.format("%s/5", TBC));
+                        tvReview.setText(String.format("%d Review", listFb.size()));
                         ratingBar.setRating(rating);
                         adapterRV = new ReviewAdapter(listFb, getApplicationContext());
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -145,8 +152,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void onFailure(Call<ResponeFeedBack> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<ResponeFeedBack> call, @NonNull Throwable t) {
             }
         });
 
@@ -174,7 +180,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         romList = new ArrayList<>();
         ramList = new ArrayList<>();
         colorList = new ArrayList<>();
-
+        btnBuyNow = (Button) findViewById(R.id.btn_buy_now);
         setSupportActionBar(toolbarDetailPro);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
@@ -191,7 +197,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         price = Integer.parseInt(getIntent().getStringExtra("price"));
         id = getIntent().getStringExtra("id");
         imgCover = getIntent().getStringExtra("imgCover");
-        GetListProductResponse.Product getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
+        getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
         if (getProduct != null) {
             optionList = getProduct.getOption();
             Log.d("zzzzz", "init: " + optionList.toString());
@@ -243,10 +249,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             selectedColors = colorList.get(0).getTitle();
             ColorAdapter.OnColorItemClickListener colorItemClickListener = color -> {
                 selectedColors = color.getTitle();
-                if (color.getFeesArise() != null){
+                if (color.getFeesArise() != null) {
                     feesAriseColor = Integer.parseInt(color.getFeesArise());
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
-                }else {
+                } else {
                     feesAriseColor = 0;
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
                 }
@@ -261,10 +267,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             selectedRams = ramList.get(0).getTitle();
             RamAdapter.OnRamItemClickListener ramItemClickListener = ram -> {
                 selectedRams = ram.getTitle();
-                if (ram.getFeesArise() != null){
+                if (ram.getFeesArise() != null) {
                     feesAriseRam = Integer.parseInt(ram.getFeesArise());
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
-                }else {
+                } else {
                     feesAriseRam = 0;
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
                 }
@@ -282,7 +288,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 if (rom.getFeesArise() != null) {
                     feesAriseRom = Integer.parseInt(rom.getFeesArise());
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
-                }else {
+                } else {
                     feesAriseRom = 0;
                     tvPriceProduct.setText(CurrencyUtils.formatCurrency(String.valueOf(price + feesAriseColor + feesAriseRom + feesAriseRam)));
                 }
@@ -361,7 +367,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.e("error", t.getMessage());
+                        Log.e("error", Objects.requireNonNull(t.getMessage()));
                         Toast.makeText(DetailProductActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 }
@@ -369,7 +375,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         } catch (Exception e) {
             runOnUiThread(() -> {
                 LoadingDialog.dismissProgressDialog();
-                Log.e("error", e.getMessage());
+                Log.e("error", Objects.requireNonNull(e.getMessage()));
                 Toast.makeText(DetailProductActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             });
         }
@@ -378,6 +384,27 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void onclickByNow() {
-
+        btnBuyNow.setOnClickListener(v -> {
+            Intent intent = new Intent(this, OrderActivity.class);
+            ListOder listOder = new ListOder();
+            ArrayList<Cart.Option> optionArrayList = new ArrayList<>();
+            for (GetListProductResponse.Option item : getProduct.getOption()) {
+                Cart.Option option = new Cart.Option();
+                option.setType(item.getType());
+                option.setContent(item.getContent());
+                option.setTitle(item.getTitle());
+                if(item.getFeesArise() != null){
+                    option.setFeesArise(item.getFeesArise());
+                }else {
+                    option.setFeesArise("0");
+                }
+                optionArrayList.add(option);
+            }
+            List<Cart> list = new ArrayList<>();
+            list.add(new Cart(getProduct.get_id(), preferenceManager.getString("userId"), getProduct.getTitle(), optionArrayList, Integer.parseInt(getProduct.getPrice()), 1, getProduct.getImg_cover(), 1));
+            listOder.setList(list);
+            intent.putExtra("listOder",listOder);
+            startActivity(intent);
+        });
     }
 }

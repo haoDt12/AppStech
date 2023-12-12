@@ -44,4 +44,7 @@ public class Option {
         this.content = content;
         this.feesArise = feesArise;
     }
+
+    public Option() {
+    }
 }

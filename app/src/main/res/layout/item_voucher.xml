@@ -60,6 +60,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:layout_marginTop="10dp"
                         android:id="@+id/tv_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -87,21 +88,19 @@
                         android:textSize="14sp"
                         android:textColor="#00C8B5"
                         android:textStyle="normal" />
+                    <Button
+                        android:id="@+id/btn_use"
+                        android:layout_gravity="right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/bg_cart"
+                        android:text="Sử dụng"
+                        android:textSize="10sp"
+                        android:layout_marginRight="10dp"
+                        android:textAllCaps="false"
+                        android:textColor="#04D5C1" />
                 </LinearLayout>
-
-                <Button
-                    android:layout_width="75dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="65dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:backgroundTint="@color/bg_cart"
-                    android:text="Sử dụng"
-                    android:textSize="10sp"
-                    android:textAllCaps="false"
-                    android:textColor="#04D5C1" />
             </RelativeLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

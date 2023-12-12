@@ -114,14 +114,8 @@
                 android:background="@drawable/bg_adrress"
                 android:padding="10dp"
                 android:orientation="horizontal">
-
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Vui lòng chọn Voucher"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-                <TextView
+                    android:id="@+id/tv_giam_gia"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
