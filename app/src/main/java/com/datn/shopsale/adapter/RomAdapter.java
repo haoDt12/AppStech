@@ -8,24 +8,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.KeyValue;
+import com.datn.shopsale.models.Option;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
 public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
-    private List<KeyValue> romList;
+    private List<Option> romList;
     private OnRomItemClickListener listener; // Define a listener interface
     private String selectedRom; // Define a listener interface
 
-    public RomAdapter(List<KeyValue> romList, OnRomItemClickListener listener) {
+    public RomAdapter(List<Option> romList, OnRomItemClickListener listener) {
         this.romList = romList;
         this.listener = listener;
-        selectedRom = romList.get(0).getKey();
+        selectedRom = romList.get(0).getTitle();
     }
 
     public interface OnRomItemClickListener {
-        void onRomItemClick(String rom);
+        void onRomItemClick(Option rom);
     }
     @NonNull
     @Override
@@ -36,7 +36,7 @@ public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RomAdapter.RomViewHolder holder, int position) {
-        final String rom = romList.get(position).getKey();
+        final String rom = romList.get(position).getTitle();
         holder.btnRom.setText(rom);
         if (rom.equals(selectedRom)) {
             holder.btnRom.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
@@ -47,15 +47,15 @@ public class RomAdapter extends RecyclerView.Adapter<RomAdapter.RomViewHolder> {
         holder.btnRom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String clickedRom = romList.get(holder.getAdapterPosition()).getKey();
-
+                String clickedRom = romList.get(holder.getAdapterPosition()).getTitle();
+                Option option = romList.get(holder.getAdapterPosition());
                 if (selectedRom != null && selectedRom.equals(clickedRom)) {
                     selectedRom = null;
                 } else {
                     selectedRom = clickedRom;
                 }
                 notifyDataSetChanged();
-                listener.onRomItemClick(clickedRom);
+                listener.onRomItemClick(option);
             }
         });
     }

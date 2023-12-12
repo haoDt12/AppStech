@@ -9,22 +9,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.KeyValue;
+import com.datn.shopsale.models.Option;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
 public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
-    private List<KeyValue> ramList;
+    private List<Option> ramList;
     private String selectedRam;
     private OnRamItemClickListener listener; // Define a listener interface
-    public RamAdapter(List<KeyValue> ramList,OnRamItemClickListener listener) {
+    public RamAdapter(List<Option> ramList,OnRamItemClickListener listener) {
         this.ramList = ramList;
         this.listener= listener;
-        selectedRam=ramList.get(0).getKey();
+        selectedRam=ramList.get(0).getTitle();
     }
     public interface OnRamItemClickListener {
-        void onRamItemClick(String ram);
+        void onRamItemClick(Option option);
     }
 
     @NonNull
@@ -36,7 +36,7 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull RamAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        final String ram = ramList.get(position).getKey();
+        final String ram = ramList.get(position).getTitle();
         holder.btnRam.setText(ram);
         if (ram.equals(selectedRam)) {
             holder.btnRam.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
@@ -47,7 +47,8 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
         holder.btnRam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String clickedRam = ramList.get(holder.getAdapterPosition()).getKey();
+                String clickedRam = ramList.get(holder.getAdapterPosition()).getTitle();
+                Option option = ramList.get(holder.getAdapterPosition());
 
                 if (selectedRam != null && selectedRam.equals(clickedRam)) {
                     selectedRam = null;
@@ -55,7 +56,7 @@ public class RamAdapter extends RecyclerView.Adapter<RamAdapter.ViewHolder> {
                     selectedRam = clickedRam;
                 }
                 notifyDataSetChanged();
-                listener.onRamItemClick(clickedRam);
+                listener.onRamItemClick(option);
             }
         });
     }
