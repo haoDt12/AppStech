@@ -11,6 +11,7 @@
     <string name="dark_modes">Chế độ tối</string>
     <string name="language">Ngôn ngữ</string>
     <string name="email">Email</string>
+    <string name="get_pass">Quên mật khẩu</string>
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
     <string name="dont_have_account">Chưa có tài khoản?</string>

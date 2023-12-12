@@ -8,7 +8,7 @@
     tools:context=".ui.login.ForgotPassActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_forgot_pass"
-        app:title="@string/email"
+        app:title="@string/get_pass"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
     <LinearLayout
