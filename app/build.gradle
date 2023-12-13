@@ -33,6 +33,11 @@ android {
 }
 
 dependencies {
+    //zalopay
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation("commons-codec:commons-codec:1.14")
+    implementation files('../app/src/main/libs/zpdk-release-v3.1.aar')
+
     //ted permission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
@@ -51,8 +56,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:21.5.0'
     implementation platform('com.google.firebase:firebase-bom:32.6.0')
     implementation 'com.google.firebase:firebase-messaging:23.3.1'
-
-    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
