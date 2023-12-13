@@ -61,8 +61,12 @@ public class EBankingPayActivity extends AppCompatActivity {
         List<OderRequest.Product> listProduct = new ArrayList<>();
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
-            for (Cart.Option option: item.getOption()){
-                optionList.add(new OderRequest.Option(option.getType(),option.getTitle(),option.getContent(),option.getFeesArise()));
+            for (Cart.Option option : item.getOption()) {
+                if(option.getFeesArise() != null){
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                }else {
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), "0"));
+                }
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }

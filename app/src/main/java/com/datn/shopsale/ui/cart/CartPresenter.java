@@ -1,23 +1,7 @@
 package com.datn.shopsale.ui.cart;
 
-import android.content.Context;
-
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.PreferenceManager;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class CartPresenter {
     private final ICartView iCartView;

@@ -10,6 +10,7 @@ import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.response.BaseResponse;
 import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
@@ -19,6 +20,7 @@ import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetPassResponse;
+import com.datn.shopsale.response.GetPriceZaloPayResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.ResponseAddress;
@@ -236,4 +238,10 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getVoucherByUserId")
     Call<GetListVoucher.Root> getListVoucher(@Header("Authorization") String token, @Field("userId") String userId);
+    @POST("/api/getPriceZaloPay")
+    Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @POST("/api/creatOrderZaloPay")
+    Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @POST("/api/checkToken")
+    Call<BaseResponse> checkToken(@Header("Authorization") String token);
 }
