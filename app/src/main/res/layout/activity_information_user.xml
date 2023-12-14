@@ -35,24 +35,24 @@
     </androidx.appcompat.widget.Toolbar>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="160dp"
         android:background="#F2F0F0">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/img_user"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="85dp"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_user" />
 
         <ImageView
             android:id="@+id/img_camera"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="175dp"
-            android:layout_marginRight="130dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="120dp"
+            android:layout_marginEnd="170dp"
             android:src="@drawable/ic_photo_camera"
             android:visibility="invisible" />
     </RelativeLayout>
@@ -65,42 +65,42 @@
             android:id="@+id/lnl_layout_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="35sp"
-            android:layout_marginTop="50sp"
-            android:layout_marginEnd="35sp"
+            android:layout_marginHorizontal="25dp"
+            android:layout_marginTop="20sp"
             android:orientation="vertical"
             android:visibility="visible">
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:text="@string/full_name"
-                    android:textColor="#818181"
-                    android:textSize="18sp" />
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    android:textColor="@color/blur_gray"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
                     android:text="Nguyễn Văn A"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:background="@drawable/bg_input_text"
+                    android:backgroundTint="@color/color_app"
                     android:textColor="#101010"
                     android:textSize="18sp" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:background="#C1C1C1" />
-
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp">
@@ -110,27 +110,28 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="@string/email"
-                    android:textColor="#818181"
-                    android:textSize="18sp" />
+                    android:textStyle="bold"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    android:textColor="@color/blur_gray"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
                     android:text="anv123@gmail.com"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:background="@drawable/bg_input_text"
+                    android:backgroundTint="@color/color_app"
                     android:textColor="#101010"
                     android:textSize="18sp" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:background="#C1C1C1" />
-
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp">
@@ -138,39 +139,47 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:text="@string/phone_number"
-                    android:textColor="#818181"
-                    android:textSize="18sp" />
+                    android:textStyle="bold"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginVertical="5dp"
+                    android:textColor="@color/blur_gray"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
                     android:text="0987654321"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="20dp"
+                    android:background="@drawable/bg_input_text"
+                    android:backgroundTint="@color/color_app"
                     android:textColor="#101010"
                     android:textSize="18sp" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="20dp"
-                android:background="#C1C1C1" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/lnl_layout_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35sp"
-            android:layout_marginTop="50sp"
-            android:layout_marginEnd="35sp"
+            android:layout_marginTop="15sp"
+            android:layout_marginHorizontal="25sp"
             android:orientation="vertical"
-            android:visibility="invisible">
+            android:visibility="gone">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Họ tên"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
             <EditText
                 android:id="@+id/ed_name"
                 android:layout_width="match_parent"
@@ -178,23 +187,43 @@
                 android:background="@drawable/bg_input_signup"
                 android:hint="@string/full_name"
                 android:padding="20dp"
+                android:layout_marginBottom="25dp"
                 android:textColorHint="#BBAFAF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Địa chỉ email"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/ed_email"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_input_signup"
                 android:hint="@string/email"
                 android:padding="20dp"
+                android:layout_marginBottom="25dp"
                 android:textColorHint="#BBAFAF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số điện thoại"
+                android:layout_marginVertical="5dp"
+                android:layout_marginHorizontal="15dp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
 
             <EditText
                 android:id="@+id/ed_phone"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="20dp"
                 android:background="@drawable/bg_input_signup"
                 android:hint="@string/phone_number"
                 android:padding="20dp"
@@ -204,14 +233,13 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
-                android:layout_marginStart="50dp"
+                android:layout_marginHorizontal="50dp"
                 android:layout_marginTop="60dp"
-                android:layout_marginEnd="50dp"
                 android:background="@drawable/bg_btn_signup"
                 android:text="@string/save"
+                android:textAllCaps="false"
+                android:textColor="@color/mauve"
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
-
-
 </LinearLayout>

@@ -18,6 +18,7 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.google.android.material.textfield.TextInputLayout;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -34,6 +35,11 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView tvLogin;
     private Button btnSignUp;
     ApiService apiService;
+    private TextInputLayout tilEmail;
+    private TextInputLayout tilFullName;
+    private TextInputLayout tilPhoneNumberRegister;
+    private TextInputLayout tilPassword;
+    private TextInputLayout tilConfirmPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,24 +108,31 @@ public class SignUpActivity extends AppCompatActivity {
 
     private Boolean validateSignUp() {
         if (edEmail.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Email không được để trống", Toast.LENGTH_SHORT).show();
+            tilEmail.setError("Email không được để trống");
+//            Toast.makeText(this, "Email không được để trống", Toast.LENGTH_SHORT).show();
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(edEmail.getText().toString()).matches()) {
-            Toast.makeText(this, "Định dạng email không chính xác", Toast.LENGTH_SHORT).show();
+            tilEmail.setError("Định dạng email không chính xác");
+//            Toast.makeText(this, "Định dạng email không chính xác", Toast.LENGTH_SHORT).show();
             return false;
         } else if (edFullname.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Họ tên không được để trống", Toast.LENGTH_SHORT).show();
+            tilFullName.setError("Họ tên không được để trống");
+//            Toast.makeText(this, , Toast.LENGTH_SHORT).show();
             return false;
         } else if (edPhoneNumber.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Số điện thoại không được để trống", Toast.LENGTH_SHORT).show();
+            tilPhoneNumberRegister.setError("Số điện thoại không được để trống");
+//            Toast.makeText(this, , Toast.LENGTH_SHORT).show();
             return false;
         } else if (edPassword.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Mật khẩu không được để trống", Toast.LENGTH_SHORT).show();
+            tilPassword.setError("Mật khẩu không được để trống");
+//            Toast.makeText(this, , Toast.LENGTH_SHORT).show();
             return false;
         } else if (edConfirmPassword.getText().toString().isEmpty()) {
-            Toast.makeText(this, "Xác nhận mật khẩu không được để trống", Toast.LENGTH_SHORT).show();
+            tilConfirmPassword.setError("Xác nhận mật khẩu không được để trống");
+//            Toast.makeText(this, , Toast.LENGTH_SHORT).show();
             return false;
         } else if (!edConfirmPassword.getText().toString().trim().equals(edPassword.getText().toString().trim())) {
+            tilConfirmPassword.setError("Xác nhận mật khẩu không trùng khớp");
             Toast.makeText(this, "Xác nhận mật khẩu không trùng khớp", Toast.LENGTH_SHORT).show();
             return false;
         } else {
@@ -128,6 +141,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void inutUI() {
+        tilEmail = (TextInputLayout) findViewById(R.id.til_email);
+        tilFullName = (TextInputLayout) findViewById(R.id.til_full_name);
+        tilPhoneNumberRegister = (TextInputLayout) findViewById(R.id.til_phone_number_register);
+        tilPassword = (TextInputLayout) findViewById(R.id.til_password);
+        tilConfirmPassword = (TextInputLayout) findViewById(R.id.til_confirm_password);
         imgLogo = findViewById(R.id.img_logo);
         edEmail = findViewById(R.id.ed_email);
         edFullname = findViewById(R.id.ed_full_name);
