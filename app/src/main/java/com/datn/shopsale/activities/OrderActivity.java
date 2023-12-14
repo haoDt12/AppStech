@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.adapter.AddressAdapter;
 import com.datn.shopsale.adapter.OrderAdapter;
 import com.datn.shopsale.apizalopay.CreateOrder;
 import com.datn.shopsale.models.Address;
@@ -43,6 +42,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,10 +66,9 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvShipPrice;
     private TextView tvSumMoney;
     private TextView tvGiamGia;
-    //    private Spinner spinnerAddress;
     private Button btnOder;
     private ArrayList<Address> dataList = new ArrayList<>();
-    private int sumMoney = 0;
+    private int sumMoney = 0,sumPriceProduct = 0;
     private String address;
     private Button btnMoney;
     private Button btnEBanking;
@@ -82,8 +81,6 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
     private static final int REQUEST_SELECT_VOUCHER = 2;
-    private AddressAdapter addressAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +113,7 @@ public class OrderActivity extends AppCompatActivity {
         tvGiamGia.setText(getString(R.string.b_n_c_mu_n_ch_n_voucher));
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         setSupportActionBar(toolbarOder);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarOder.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -129,10 +126,17 @@ public class OrderActivity extends AppCompatActivity {
         if (intent.hasExtra("listOder")) {
             listOder = (ListOder) intent.getSerializableExtra("listOder");
         }
+        assert listOder != null;
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
         tvShipPrice.setText("0đ");
         for (Cart item : listOder.getList()) {
-            sumMoney = sumMoney + item.getPrice() * item.getQuantity();
+            for (Cart.Option option: item.getOption()) {
+                if(option.getFeesArise() != null){
+                    sumPriceProduct += Integer.parseInt(option.getFeesArise());
+                }
+            }
+            sumMoney = sumMoney + (item.getPrice() + sumPriceProduct) * item.getQuantity();
+            sumPriceProduct = 0;
         }
         tvSumMoney.setText(String.valueOf(sumMoney));
         tvTotal.setText(String.valueOf(sumMoney));
@@ -161,7 +165,8 @@ public class OrderActivity extends AppCompatActivity {
         Call<ResponseAddress.Root> call = apiService.getAddress(preferenceManager.getString("token"), idUser);
         call.enqueue(new Callback<ResponseAddress.Root>() {
             @Override
-            public void onResponse(Call<ResponseAddress.Root> call, Response<ResponseAddress.Root> response) {
+            public void onResponse(@NonNull Call<ResponseAddress.Root> call, @NonNull Response<ResponseAddress.Root> response) {
+                assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
                         for (ResponseAddress.Address item : response.body().getUser().getAddress()) {
@@ -177,7 +182,7 @@ public class OrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseAddress.Root> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseAddress.Root> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 });
@@ -227,7 +232,11 @@ public class OrderActivity extends AppCompatActivity {
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                if(option.getFeesArise() != null){
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                }else {
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), "0"));
+                }
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }

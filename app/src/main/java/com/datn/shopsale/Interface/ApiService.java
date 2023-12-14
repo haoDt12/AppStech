@@ -10,6 +10,7 @@ import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.response.BaseResponse;
 import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
@@ -241,4 +242,6 @@ public interface ApiService {
     Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
     @POST("/api/creatOrderZaloPay")
     Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @POST("/api/checkToken")
+    Call<BaseResponse> checkToken(@Header("Authorization") String token);
 }
