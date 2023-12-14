@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +17,7 @@ import com.datn.shopsale.databinding.FragmentInTransitOrderBinding;
 import com.datn.shopsale.models.Orders;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -39,8 +39,7 @@ public class InTransitOrderFragment extends Fragment {
     }
 
     public static InTransitOrderFragment newInstance() {
-        InTransitOrderFragment fragment = new InTransitOrderFragment();
-        return fragment;
+        return new InTransitOrderFragment();
     }
 
     @Override
@@ -49,23 +48,22 @@ public class InTransitOrderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentInTransitOrderBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
         // Inflate the layout for this fragment
-        return root;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        preferenceManager = new PreferenceManager(getActivity());
+        preferenceManager = new PreferenceManager(requireActivity());
         apiService = RetrofitConnection.getApiService();
-        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
         getListOrderInTransit();
     }
 
     private void getListOrderInTransit() {
+        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
         String token = preferenceManager.getString("token");
         String userId = preferenceManager.getString("userId");
         ArrayList<Orders> dataOrder = new ArrayList<>();
@@ -76,36 +74,40 @@ public class InTransitOrderFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Response<GetListOrderResponse.Root> response) {
                 assert response.body() != null;
-                if (response.body().code == 1) {
-                    for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
-                        Log.d("hhhhhhhh", "onResponse: "+response.body().listOrder);
-                        dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
-                    }
-                    for (Orders item: dataOrder) {
-                        if (item.getStatus().equals("InTransit")){
-                            dataOrderInTransit.add(item);
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    if (response.body().code == 1) {
+                        for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
+                            Log.d("hhhhhhhh", "onResponse: " + response.body().listOrder);
+                            dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
                         }
-                    }
-                    if (getActivity() != null){
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binding.rcvInTransit.setLayoutManager(new LinearLayoutManager(getActivity()));
-                                adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
-                                binding.rcvInTransit.setAdapter(adapter);
-                                LoadingDialog.dismissProgressDialog();
+                        for (Orders item : dataOrder) {
+                            if (item.getStatus().equals("InTransit")) {
+                                dataOrderInTransit.add(item);
                             }
-                        });
+                        }
+                        binding.rcvInTransit.setLayoutManager(new LinearLayoutManager(requireActivity()));
+                        adapter = new ListOrderAdapter(dataOrderInTransit, requireActivity());
+                        binding.rcvInTransit.setAdapter(adapter);
+                    } else {
+                        requireActivity().runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message));
                     }
-                } else {
-                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-                }
+                });
             }
 
             @Override
-            public void onFailure(Call<GetListOrderResponse.Root> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+                });
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getListOrderInTransit();
     }
 }

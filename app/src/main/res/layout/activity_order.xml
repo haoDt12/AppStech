@@ -27,11 +27,11 @@
                 android:text="@string/shipping_address"
                 android:textAlignment="center"
                 android:textColor="#F0000000"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:background="@drawable/bg_adrress">
 
                 <LinearLayout
@@ -42,9 +42,8 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="310dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:orientation="horizontal"
@@ -54,7 +53,7 @@
                             android:id="@+id/tv_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
+                            android:layout_weight="6"
                             android:text="@string/vui_long_chon_dia_chi"
                             android:textColor="@color/black"
                             android:textSize="16sp"
@@ -95,33 +94,30 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="40dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_arrow_right"
+                    android:src="@drawable/angle_right"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_order"
+                android:layout_marginVertical="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <LinearLayout
                 android:id="@+id/lnl_voucher"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:background="@drawable/bg_adrress"
-                android:padding="10dp"
+                android:padding="5dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
-
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Vui lòng chọn Voucher"
-                    android:textColor="@color/black"
-                    android:textSize="14sp" />
-                <TextView
+                    android:id="@+id/tv_giam_gia"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -129,10 +125,10 @@
                     android:textColor="@color/black"
                     android:textSize="14sp" />
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/ic_arrow_right" />
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/angle_right" />
             </LinearLayout>
 
             <TextView
@@ -141,7 +137,7 @@
                 android:text="@string/payment_methods"
                 android:textAlignment="center"
                 android:textColor="#F0000000"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -241,6 +237,7 @@
                     android:textSize="15dp"
                     android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -264,6 +261,35 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="15.000đ"
+                    android:textColor="#373b54"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
+                android:weightSum="6">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="1dp"
+                    android:layout_weight="4"
+                    android:text="Giảm giá:"
+                    android:textColor="#373b54"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_voucher"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="-20.0000"
                     android:textColor="#373b54"
                     android:textSize="15dp"
                     android:textStyle="bold" />
@@ -305,9 +331,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:text="@string/abate"
-                        android:backgroundTint="@color/black"
+                        android:backgroundTint="#B15B5B"
                         android:textColor="@color/white"
-                        android:textSize="8sp"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textAllCaps="false"
                         app:cornerRadius="10dp" />
                 </LinearLayout>
             </RelativeLayout>

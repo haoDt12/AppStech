@@ -20,6 +20,7 @@ import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.ui.cart.CartFragment;
 import com.datn.shopsale.ui.cart.IChangeQuantity;
 import com.datn.shopsale.utils.Animation;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private static IChangeQuantity iChangeQuantity;
     private boolean isExpanded = false;
 
-    public CartAdapter(List<Cart> listItem,Context context,IChangeQuantity IChangeQuantity) {
+    public CartAdapter(List<Cart> listItem, Context context, IChangeQuantity IChangeQuantity) {
         CartAdapter.listItem = listItem;
         CartAdapter.mContext = context;
         CartAdapter.iChangeQuantity = IChangeQuantity;
@@ -57,7 +58,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         int _index = position;
         int status = item.getStatus();
         int quantity = item.getQuantity();
-
+        int free = item.getPrice();
+        int feesArise = 0;
         holder.cbCheck.setChecked(status != 1);
         holder.tvName.setText(item.getTitle());
 
@@ -71,30 +73,35 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 isExpanded = true;
             }
         });
-
-        holder.tvPrice.setText(item.getQuantity()* item.getPrice() + " đ");
+        for (Cart.Option option : item.getOption()) {
+            if(option.getFeesArise() != null){
+                feesArise += Integer.parseInt(option.getFeesArise());
+            }
+        }
+        int totalPrice = quantity * (free + feesArise);
+        holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(totalPrice)));
         holder.tvQuantity.setText(item.getQuantity() + "");
         Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(item.getImgCover())).into(holder.img_product);
         holder.cbCheck.setOnClickListener(v -> {
             boolean isSelected = holder.cbCheck.isChecked();
             if (isSelected) {
                 item.setStatus(2);
-                iChangeQuantity.IclickCheckBox(item,_index);
+                iChangeQuantity.IclickCheckBox(item, _index);
 //                cartFragment.updateStatusCart(2, position);
             } else {
                 item.setStatus(1);
-                iChangeQuantity.IclickCheckBox2(item,_index);
+                iChangeQuantity.IclickCheckBox2(item, _index);
 //                cartFragment.updateStatusCart(1, position);
             }
         });
 
 
         holder.imgIncrease.setOnClickListener(v -> {
-            iChangeQuantity.IclickIncrease(item,_index);
+            iChangeQuantity.IclickIncrease(item, _index);
 
         });
         holder.imgDecrease.setOnClickListener(v -> {
-            iChangeQuantity.IclickReduce(item,_index);
+            iChangeQuantity.IclickReduce(item, _index);
         });
 
     }
@@ -127,7 +134,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             imgDecrease = itemView.findViewById(R.id.img_decrease);
             imgIncrease = itemView.findViewById(R.id.img_increase);
             img_product = itemView.findViewById(R.id.img_cart);
-
 
 
         }

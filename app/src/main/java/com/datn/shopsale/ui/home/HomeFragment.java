@@ -9,7 +9,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +31,7 @@ import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
-import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -48,10 +47,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
-    private boolean isLoadProduct = false;
-    private boolean isLoadCategory = false;
-    private boolean isLoadBanner = false;
-
     private FragmentHomeBinding binding;
 
     private ArrayList<GetListProductResponse.Product> dataList = new ArrayList<>();
@@ -80,6 +75,7 @@ public class HomeFragment extends Fragment {
     }
 
     private List<String> GetListBanner() {
+        LoadingDialog.showProgressDialog(getActivity(), "Loading...");
         List<String> list = new ArrayList<>();
         listImg.clear();
         Call<GetBannerResponse.Root> call = apiService.getListBanner(preferenceManager.getString("token"));
@@ -88,10 +84,11 @@ public class HomeFragment extends Fragment {
             public void onResponse(@NonNull Call<GetBannerResponse.Root> call, @NonNull Response<GetBannerResponse.Root> response) {
                 Log.d("TAG", "onResponse: " + response.code() + "zzzzzzzzzzz" + response);
                 Log.d("TAG", "onResponse: " + response.body());
+                Log.d("check", "onResponse: 1");
                 assert response.body() != null;
-                if (response.body().code == 1) {
-                    requireActivity().runOnUiThread(() -> {
-                        isLoadBanner = true;
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    if (response.body().code == 1) {
                         for (GetBannerResponse.Banner item : response.body().banner) {
                             listImg.add(new GetBannerResponse.Banner(item._id, item.img));
                             Log.d("TAG", "run: " + listImg.get(0).getImg());
@@ -101,32 +98,22 @@ public class HomeFragment extends Fragment {
                         }
                         SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
                         binding.vpgSlideImage.setAdapter(sliderAdapter);
-//                        binding.vpgSlideImage.setBackgroundResource(R.drawable.bg_search_view);
-
                         binding.circleIndicator.setViewPager(binding.vpgSlideImage);
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
                         Log.d("item", "onResponse: " + list.size());
-                        if (isLoadProduct && isLoadCategory) {
-                            LoadingDialog.dismissProgressDialog();
-                        }
-                    });
-                } else {
-                    requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
-                        if (isLoadProduct && isLoadCategory) {
-                            LoadingDialog.dismissProgressDialog();
-                        }
-                    });
-                }
+
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull Call<GetBannerResponse.Root> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (isLoadProduct && isLoadCategory) {
-                        LoadingDialog.dismissProgressDialog();
-                    }
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+
                 });
             }
 
@@ -147,24 +134,26 @@ public class HomeFragment extends Fragment {
         Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
         Log.d("TagList", "onCreateView: " + GetListBanner().size());
-
         timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                requireActivity().runOnUiThread(() -> {
-                    try {
-                        int currentItem = binding.vpgSlideImage.getCurrentItem();
-                        int totalItems = Objects.requireNonNull(binding.vpgSlideImage.getAdapter()).getCount();
-                        int nextItem = (currentItem + 1) % totalItems;
-                        binding.vpgSlideImage.setCurrentItem(nextItem);
-                    } catch (Exception exception) {
-                        Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
-                    }
-                });
-            }
-        }, 2000, 2000);
-        LoadingDialog.showProgressDialog(getActivity(), "Loading...");
+        if (binding != null && binding.vpgSlideImage.getAdapter() != null) {
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    requireActivity().runOnUiThread(() -> {
+                        try {
+                            int currentItem = binding.vpgSlideImage.getCurrentItem();
+                            int totalItems = Objects.requireNonNull(binding.vpgSlideImage.getAdapter()).getCount();
+                            int nextItem = (currentItem + 1) % totalItems;
+                            binding.vpgSlideImage.setCurrentItem(nextItem);
+                        } catch (Exception exception) {
+                            Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
+                        }
+                    });
+                }
+            }, 2000, 2000);
+        } else {
+            Log.d("zzzzz", "onViewCreated: null binding" );
+        }
         displayCategory();
         displayProduct();
         Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
@@ -172,120 +161,93 @@ public class HomeFragment extends Fragment {
     }
 
     private void displayProduct() {
+        LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         dataList.clear();
         Call<GetListProductResponse.Root> call = apiService.getListProduct(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetListProductResponse.Root>() {
             @Override
             public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
                 assert null != response.body();
-                if (response.body().getCode() == 1) {
-                    dataList = response.body().getProduct();
-                    requireActivity().runOnUiThread(new TimerTask() {
-                        @Override
-                        public void run() {
-                            productAdapter = new ProductAdapter(dataList, getActivity(), R.layout.item_product);
-                            binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                            binding.rcvListItemPro.setAdapter(productAdapter);
-                            isLoadProduct = true;
-                            if (isLoadCategory && isLoadBanner) {
-                                LoadingDialog.dismissProgressDialog();
-                            }
-                        }
-                    });
-                } else {
-                    requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if (isLoadCategory && isLoadBanner) {
-                            LoadingDialog.dismissProgressDialog();
-                        }
-                    });
-                }
-                if (response.body().getMessage().equals("wrong token")) {
-                    requireActivity().runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        preferenceManager.clear();
-                        startActivity(new Intent(getActivity(), LoginActivity.class));
-                        requireActivity().finish();
-                    });
-                }
+                Log.d("check", "onResponse: 2");
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+
+                    if (response.body().getCode() == 1) {
+                        dataList = response.body().getProduct();
+                        productAdapter = new ProductAdapter(dataList, getActivity(), R.layout.item_product);
+                        binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        binding.rcvListItemPro.setAdapter(productAdapter);
+
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (isLoadCategory && isLoadBanner) {
-                        LoadingDialog.dismissProgressDialog();
-                    }
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
                 });
             }
         });
     }
 
     private void displayCategory() {
+        LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         ArrayList<Category> dataCategory = new ArrayList<>();
         Call<GetListCategoryResponse.Root> call = apiService.getListCategory(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetListCategoryResponse.Root>() {
             @Override
             public void onResponse(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Response<GetListCategoryResponse.Root> response) {
                 Log.d("zzzz", "onResponse: " + response);
+                Log.d("check", "onResponse: 3");
                 assert response.body() != null;
-                if (response.body().getCode() == 1) {
-                    for (GetListCategoryResponse.Category item : response.body().getCategory()) {
-                        dataCategory.add(new Category(item.get_id(), item.getTitle(), item.getImg(), item.getDate()));
-                    }
-                    requireActivity().runOnUiThread(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if (dataCategory.size() > 12) {
-                                if (!dataCategory.get(11).getTitle().equals("Xem thêm")) {
-                                    String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
-                                    Category viewMore = new Category("-1", "Xem thêm", temp, "---");
-                                    Category viewLess = new Category("-1", "Ẩn bớt", temp, "---");
-                                    Log.d("zzzz", "run: " + dataCategory);
-                                    if (isDisableItem) {
-                                        dataCategory.add(11, viewMore);
-                                    } else {
-                                        dataCategory.add(dataCategory.size(), viewLess);
-                                    }
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    if (response.body().getCode() == 1) {
+                        for (GetListCategoryResponse.Category item : response.body().getCategory()) {
+                            dataCategory.add(new Category(item.get_id(), item.getTitle(), item.getImg(), item.getDate()));
+                        }
 
-                                }
-                            }
-                            categoriesAdapter = new CategoriesAdapter(getActivity(), dataCategory, category -> {
-                                if (category.getId().equals("-1")) {
-                                    isDisableItem = !isDisableItem;
-                                    displayCategory();
+                        if (dataCategory.size() > 12) {
+                            if (!dataCategory.get(11).getTitle().equals("Xem thêm")) {
+                                String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
+                                Category viewMore = new Category("-1", "Xem thêm", temp, "---");
+                                Category viewLess = new Category("-1", "Ẩn bớt", temp, "---");
+                                Log.d("zzzz", "run: " + dataCategory);
+                                if (isDisableItem) {
+                                    dataCategory.add(11, viewMore);
                                 } else {
-                                    Intent intent = new Intent(getActivity(), ListProductActivity.class);
-                                    intent.putExtra("categoryId", category.getId());
-                                    startActivity(intent);
+                                    dataCategory.add(dataCategory.size(), viewLess);
                                 }
-                            });
-                            binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-                            binding.rcvListCategories.setAdapter(categoriesAdapter);
-                            isLoadCategory = true;
-                            if (isLoadProduct && isLoadBanner) {
-                                LoadingDialog.dismissProgressDialog();
+
                             }
                         }
-                    });
-                } else {
-                    requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        if (isLoadProduct && isLoadBanner) {
-                            LoadingDialog.dismissProgressDialog();
-                        }
-                    });
-                }
+                        categoriesAdapter = new CategoriesAdapter(getActivity(), dataCategory, category -> {
+                            if (category.getId().equals("-1")) {
+                                isDisableItem = !isDisableItem;
+                                displayCategory();
+                            } else {
+                                Intent intent = new Intent(getActivity(), ListProductActivity.class);
+                                intent.putExtra("categoryId", category.getId());
+                                startActivity(intent);
+                            }
+                        });
+                        binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+                        binding.rcvListCategories.setAdapter(categoriesAdapter);
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (isLoadProduct && isLoadBanner) {
-                        LoadingDialog.dismissProgressDialog();
-                    }
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
                 });
             }
         });

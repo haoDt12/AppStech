@@ -17,6 +17,6 @@
     <color name="pink">#FD72A1</color>
     <color name="violet">#A247B1</color>
     <color name="yellow">#FFC30E</color>
-    <color name="blur_gray">#888888</color>
-    <color name="color_app">#DFDFDF</color>
+    <color name="blur_gray">#818181</color>
+    <color name="color_app">#ECEBEB</color>
 </resources>

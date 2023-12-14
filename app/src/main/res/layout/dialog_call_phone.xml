@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_call"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="#878686"
+                android:paddingHorizontal="40dp"
+                android:layout_marginHorizontal="30dp"
+                app:cornerRadius="50dp"
+                android:textColor="#14B6FF"
+                android:textStyle="normal"
+                android:drawableLeft="@drawable/phone"
+                android:textAllCaps="false"
+                android:text="Gọi: 0961803120" />
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:backgroundTint="#574E4E"
+                android:padding="10dp"
+                app:cornerRadius="50dp"
+                android:textColor="@color/mauve"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:text="Hủy" />
+    </LinearLayout>
+</RelativeLayout>

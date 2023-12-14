@@ -2,10 +2,10 @@ package com.datn.shopsale.ui.dashboard;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -32,11 +31,11 @@ import com.datn.shopsale.activities.VoucherActivity;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
-import com.datn.shopsale.ui.dashboard.chat.ListUsersChatActivity;
 import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -94,13 +93,14 @@ public class DashboardFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_dashboard, container, false);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
-        preferenceManager = new PreferenceManager(getContext());
+        preferenceManager = new PreferenceManager(requireActivity());
 
         btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
@@ -123,26 +123,16 @@ public class DashboardFragment extends Fragment {
         tvEmail.setText("");
         tvName.setText("");
 
-        lnlProfile.setOnClickListener(view1 -> {
-            activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class));
-        });
-        lnChat.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), ChatScreenAdminActivity.class));
-        });
-        lnLocation.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), AddressActivity.class));
-        });
-        lnSetting.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), SettingActivity.class));
-        });
-        lnOrder.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), MyOrderActivity.class));
-        });
-        lnStore.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), StoreActivity.class));
-        });
+        lnlProfile.setOnClickListener(view1 -> activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class)));
+        lnChat.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ChatScreenAdminActivity.class)));
+        lnLocation.setOnClickListener(view1 -> startActivity(new Intent(getContext(), AddressActivity.class)));
+        lnSetting.setOnClickListener(view1 -> startActivity(new Intent(getContext(), SettingActivity.class)));
+        lnOrder.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MyOrderActivity.class)));
+        lnStore.setOnClickListener(view1 -> startActivity(new Intent(getContext(), StoreActivity.class)));
         lnVoucher.setOnClickListener(view1 -> {
-            startActivity(new Intent(getContext(), VoucherActivity.class));
+            Intent intent = new Intent(requireActivity(),VoucherActivity.class);
+            intent.putExtra("action",1);
+            startActivity(intent);
         });
 
         accessToken = AccessToken.getCurrentAccessToken();
@@ -155,25 +145,19 @@ public class DashboardFragment extends Fragment {
         }
 
         btnLoginWithFacebook.setOnClickListener(v -> {
-//            updateUI();
-//            LoginManager.getInstance().logOut();
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    while (true) {
-                        try {
-                            String result = btnLoginWithFacebook.getText().toString();
-                            if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
-                                updateUI();
-                                break;
-                            }
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+            Thread thread = new Thread(() -> {
+                while (true) {
+                    try {
+                        String result = btnLoginWithFacebook.getText().toString();
+                        if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
+                            updateUI();
+                            break;
                         }
-
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+
                 }
             });
 
@@ -184,6 +168,7 @@ public class DashboardFragment extends Fragment {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
             Window window = dialog.getWindow();
+            assert window != null;
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
             window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
             window.getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -193,13 +178,8 @@ public class DashboardFragment extends Fragment {
 
             ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
             Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
-            btnCancel.setOnClickListener(view2 -> {
-                dialog.cancel();
-            });
-            btnConfirm.setOnClickListener(view2 -> {
-                signOut();
-
-            });
+            btnCancel.setOnClickListener(view2 -> dialog.cancel());
+            btnConfirm.setOnClickListener(view2 -> signOut());
             dialog.show();
         });
     }
@@ -215,20 +195,17 @@ public class DashboardFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getActivity(), LoginActivity.class));
         preferenceManager.clear();
-        getActivity().finish();
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        requireActivity().finish();
     }
     private void getUser(){
         LoadingDialog.showProgressDialog(getActivity(),"Loading...");
         Call<GetUserByIdResponse.Root> call = apiService.getUserById(preferenceManager.getString("token"),preferenceManager.getString("userId"));
         call.enqueue(new Callback<GetUserByIdResponse.Root>() {
             @Override
-            public void onResponse(Call<GetUserByIdResponse.Root> call, Response<GetUserByIdResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Response<GetUserByIdResponse.Root> response) {
+                assert response.body() != null;
                 if(response.body().getCode() == 1){
-                    getActivity().runOnUiThread(() -> {
+                    requireActivity().runOnUiThread(() -> {
                         user = response.body().getUser();
                         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgAvatarUsers);
                         tvName.setText(user.getFull_name());
@@ -236,18 +213,18 @@ public class DashboardFragment extends Fragment {
                         LoadingDialog.dismissProgressDialog();
                     });
                 }else {
-                    getActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(),response.body().getMessage());
                     });
                 }
             }
 
             @Override
-            public void onFailure(Call<GetUserByIdResponse.Root> call, Throwable t) {
-                getActivity().runOnUiThread(() -> {
-                    Log.d("onFailure", "onFailure: " + t.getMessage());
+            public void onFailure(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(),t.getMessage());
                 });
             }
         });

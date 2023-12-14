@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,7 +72,6 @@ public class ReviewActivity extends AppCompatActivity {
         apiService = RetrofitConnection.getApiService();
         id = getIntent().getStringExtra("id");
         getCmt();
-        Toast.makeText(this, ""+id, Toast.LENGTH_SHORT).show();
     }
 
     private void getCmt() {
@@ -165,5 +166,23 @@ public class ReviewActivity extends AppCompatActivity {
         toolbarReview.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
+        LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
+        LayerDrawable progressDrawable1 = (LayerDrawable) progress1.getProgressDrawable();
+        LayerDrawable progressDrawable2 = (LayerDrawable) progress2.getProgressDrawable();
+        LayerDrawable progressDrawable3 = (LayerDrawable) progress3.getProgressDrawable();
+        LayerDrawable progressDrawable4 = (LayerDrawable) progress4.getProgressDrawable();
+        LayerDrawable progressDrawable5 = (LayerDrawable) progress5.getProgressDrawable();
+        starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        starsDrawable.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable1.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable1.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable2.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable2.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable3.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable3.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable4.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable4.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable5.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        progressDrawable5.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
     }
 }

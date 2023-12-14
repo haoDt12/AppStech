@@ -33,6 +33,7 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.Constants;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -127,15 +128,17 @@ public class CartFragment extends Fragment {
     private void setSelectedItem(){
         if(cartList != null){
             for (int i = 0; i < cartList.size(); i++) {
-                if (cartList.size()==listOder.getList().size()){
-                    chk_selectAll.setChecked(true);
+                if(listOder.getList() != null){
+                    if (cartList.size() == listOder.getList().size()){
+                        chk_selectAll.setChecked(true);
+                    }
                 }
                 if( cartList.get(i).getStatus()==1){
                     cartList.get(i).setStatus(2);
                     tong+=  (cartList.get(i).getPrice()*cartList.get(i).getQuantity());
                 }
 
-                Tvsum.setText(String.valueOf(tong));
+                Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                 cartAdapter.notifyDataSetChanged();
 
             }
@@ -147,7 +150,7 @@ public class CartFragment extends Fragment {
 
             cartList.get(i).setStatus(1);
             tong = 0;
-            Tvsum.setText(String.valueOf(tong));
+            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
             cartAdapter.notifyDataSetChanged();
         }
     }

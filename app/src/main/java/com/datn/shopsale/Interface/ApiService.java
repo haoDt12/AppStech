@@ -7,19 +7,24 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddressRequest;
+import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
-import com.datn.shopsale.response.GetListCartResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
+import com.datn.shopsale.response.GetPassResponse;
+import com.datn.shopsale.response.GetPriceZaloPayResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
+import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
@@ -220,9 +225,20 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/api/getAllFeedBackByProductId")
     Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
+
+    @POST("/api/editPassword")
+    Call<EditPasswordResponse> editPassword(@Header("Authorization") String token, @Body EditPassRequest request);
+    @POST("/api/verifyOtpEditPass")
+    Call<VerifyOtpEditPassResponse> sendOtpPassword(@Header("Authorization") String token, @Body EditPassRequest request);
+
     @FormUrlEncoded
-    @POST("/api/getCartByCartIdUser")
-    Call<GetListCartResponse.Root> getDataCartV2(@Header("Authorization") String token,
-                                            @Field("id") String id
-    );
+    @POST("/api/getPassWord")
+    Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
+    @FormUrlEncoded
+    @POST("/api/getVoucherByUserId")
+    Call<GetListVoucher.Root> getListVoucher(@Header("Authorization") String token, @Field("userId") String userId);
+    @POST("/api/getPriceZaloPay")
+    Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @POST("/api/creatOrderZaloPay")
+    Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
 }

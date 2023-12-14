@@ -1,9 +1,12 @@
 package com.datn.shopsale.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,19 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.Voucher;
+import com.datn.shopsale.response.GetListVoucher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherViewHolder> {
-    private List<Voucher> list;
+    private List<GetListVoucher.ListVoucher> list;
     private Context context;
-
-    public VoucherAdapter(List<Voucher> list, Context context) {
+    private int actionCode;
+    public VoucherAdapter(List<GetListVoucher.ListVoucher> list, Context context,int actionCode) {
         this.list = list;
         this.context = context;
+        this.actionCode = actionCode;
     }
 
     @NonNull
@@ -36,13 +38,22 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
 
     @Override
     public void onBindViewHolder(@NonNull VoucherAdapter.VoucherViewHolder holder, int position) {
-        Voucher voucher = list.get(position);
+        GetListVoucher.ListVoucher voucher = list.get(position);
         if(voucher == null){
             return;
         }
+        if(actionCode == 1){
+            holder.btnUse.setVisibility(View.GONE);
+        }
         holder.tvTitle.setText(voucher.getTitle());
-        holder.tvContent.setText(voucher.getTitle()+"-"+voucher.getSale());
-        holder.tvDate.setText(voucher.getDate());
+        holder.tvContent.setText(voucher.getContent());
+        holder.tvDate.setText(String.format("Từ %s đến %s", voucher.getFromDate(), voucher.getToDate()));
+        holder.btnUse.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OrderAdapter.class);
+            intent.putExtra("voucher",voucher);
+            ((Activity) context).setResult(Activity.RESULT_OK,intent);
+            ((Activity) context).finish();
+        });
     }
 
     @Override
@@ -58,7 +69,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         private TextView tvTitle;
         private TextView tvContent;
         private TextView tvDate;
-
+        private Button btnUse;
         public VoucherViewHolder(@NonNull View itemView) {
             super(itemView);
             layoutSwipe = (SwipeLayout) itemView.findViewById(R.id.layout_swipe);
@@ -68,6 +79,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
             tvDate = (TextView) itemView.findViewById(R.id.tv_date);
+            btnUse = (Button) itemView.findViewById(R.id.btn_use);
         }
     }
 }
