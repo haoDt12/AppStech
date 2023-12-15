@@ -6,25 +6,14 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Constants {
-    public enum STATUS_CART {
-        DEFAULT(1),
-        DELETE(0),
-        DONE(2);
-        private final int value;
-
-        STATUS_CART(final int newValue) {
-            value = newValue;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
+    public static final String CHAT_SERVER_URL = "http://192.168.1.3:3000";
+    public static final String API_KEY = "df3b11a996831dee0ed12cc93bbc0532-32bd11ad-9a6c-4e2c-8fe9-330ee305b96a";
+    public static final String ALGORITHM = "AES/CBC/PKCS7Padding";
+    public static final String HASH_ALGORITHM = "SHA-1";
     public static final String btnReduce = "reduce";
     public static final String idUserAdmin = "654b1ca8a39405e39cad703b";
     public static final String btnIncrease = "increase";
-    public static final String URL_API = "http://192.168.68.115:3000";
+    public static final String URL_API = "http://192.168.1.3:3000";
     public static final String HEX_CHAR = "0123456789ABCDEF";
     public static final String KEY_PREFERENCE_ACC = "logged_acc";
     public static final String KEY_EMAIL = "email";
@@ -42,13 +31,15 @@ public class Constants {
             return idUser2 + "_" + idUser1;
         }
     }
-    public static String getOtherId(List<String> list,String id){
-        if(list.get(0).equals(id)){
+
+    public static String getOtherId(List<String> list, String id) {
+        if (list.get(0).equals(id)) {
             return list.get(1);
-        }else {
+        } else {
             return list.get(0);
         }
     }
+
     public static String timestamptoString(Timestamp timestamp) {
         return new SimpleDateFormat("HH:mm").format(timestamp.toDate());
     }

@@ -303,20 +303,22 @@ public class OrderActivity extends AppCompatActivity {
         call.enqueue(new Callback<GetPriceZaloPayResponse>() {
             @Override
             public void onResponse(@NonNull Call<GetPriceZaloPayResponse> call, @NonNull Response<GetPriceZaloPayResponse> response) {
-                assert response.body() != null;
-                if (response.body().getCode() == 1) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
-                        createOrderZaloPay(String.valueOf(response.body().getPrice()));
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            LoadingDialog.dismissProgressDialog();
+                            createOrderZaloPay(String.valueOf(response.body().getPrice()));
 
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
-                        LoadingDialog.dismissProgressDialog();
-                    });
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                            LoadingDialog.dismissProgressDialog();
+                        });
+                    }
                 }
+
             }
 
             @Override
@@ -402,8 +404,9 @@ public class OrderActivity extends AppCompatActivity {
                 ZaloPaySDK.getInstance().payOrder(OrderActivity.this, token, "demozpdk://app", new PayOrderListener() {
                     @Override
                     public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
-                        callApiOrderZaloPay(transactionId,transToken);
+                        callApiOrderZaloPay(transactionId, transToken);
                     }
+
                     @Override
                     public void onPaymentCanceled(String zpTransToken, String appTransID) {
                         new AlertDialog.Builder(OrderActivity.this)
@@ -424,16 +427,17 @@ public class OrderActivity extends AppCompatActivity {
                                 .setNegativeButton("Cancel", null).show();
                     }
                 });
-            }else {
-                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
+            } else {
+                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             }
 
         } catch (Exception e) {
-            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
+            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             e.printStackTrace();
         }
     }
-    private void callApiOrderZaloPay(String transactionId, String transToken){
+
+    private void callApiOrderZaloPay(String transactionId, String transToken) {
         List<OderRequest.Product> listProduct = new ArrayList<>();
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
