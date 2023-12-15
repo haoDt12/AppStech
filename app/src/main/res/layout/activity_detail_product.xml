@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:backgroundTint="@color/color_app"
     tools:context=".activities.DetailProductActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -189,11 +190,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_coneradios"
             android:padding="10dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <LinearLayout
@@ -251,8 +253,13 @@
                             android:background="@color/white"/>
                     </LinearLayout>
                 </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/blur_gray" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recy_cmt"
+                    android:layout_marginVertical="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </LinearLayout>

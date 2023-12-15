@@ -87,6 +87,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private List<Option> ramList;
     private List<Option> colorList;
     private List<GetListProductResponse.Option> optionList;
+    private Option colorOption;
+    private Option ramOption;
+    private Option romOption;
     private int feesAriseColor = 0;
     private int feesAriseRam = 0;
     private int feesAriseRom = 0;
@@ -194,7 +197,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
 
         title = getIntent().getStringExtra("title");
-        price = Integer.parseInt(getIntent().getStringExtra("price"));
+        price = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("price")));
         id = getIntent().getStringExtra("id");
         imgCover = getIntent().getStringExtra("imgCover");
         getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
@@ -221,12 +224,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         ArrayList<Product> contentItems = new ArrayList<>();
 
-        if (video != null) {
-            // Thêm video vào danh sách
-            Product videoContent = new Product();
-            videoContent.setVideo(video);
-            contentItems.add(videoContent);
-        }
+        // Thêm video vào danh sách
+        Product videoContent = new Product();
+        videoContent.setVideo(video);
+        contentItems.add(videoContent);
 
         if (listImg != null && !listImg.isEmpty()) {
             // Thêm hình ảnh vào danh sách
@@ -247,7 +248,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvPriceProduct.setText(formattedNumber);
         if (!colorList.isEmpty()) {
             selectedColors = colorList.get(0).getTitle();
+            colorOption = colorList.get(0);
             ColorAdapter.OnColorItemClickListener colorItemClickListener = color -> {
+                colorOption = color;
                 selectedColors = color.getTitle();
                 if (color.getFeesArise() != null) {
                     feesAriseColor = Integer.parseInt(color.getFeesArise());
@@ -265,7 +268,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         }
         if (!ramList.isEmpty()) {
             selectedRams = ramList.get(0).getTitle();
+            ramOption = ramList.get(0);
             RamAdapter.OnRamItemClickListener ramItemClickListener = ram -> {
+                ramOption = ram;
                 selectedRams = ram.getTitle();
                 if (ram.getFeesArise() != null) {
                     feesAriseRam = Integer.parseInt(ram.getFeesArise());
@@ -282,8 +287,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             tvRam.setVisibility(View.GONE);
         }
         if (!romList.isEmpty()) {
+            romOption = romList.get(0);
             selectedRoms = romList.get(0).getTitle();
             RomAdapter.OnRomItemClickListener romItemClickListener = rom -> {
+                romOption = rom;
                 selectedRoms = rom.getTitle();
                 if (rom.getFeesArise() != null) {
                     feesAriseRom = Integer.parseInt(rom.getFeesArise());
@@ -388,22 +395,31 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             Intent intent = new Intent(this, OrderActivity.class);
             ListOder listOder = new ListOder();
             ArrayList<Cart.Option> optionArrayList = new ArrayList<>();
-            for (GetListProductResponse.Option item : getProduct.getOption()) {
-                Cart.Option option = new Cart.Option();
-                option.setType(item.getType());
-                option.setContent(item.getContent());
-                option.setTitle(item.getTitle());
-                if(item.getFeesArise() != null){
-                    option.setFeesArise(item.getFeesArise());
-                }else {
-                    option.setFeesArise("0");
+            if (colorOption != null) {
+                if (colorOption.getFeesArise() != null) {
+                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), colorOption.getFeesArise()));
+                } else {
+                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), "0"));
                 }
-                optionArrayList.add(option);
+            }
+            if (ramOption != null) {
+                if (ramOption.getFeesArise() != null) {
+                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), ramOption.getFeesArise()));
+                } else {
+                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), "0"));
+                }
+            }
+            if (romOption != null) {
+                if (romOption.getFeesArise() != null) {
+                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), romOption.getFeesArise()));
+                } else {
+                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), "0"));
+                }
             }
             List<Cart> list = new ArrayList<>();
             list.add(new Cart(getProduct.get_id(), preferenceManager.getString("userId"), getProduct.getTitle(), optionArrayList, Integer.parseInt(getProduct.getPrice()), 1, getProduct.getImg_cover(), 1));
             listOder.setList(list);
-            intent.putExtra("listOder",listOder);
+            intent.putExtra("listOder", listOder);
             startActivity(intent);
         });
     }

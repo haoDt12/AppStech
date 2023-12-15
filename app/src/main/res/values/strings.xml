@@ -155,6 +155,7 @@
     <string name="vui_long_chon_dia_chi">Vui lòng chọn địa chỉ</string>
     <string name="thanh_to_n">Đã thanh toán: </string>
     <string name="b_n_c_mu_n_ch_n_voucher">Bạn có muốn chọn voucher</string>
+    <string name="login_err">Đã hết phiên đăng nhập vui lòng đăng nhập lại</string>
 
     <string name="connect">Connected</string>
     <string name="disconnect">Disconnected, Please check your internet connection</string>

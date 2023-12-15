@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.R;
+import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.squareup.picasso.Picasso;
@@ -30,10 +31,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull OrderAdapter.ViewHolder holder, int position) {
+        int fee = 0;
+        int price = 0;
+        for (Cart.Option option: mList.getList().get(position).getOption()) {
+            if(option.getFeesArise() != null){
+                fee += Integer.parseInt(option.getFeesArise());
+            }
+        }
+        price = mList.getList().get(position).getPrice() + fee;
         holder.tvName.setText(mList.getList().get(position).getTitle());
-        holder.tvPrice.setText(String.valueOf(mList.getList().get(position).getPrice()));
+        holder.tvPrice.setText(String.valueOf(price));
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
-//        holder.tvColor.setText(mList.getList().get(position).getColor());
         holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }
 

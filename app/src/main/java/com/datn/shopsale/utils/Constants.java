@@ -6,14 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Constants {
-    public static final String CHAT_SERVER_URL = "http://192.168.1.3:3000";
-    public static final String API_KEY = "df3b11a996831dee0ed12cc93bbc0532-32bd11ad-9a6c-4e2c-8fe9-330ee305b96a";
-    public static final String ALGORITHM = "AES/CBC/PKCS7Padding";
-    public static final String HASH_ALGORITHM = "SHA-1";
+
     public static final String btnReduce = "reduce";
     public static final String idUserAdmin = "654b1ca8a39405e39cad703b";
     public static final String btnIncrease = "increase";
-    public static final String URL_API = "http://192.168.1.3:3000";
+    public static final String URL_API = "http://192.168.1.5:3000";
     public static final String HEX_CHAR = "0123456789ABCDEF";
     public static final String KEY_PREFERENCE_ACC = "logged_acc";
     public static final String KEY_EMAIL = "email";
