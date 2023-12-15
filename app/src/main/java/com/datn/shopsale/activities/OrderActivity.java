@@ -35,6 +35,7 @@ import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -81,6 +82,11 @@ public class OrderActivity extends AppCompatActivity {
     private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
     private static final int REQUEST_SELECT_VOUCHER = 2;
+    private TextView tvPriceVoucher;
+    private TextView tvVoucher;
+
+    private AddressAdapter addressAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +116,8 @@ public class OrderActivity extends AppCompatActivity {
         btnEBanking = (Button) findViewById(R.id.btn_e_banking);
         btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
         lnlVoucher = (LinearLayout) findViewById(R.id.lnl_voucher);
+        tvPriceVoucher = (TextView) findViewById(R.id.tv_price_voucher);
+        tvVoucher = (TextView) findViewById(R.id.tv_voucher);
         tvGiamGia.setText(getString(R.string.b_n_c_mu_n_ch_n_voucher));
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         setSupportActionBar(toolbarOder);
@@ -128,7 +136,8 @@ public class OrderActivity extends AppCompatActivity {
         }
         assert listOder != null;
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
-        tvShipPrice.setText("0đ");
+        tvShipPrice.setText("0 VND");
+        tvVoucher.setText("0 VND");
         for (Cart item : listOder.getList()) {
             for (Cart.Option option: item.getOption()) {
                 if(option.getFeesArise() != null){
@@ -138,8 +147,8 @@ public class OrderActivity extends AppCompatActivity {
             sumMoney = sumMoney + (item.getPrice() + sumPriceProduct) * item.getQuantity();
             sumPriceProduct = 0;
         }
-        tvSumMoney.setText(String.valueOf(sumMoney));
         tvTotal.setText(String.valueOf(sumMoney));
+        tvSumMoney.setText(String.valueOf(sumMoney));
         OrderAdapter adapter = new OrderAdapter(listOder);
         recyclerView.setAdapter(adapter);
         onSelectPayAction(btnMoney);
@@ -394,8 +403,10 @@ public class OrderActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 assert data != null;
                 GetListVoucher.ListVoucher voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
+                String price = data.getStringExtra("price");
                 assert voucher != null;
                 tvGiamGia.setText(voucher.getContent());
+                tvPriceVoucher.setText(price);
             }
         }
     }
@@ -494,5 +505,19 @@ public class OrderActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sumMoney = 0;
+
+        for (Cart item : listOder.getList()) {
+            sumMoney = sumMoney + item.getPrice() * item.getQuantity();
+        }
+        String price = tvPriceVoucher.getText().toString();
+        tvVoucher.setText(CurrencyUtils.formatCurrency(price));
+        tvTotal.setText(String.valueOf(sumMoney));
+        tvSumMoney.setText(String.valueOf(sumMoney - Integer.parseInt(price)));
     }
 }
