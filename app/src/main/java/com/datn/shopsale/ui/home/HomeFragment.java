@@ -30,7 +30,7 @@ import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
-import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.ui.dashboard.chat.ChatActivityFirebase;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -267,7 +267,7 @@ public class HomeFragment extends Fragment {
             if (preferenceManager.getString("userId").equals(Constants.idUserAdmin)) {
                 startActivity(new Intent(getActivity(), ChatScreenAdminActivity.class));
             } else {
-                startActivity(new Intent(getActivity(), ChatActivity.class));
+                startActivity(new Intent(getActivity(), ChatActivityFirebase.class));
 
             }
             return true;

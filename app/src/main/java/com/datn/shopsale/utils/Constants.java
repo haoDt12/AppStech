@@ -6,20 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Constants {
-    public enum STATUS_CART {
-        DEFAULT(1),
-        DELETE(0),
-        DONE(2);
-        private final int value;
-
-        STATUS_CART(final int newValue) {
-            value = newValue;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
 
     public static final String btnReduce = "reduce";
     public static final String idUserAdmin = "654b1ca8a39405e39cad703b";
@@ -42,13 +28,15 @@ public class Constants {
             return idUser2 + "_" + idUser1;
         }
     }
-    public static String getOtherId(List<String> list,String id){
-        if(list.get(0).equals(id)){
+
+    public static String getOtherId(List<String> list, String id) {
+        if (list.get(0).equals(id)) {
             return list.get(1);
-        }else {
+        } else {
             return list.get(0);
         }
     }
+
     public static String timestamptoString(Timestamp timestamp) {
         return new SimpleDateFormat("HH:mm").format(timestamp.toDate());
     }
