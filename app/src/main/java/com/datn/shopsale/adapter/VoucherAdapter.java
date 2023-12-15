@@ -51,6 +51,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         holder.btnUse.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrderAdapter.class);
             intent.putExtra("voucher",voucher);
+            intent.putExtra("price", voucher.getPrice()+ "");
             ((Activity) context).setResult(Activity.RESULT_OK,intent);
             ((Activity) context).finish();
         });
