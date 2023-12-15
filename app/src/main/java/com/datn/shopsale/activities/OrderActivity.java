@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -329,14 +330,13 @@ public class OrderActivity extends AppCompatActivity {
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
                         Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
                         createOrderZaloPay(String.valueOf(response.body().getPrice()));
 
                     });
                 } else {
                     runOnUiThread(() -> {
-                        AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
                         LoadingDialog.dismissProgressDialog();
+                        AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
                     });
                 }
             }
@@ -426,33 +426,47 @@ public class OrderActivity extends AppCompatActivity {
                 ZaloPaySDK.getInstance().payOrder(OrderActivity.this, token, "demozpdk://app", new PayOrderListener() {
                     @Override
                     public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
-                        callApiOrderZaloPay(transactionId,transToken);
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            callApiOrderZaloPay(transactionId,transToken);
+                        });
+
                     }
                     @Override
                     public void onPaymentCanceled(String zpTransToken, String appTransID) {
-                        new AlertDialog.Builder(OrderActivity.this)
-                                .setTitle("User Cancel Payment")
-                                .setMessage(String.format("zpTransToken: %s \n", zpTransToken))
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                })
-                                .setNegativeButton("Cancel", null).show();
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            new AlertDialog.Builder(OrderActivity.this)
+                                    .setTitle("User Cancel Payment")
+                                    .setMessage("Đã huỷ thanh toán")
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                    })
+                                    .setNegativeButton("Cancel", null).show();
+                        });
                     }
 
                     @Override
                     public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
-                        new AlertDialog.Builder(OrderActivity.this)
-                                .setTitle("Payment Fail")
-                                .setMessage(String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken))
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                })
-                                .setNegativeButton("Cancel", null).show();
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            new AlertDialog.Builder(OrderActivity.this)
+                                    .setTitle("Payment Fail")
+                                    .setMessage(String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken))
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                    })
+                                    .setNegativeButton("Cancel", null).show();
+                        });
                     }
                 });
             }else {
+                LoadingDialog.dismissProgressDialog();
+                Log.d("zzzz", "createOrderZaloPay:");
                 AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
             }
 
         } catch (Exception e) {
+            LoadingDialog.dismissProgressDialog();
+            Log.d("zzzz", "createOrderZaloPay: " + e);
             AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
             e.printStackTrace();
         }
@@ -485,7 +499,7 @@ public class OrderActivity extends AppCompatActivity {
                         LoadingDialog.dismissProgressDialog();
                         new AlertDialog.Builder(OrderActivity.this)
                                 .setTitle("Payment Success")
-                                .setMessage(String.format("TransactionId: %s - TransToken: %s", transactionId, transToken))
+                                .setMessage("Đã thanh toán")
                                 .setPositiveButton("OK", (dialog, which) -> {
                                     setResult(Activity.RESULT_OK);
                                     finish();
@@ -522,5 +536,10 @@ public class OrderActivity extends AppCompatActivity {
         tvVoucher.setText(CurrencyUtils.formatCurrency(price));
         tvTotal.setText(String.valueOf(sumMoney));
         tvSumMoney.setText(String.valueOf(sumMoney - Integer.parseInt(price)));
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
     }
 }

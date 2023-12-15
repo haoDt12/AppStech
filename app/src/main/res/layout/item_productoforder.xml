@@ -64,12 +64,12 @@
                         android:id="@+id/tv_ramRamProductOfOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ram: 8Gb/ 128Gb" />
+                        android:text=""/>
                     <TextView
                         android:id="@+id/tv_ramRomProductOfOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Rom: 8Gb/ 128Gb" />
+                        android:text=""/>
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </LinearLayout>
 
