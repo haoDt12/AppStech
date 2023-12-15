@@ -41,6 +41,7 @@ public class OderRequest {
     }
 
     public static class Root{
+        private String voucherId;
         private String userId;
         private List<Product> product;
         private String address;
@@ -67,6 +68,14 @@ public class OderRequest {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        public String getVoucherId() {
+            return voucherId;
+        }
+
+        public void setVoucherId(String voucherId) {
+            this.voucherId = voucherId;
         }
     }
     public static class Option{

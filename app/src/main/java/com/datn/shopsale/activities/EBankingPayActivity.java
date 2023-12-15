@@ -37,7 +37,7 @@ public class EBankingPayActivity extends AppCompatActivity {
     private ListOder listOder;
     private String address;
     private ApiService apiService;
-
+    private String voucherId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +50,9 @@ public class EBankingPayActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("listOder")) {
             listOder = (ListOder) intent.getSerializableExtra("listOder");
+        }
+        if (intent.hasExtra("voucherId")) {
+            voucherId = intent.getStringExtra("voucherId");
         }
         WebSettings webSettings = webViewPay.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -77,6 +80,9 @@ public class EBankingPayActivity extends AppCompatActivity {
         request.setAmount("");
         request.setBankCode("");
         request.setLanguage("vn");
+        if(voucherId != null){
+            request.setVoucherId(voucherId);
+        }
         Call<VnPayResponse> call = apiService.createOrderVnPay(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<VnPayResponse>() {
             @Override

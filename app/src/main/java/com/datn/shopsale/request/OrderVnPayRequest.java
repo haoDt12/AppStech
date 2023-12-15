@@ -4,6 +4,7 @@ import java.util.List;
 
 public class OrderVnPayRequest {
     public static class Root{
+        private String voucherId;
         private String userId;
         private List<OderRequest.Product> product;
         private String address;
@@ -56,6 +57,14 @@ public class OrderVnPayRequest {
 
         public void setAddress(String address) {
             this.address = address;
+        }
+
+        public String getVoucherId() {
+            return voucherId;
+        }
+
+        public void setVoucherId(String voucherId) {
+            this.voucherId = voucherId;
         }
     }
 }

@@ -84,6 +84,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final int REQUEST_SELECT_VOUCHER = 2;
     private TextView tvPriceVoucher;
     private TextView tvVoucher;
+    private GetListVoucher.ListVoucher voucher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -250,6 +251,9 @@ public class OrderActivity extends AppCompatActivity {
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<ResApi>() {
@@ -312,6 +316,9 @@ public class OrderActivity extends AppCompatActivity {
         OderRequest.Root request = new OderRequest.Root();
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         request.setAddress(address);
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<GetPriceZaloPayResponse> call = apiService.getPriceOrderZaloPay(preferenceManager.getString("token"), request);
@@ -397,7 +404,7 @@ public class OrderActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SELECT_VOUCHER) {
             if (resultCode == RESULT_OK) {
                 assert data != null;
-                GetListVoucher.ListVoucher voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
+                voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
                 String price = data.getStringExtra("price");
                 assert voucher != null;
                 tvGiamGia.setText(voucher.getContent());
@@ -463,6 +470,9 @@ public class OrderActivity extends AppCompatActivity {
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<ResApi> call = apiService.createOrderZaloPay(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<ResApi>() {
