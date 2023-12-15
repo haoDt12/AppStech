@@ -164,6 +164,7 @@
                     android:background="@color/color_app" />
                 <FrameLayout
                     android:id="@+id/ln_chat"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -204,6 +205,7 @@
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="20dp"
                     android:layout_height="1dp"
+                    android:visibility="gone"
                     android:background="@color/color_app" />
 
                 <FrameLayout
@@ -253,6 +255,7 @@
 
                 <FrameLayout
                     android:id="@+id/ln_store"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
