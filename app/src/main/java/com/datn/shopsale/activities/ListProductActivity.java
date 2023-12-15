@@ -38,11 +38,9 @@ import retrofit2.Response;
 
 public class ListProductActivity extends AppCompatActivity {
     private ImageView imgCart;
-    private ImageView imgMore, imgChangeLayout;
-
+    private ImageView imgChangeLayout;
     private RecyclerView rcvProduct;
     private LinearLayout lnlSearch;
-
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private ProductAdapter productAdapter;
@@ -64,7 +62,6 @@ public class ListProductActivity extends AppCompatActivity {
         Toolbar toolbarListPro = (Toolbar) findViewById(R.id.toolbar_list_pro);
         lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
         imgCart = (ImageView) findViewById(R.id.img_cart);
-        imgMore = (ImageView) findViewById(R.id.img_more);
         imgChangeLayout = findViewById(R.id.img_change_layout);
         rcvProduct = findViewById(R.id.rcv_list_product);
         setSupportActionBar(toolbarListPro);
@@ -90,8 +87,6 @@ public class ListProductActivity extends AppCompatActivity {
 
     private void setEventClick() {
         imgCart.setOnClickListener(v -> {
-        });
-        imgMore.setOnClickListener(v -> {
         });
         imgChangeLayout.setOnClickListener(v -> {
             isGirdView = !isGirdView;

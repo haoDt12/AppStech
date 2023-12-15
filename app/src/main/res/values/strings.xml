@@ -6,6 +6,7 @@
     <string name="cart">Giỏ hàng</string>
     <string name="user">Người dùng</string>
     <string name="tinnhan">Tin nhắn</string>
+    <string name="texting">Nhắn tin</string>
     <string name="chart">Thông kê, doanh thu</string>
     <string name="notifications">Thông báo</string>
     <string name="dark_modes">Chế độ tối</string>
@@ -154,4 +155,12 @@
     <string name="vui_long_chon_dia_chi">Vui lòng chọn địa chỉ</string>
     <string name="thanh_to_n">Đã thanh toán: </string>
     <string name="b_n_c_mu_n_ch_n_voucher">Bạn có muốn chọn voucher</string>
+    <string name="login_err">Đã hết phiên đăng nhập vui lòng đăng nhập lại</string>
+
+    <string name="connect">Connected</string>
+    <string name="disconnect">Disconnected, Please check your internet connection</string>
+    <string name="error_connect">Failed to connect</string>
+    <string name="message_user_joined">%s joined</string>
+    <string name="message_user_left">%s left</string>
+    <string name="user_action_typing">is typing</string>
 </resources>

@@ -10,12 +10,15 @@ import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.response.BaseResponse;
 import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
+import com.datn.shopsale.response.GetConversationResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.GetListVoucher;
+import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetPassResponse;
@@ -30,6 +33,7 @@ import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -228,17 +232,57 @@ public interface ApiService {
 
     @POST("/api/editPassword")
     Call<EditPasswordResponse> editPassword(@Header("Authorization") String token, @Body EditPassRequest request);
+
     @POST("/api/verifyOtpEditPass")
     Call<VerifyOtpEditPassResponse> sendOtpPassword(@Header("Authorization") String token, @Body EditPassRequest request);
 
     @FormUrlEncoded
     @POST("/api/getPassWord")
     Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
+
     @FormUrlEncoded
     @POST("/api/getVoucherByUserId")
     Call<GetListVoucher.Root> getListVoucher(@Header("Authorization") String token, @Field("userId") String userId);
+
     @POST("/api/getPriceZaloPay")
     Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+
     @POST("/api/creatOrderZaloPay")
     Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+    @POST("/api/checkToken")
+    Call<BaseResponse> checkToken(@Header("Authorization") String token);
+
+    @FormUrlEncoded
+    @POST("/api/getConversationByIDUser")
+    Call<GetConversationResponse.Root> getConversationByIDUser(@Header("Authorization") String token,
+                                                               @Field("idUser") String idUser);
+
+    @FormUrlEncoded
+    @POST("/api/getMessageLatest")
+    Call<GetMessageResponse.Root> getMessageLatest(@Header("Authorization") String token,
+                                                   @Field("conversationIDs[]") ArrayList<String> conversationIDs);
+
+    @FormUrlEncoded
+    @POST("/api/getAnyUserById")
+    Call<GetUserByIdResponse.Root> getAnyUserById(@Header("Authorization") String token,
+                                                  @Field("userId") String userId);
+
+    @Multipart
+    @POST("/api/addMessage")
+    Call<GetMessageResponse.ResponseMessage> addMessage(
+            @Header("Authorization") String token,
+            @Part("conversation") RequestBody conversation,
+            @Part("senderId") RequestBody senderId,
+            @Part("receiverId") RequestBody receiverId,
+            @Part("message") RequestBody message,
+            @Part MultipartBody.Part images,
+            @Part MultipartBody.Part video
+    );
+
+    @FormUrlEncoded
+    @POST("/api/getMessageByIDConversation")
+    Call<GetMessageResponse.Root> getMessageByIDConversation(@Header("Authorization") String token,
+                                                             @Field("conversationID") String conversationID);
+
+
 }

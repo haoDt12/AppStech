@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ChatRoomModal;
-import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.ui.dashboard.chat.ChatActivityFirebase;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -53,7 +53,7 @@ public class ConversationAdapter extends FirestoreRecyclerAdapter<ChatRoomModal,
 
         }
         holder.itemView.setOnClickListener(view -> {
-            Intent i = new Intent(mContext, ChatActivity.class);
+            Intent i = new Intent(mContext, ChatActivityFirebase.class);
             i.putStringArrayListExtra("listId", (ArrayList<String>) model.getUserId());
             mContext.startActivity(i);
         });

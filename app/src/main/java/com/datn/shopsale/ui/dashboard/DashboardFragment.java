@@ -31,6 +31,7 @@ import com.datn.shopsale.activities.VoucherActivity;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
+import com.datn.shopsale.ui.dashboard.chat.ConversationActivity;
 import com.datn.shopsale.ui.dashboard.order.MyOrderActivity;
 import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
@@ -61,6 +62,7 @@ public class DashboardFragment extends Fragment {
     private FrameLayout lnChat;
     private FrameLayout lnVoucher;
     private FrameLayout lnLocation;
+    private FrameLayout lnClause;
     private FrameLayout lnSetting;
     private FrameLayout lnOrder;
     private FrameLayout lnStore;
@@ -73,6 +75,7 @@ public class DashboardFragment extends Fragment {
     private ApiService apiService;
     private GetUserByIdResponse.User user;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
         return fragment;
@@ -113,6 +116,7 @@ public class DashboardFragment extends Fragment {
         lnlProfile = view.findViewById(R.id.lnl_profile);
         lnChat = view.findViewById(R.id.ln_chat);
         lnLocation = view.findViewById(R.id.ln_location);
+        lnClause = view.findViewById(R.id.ln_clause);
         lnSetting = view.findViewById(R.id.ln_setting);
         lnOrder = view.findViewById(R.id.ln_order);
         lnStore = view.findViewById(R.id.ln_store);
@@ -124,14 +128,15 @@ public class DashboardFragment extends Fragment {
         tvName.setText("");
 
         lnlProfile.setOnClickListener(view1 -> activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class)));
-        lnChat.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ChatScreenAdminActivity.class)));
         lnLocation.setOnClickListener(view1 -> startActivity(new Intent(getContext(), AddressActivity.class)));
+        lnChat.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ConversationActivity.class)));
+        lnClause.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ChatScreenAdminActivity.class)));
         lnSetting.setOnClickListener(view1 -> startActivity(new Intent(getContext(), SettingActivity.class)));
         lnOrder.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MyOrderActivity.class)));
         lnStore.setOnClickListener(view1 -> startActivity(new Intent(getContext(), StoreActivity.class)));
         lnVoucher.setOnClickListener(view1 -> {
-            Intent intent = new Intent(requireActivity(),VoucherActivity.class);
-            intent.putExtra("action",1);
+            Intent intent = new Intent(requireActivity(), VoucherActivity.class);
+            intent.putExtra("action", 1);
             startActivity(intent);
         });
 
@@ -197,14 +202,15 @@ public class DashboardFragment extends Fragment {
         preferenceManager.clear();
         requireActivity().finish();
     }
-    private void getUser(){
-        LoadingDialog.showProgressDialog(getActivity(),"Loading...");
-        Call<GetUserByIdResponse.Root> call = apiService.getUserById(preferenceManager.getString("token"),preferenceManager.getString("userId"));
+
+    private void getUser() {
+        LoadingDialog.showProgressDialog(getActivity(), "Loading...");
+        Call<GetUserByIdResponse.Root> call = apiService.getUserById(preferenceManager.getString("token"), preferenceManager.getString("userId"));
         call.enqueue(new Callback<GetUserByIdResponse.Root>() {
             @Override
             public void onResponse(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Response<GetUserByIdResponse.Root> response) {
                 assert response.body() != null;
-                if(response.body().getCode() == 1){
+                if (response.body().getCode() == 1) {
                     requireActivity().runOnUiThread(() -> {
                         user = response.body().getUser();
                         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgAvatarUsers);
@@ -212,10 +218,10 @@ public class DashboardFragment extends Fragment {
                         tvEmail.setText(user.getEmail());
                         LoadingDialog.dismissProgressDialog();
                     });
-                }else {
+                } else {
                     requireActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(),response.body().getMessage());
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     });
                 }
             }
@@ -224,14 +230,15 @@ public class DashboardFragment extends Fragment {
             public void onFailure(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(),t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
                 });
             }
         });
     }
-    private void onFragmentResult(){
+
+    private void onFragmentResult() {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if(result.getResultCode() == RESULT_OK){
+            if (result.getResultCode() == RESULT_OK) {
                 getUser();
             }
         });

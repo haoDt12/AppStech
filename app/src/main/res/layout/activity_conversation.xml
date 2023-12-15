@@ -8,14 +8,14 @@
     tools:context=".activities.ChatScreenAdminActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_Conversation"
+        android:id="@+id/toolbar_conversation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/tinnhan" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_Conversation"
-        android:layout_margin="10dp"
+        android:id="@+id/rcv_conversation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp" />
 </LinearLayout>
