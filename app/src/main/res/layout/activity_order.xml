@@ -36,7 +36,7 @@
 
                 <LinearLayout
                     android:id="@+id/lnl_order_address"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="15dp"
                     android:orientation="vertical">
@@ -51,23 +51,22 @@
 
                         <TextView
                             android:id="@+id/tv_name"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="6"
+                            android:layout_weight="4"
                             android:text="@string/vui_long_chon_dia_chi"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                         <TextView
                             android:id="@+id/tv_phone"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:text="09xxxxxxxxx"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="normal"
-                            android:visibility="gone"
                             android:layout_marginStart="10dp"/>
                     </LinearLayout>
 
