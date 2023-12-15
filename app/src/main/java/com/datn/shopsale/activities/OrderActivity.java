@@ -84,13 +84,6 @@ public class OrderActivity extends AppCompatActivity {
     private static final int REQUEST_SELECT_VOUCHER = 2;
     private TextView tvPriceVoucher;
     private TextView tvVoucher;
-
-
-
-
-
-    private AddressAdapter addressAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,8 +133,8 @@ public class OrderActivity extends AppCompatActivity {
         }
         assert listOder != null;
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
-        tvShipPrice.setText("0 VND");
-        tvVoucher.setText("0 VND");
+        tvShipPrice.setText(getResources().getText(R.string.vnd_0));
+        tvVoucher.setText(getResources().getText(R.string.vnd_0));
         for (Cart item : listOder.getList()) {
             for (Cart.Option option: item.getOption()) {
                 if(option.getFeesArise() != null){
