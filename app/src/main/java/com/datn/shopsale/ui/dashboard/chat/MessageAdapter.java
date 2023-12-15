@@ -183,7 +183,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         byte[] encryptedText = hexStringToByteArray(textParts[1]);
 
         MessageDigest md = MessageDigest.getInstance(Constants.HASH_ALGORITHM);
-        byte[] keyBytes = md.digest(Constants.API_KEY.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = md.digest(Constants.ENCRYPTION_KEY.getBytes(StandardCharsets.UTF_8));
         byte[] keyBytes16 = new byte[16];
         System.arraycopy(keyBytes, 0, keyBytes16, 0, 16);
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes16, "AES");
