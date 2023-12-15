@@ -229,8 +229,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private void oderMoney() {
         List<OderRequest.Product> listProduct = new ArrayList<>();
-        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
+            ArrayList<OderRequest.Option> optionList = new ArrayList<>();
             for (Cart.Option option : item.getOption()) {
                 if(option.getFeesArise() != null){
                     optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
