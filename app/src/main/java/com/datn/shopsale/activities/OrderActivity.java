@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -84,9 +85,7 @@ public class OrderActivity extends AppCompatActivity {
     private static final int REQUEST_SELECT_VOUCHER = 2;
     private TextView tvPriceVoucher;
     private TextView tvVoucher;
-
-    private AddressAdapter addressAdapter;
-
+    private GetListVoucher.ListVoucher voucher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +135,8 @@ public class OrderActivity extends AppCompatActivity {
         }
         assert listOder != null;
         tvQuantity.setText(String.valueOf(listOder.getList().size()));
-        tvShipPrice.setText("0 VND");
-        tvVoucher.setText("0 VND");
+        tvShipPrice.setText(getResources().getText(R.string.vnd_0));
+        tvVoucher.setText(getResources().getText(R.string.vnd_0));
         for (Cart item : listOder.getList()) {
             for (Cart.Option option: item.getOption()) {
                 if(option.getFeesArise() != null){
@@ -238,8 +237,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private void oderMoney() {
         List<OderRequest.Product> listProduct = new ArrayList<>();
-        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
+            ArrayList<OderRequest.Option> optionList = new ArrayList<>();
             for (Cart.Option option : item.getOption()) {
                 if(option.getFeesArise() != null){
                     optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
@@ -253,6 +252,9 @@ public class OrderActivity extends AppCompatActivity {
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<ResApi>() {
@@ -315,28 +317,28 @@ public class OrderActivity extends AppCompatActivity {
         OderRequest.Root request = new OderRequest.Root();
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         request.setAddress(address);
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<GetPriceZaloPayResponse> call = apiService.getPriceOrderZaloPay(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<GetPriceZaloPayResponse>() {
             @Override
             public void onResponse(@NonNull Call<GetPriceZaloPayResponse> call, @NonNull Response<GetPriceZaloPayResponse> response) {
-                if (response.body() != null) {
-                    if (response.body().getCode() == 1) {
-                        runOnUiThread(() -> {
-                            Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            LoadingDialog.dismissProgressDialog();
-                            createOrderZaloPay(String.valueOf(response.body().getPrice()));
+                assert response.body() != null;
+                if (response.body().getCode() == 1) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        createOrderZaloPay(String.valueOf(response.body().getPrice()));
 
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
-                            LoadingDialog.dismissProgressDialog();
-                        });
-                    }
+                    });
+                } else {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                    });
                 }
-
             }
 
             @Override
@@ -402,7 +404,7 @@ public class OrderActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SELECT_VOUCHER) {
             if (resultCode == RESULT_OK) {
                 assert data != null;
-                GetListVoucher.ListVoucher voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
+                voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
                 String price = data.getStringExtra("price");
                 assert voucher != null;
                 tvGiamGia.setText(voucher.getContent());
@@ -424,40 +426,52 @@ public class OrderActivity extends AppCompatActivity {
                 ZaloPaySDK.getInstance().payOrder(OrderActivity.this, token, "demozpdk://app", new PayOrderListener() {
                     @Override
                     public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
-                        callApiOrderZaloPay(transactionId, transToken);
-                    }
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            callApiOrderZaloPay(transactionId,transToken);
+                        });
 
+                    }
                     @Override
                     public void onPaymentCanceled(String zpTransToken, String appTransID) {
-                        new AlertDialog.Builder(OrderActivity.this)
-                                .setTitle("User Cancel Payment")
-                                .setMessage(String.format("zpTransToken: %s \n", zpTransToken))
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                })
-                                .setNegativeButton("Cancel", null).show();
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            new AlertDialog.Builder(OrderActivity.this)
+                                    .setTitle("User Cancel Payment")
+                                    .setMessage("Đã huỷ thanh toán")
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                    })
+                                    .setNegativeButton("Cancel", null).show();
+                        });
                     }
 
                     @Override
                     public void onPaymentError(ZaloPayError zaloPayError, String zpTransToken, String appTransID) {
-                        new AlertDialog.Builder(OrderActivity.this)
-                                .setTitle("Payment Fail")
-                                .setMessage(String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken))
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                })
-                                .setNegativeButton("Cancel", null).show();
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            new AlertDialog.Builder(OrderActivity.this)
+                                    .setTitle("Payment Fail")
+                                    .setMessage(String.format("ZaloPayErrorCode: %s \nTransToken: %s", zaloPayError.toString(), zpTransToken))
+                                    .setPositiveButton("OK", (dialog, which) -> {
+                                    })
+                                    .setNegativeButton("Cancel", null).show();
+                        });
                     }
                 });
-            } else {
-                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
+            }else {
+                LoadingDialog.dismissProgressDialog();
+                Log.d("zzzz", "createOrderZaloPay:");
+                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
             }
 
         } catch (Exception e) {
-            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
+            LoadingDialog.dismissProgressDialog();
+            Log.d("zzzz", "createOrderZaloPay: " + e);
+            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
             e.printStackTrace();
         }
     }
-
-    private void callApiOrderZaloPay(String transactionId, String transToken) {
+    private void callApiOrderZaloPay(String transactionId, String transToken){
         List<OderRequest.Product> listProduct = new ArrayList<>();
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
@@ -470,6 +484,9 @@ public class OrderActivity extends AppCompatActivity {
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
+        if(voucher != null){
+            request.setVoucherId(voucher.get_id());
+        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         Call<ResApi> call = apiService.createOrderZaloPay(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<ResApi>() {
@@ -482,7 +499,7 @@ public class OrderActivity extends AppCompatActivity {
                         LoadingDialog.dismissProgressDialog();
                         new AlertDialog.Builder(OrderActivity.this)
                                 .setTitle("Payment Success")
-                                .setMessage(String.format("TransactionId: %s - TransToken: %s", transactionId, transToken))
+                                .setMessage("Đã thanh toán")
                                 .setPositiveButton("OK", (dialog, which) -> {
                                     setResult(Activity.RESULT_OK);
                                     finish();
@@ -519,5 +536,10 @@ public class OrderActivity extends AppCompatActivity {
         tvVoucher.setText(CurrencyUtils.formatCurrency(price));
         tvTotal.setText(String.valueOf(sumMoney));
         tvSumMoney.setText(String.valueOf(sumMoney - Integer.parseInt(price)));
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
     }
 }
