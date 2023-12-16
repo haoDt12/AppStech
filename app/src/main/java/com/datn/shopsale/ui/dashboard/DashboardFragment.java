@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -54,8 +56,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DashboardFragment extends Fragment {
+    private static final String TAG = DashboardFragment.class.getSimpleName();
 
     private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInAccount acct;
     private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
     private Button btnLogOut;
@@ -103,6 +107,7 @@ public class DashboardFragment extends Fragment {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        acct = GoogleSignIn.getLastSignedInAccount(requireActivity());
         preferenceManager = new PreferenceManager(requireActivity());
 
         btnLogOut = view.findViewById(R.id.btn_log_out);
@@ -173,31 +178,37 @@ public class DashboardFragment extends Fragment {
             Dialog dialog = new Dialog(view1.getContext());
             dialog.setContentView(R.layout.dialog_log_out);
             Window window = dialog.getWindow();
-            assert window != null;
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-            window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
-            window.getAttributes().windowAnimations = R.style.DialogAnimation;
-            WindowManager.LayoutParams windowAttributes = window.getAttributes();
-            window.setAttributes(windowAttributes);
-            windowAttributes.gravity = Gravity.BOTTOM;
 
+            if (window != null) {
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
+                window.getAttributes().windowAnimations = R.style.DialogAnimation;
+                WindowManager.LayoutParams windowAttributes = window.getAttributes();
+                window.setAttributes(windowAttributes);
+                windowAttributes.gravity = Gravity.BOTTOM;
+                dialog.show();
+            }
             ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
             Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
             btnCancel.setOnClickListener(view2 -> dialog.cancel());
-            btnConfirm.setOnClickListener(view2 -> signOut());
-            dialog.show();
+            btnConfirm.setOnClickListener(view2 -> {
+                dialog.dismiss();
+                signOut();
+            });
         });
     }
 
     private void updateUI() {
-        tvEmail.setText("");
-        tvName.setText("");
         startActivity(new Intent(getContext(), LoginActivity.class));
         requireActivity().finish();
     }
 
     private void signOut() {
-        FirebaseAuth.getInstance().signOut();
+        mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
+            if (task.isSuccessful() && acct != null) {
+                Log.d(TAG, "signOutGoogle: " + task.getResult());
+            }
+        });
         startActivity(new Intent(getActivity(), LoginActivity.class));
         preferenceManager.clear();
         requireActivity().finish();
