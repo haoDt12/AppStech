@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,7 +72,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 .into(holder.imgAvt);
 
         holder.tvNameUser.setText(name);
-        if (latestMessage.size() == conversations.size()) {
+        if (position < latestMessage.size()) {
             GetMessageResponse.Message message = latestMessage.get(position);
             if (message == null) return;
             String idConversation = message.getConversation().get_id();
@@ -97,6 +98,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                             text = "đã gửi 1 ảnh";
                         }
                     }
+                    Log.d("TAG", "onBindViewHolder: name: " + name + " - msg: " + text);
                     holder.tvLastMessage.setText(text);
                     String dataTime = message.getTimestamp();
                     dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
@@ -105,10 +107,12 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             } catch (Exception e) {
                 Log.d("Conversation adapter", "onBindViewHolder: " + e.getMessage());
             }
-
         } else {
-            holder.tvLastMessage.setText("");
-            holder.tvTime.setText("");
+            int lenCon = conversations.size();
+            int lenChat = latestMessage.size();
+//            Log.d("TAG", "onBindViewHolder: " + position + " " + latestMessage.get(position).getMessage());
+
+
         }
         String finalIdOtherUser = idOtherUser;
         holder.itemView.setOnClickListener(view -> {
