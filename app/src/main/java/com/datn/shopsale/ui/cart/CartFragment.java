@@ -177,7 +177,7 @@ public class CartFragment extends Fragment {
                         cartList.add(objCart);
                     }
                     requireActivity().runOnUiThread(() -> {
-                        Tvsum.setText(String.valueOf(tong));
+                        Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                         cartAdapter = new CartAdapter(cartList, getActivity(), new IChangeQuantity() {
                             @Override
                             public void IclickReduce(Cart objCart, int index) {
@@ -194,7 +194,7 @@ public class CartFragment extends Fragment {
                             @Override
                             public void IclickCheckBox(Cart objCart, int index) {
                                 tong+= (objCart.getPrice()* objCart.getQuantity());
-                                Tvsum.setText(String.valueOf(tong));
+                                Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                                 listCartSelected.add(objCart);
                                 listOder.setList(listCartSelected);
                             }
@@ -202,7 +202,7 @@ public class CartFragment extends Fragment {
                             @Override
                             public void IclickCheckBox2(Cart objCart, int index) {
                                 tong-= (objCart.getPrice()* objCart.getQuantity());
-                                Tvsum.setText(String.valueOf(tong));
+                                Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                                 listCartSelected.remove(objCart);
                             }
                         });
@@ -244,7 +244,7 @@ public class CartFragment extends Fragment {
                    if(response.body().code==1){
                        if(objCart.getStatus()==2){
                          tong = tong + objCart.getPrice();
-                           Tvsum.setText(String.valueOf(tong));
+                           Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                        }
                        cartList.get(index).setQuantity(cartList.get(index).getQuantity()+1);
 
@@ -281,7 +281,7 @@ public class CartFragment extends Fragment {
                     if(response.body().code==1){
                         if(objCart.getStatus()==2){
                             tong = tong - objCart.getPrice();
-                            Tvsum.setText(String.valueOf(tong));
+                            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                         }
                         cartList.get(index).setQuantity(cartList.get(index).getQuantity()-1);
                         if(cartList.get(index).getQuantity()==0){

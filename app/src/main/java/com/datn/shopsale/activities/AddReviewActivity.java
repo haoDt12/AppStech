@@ -61,7 +61,8 @@ public class AddReviewActivity extends AppCompatActivity{
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 // Xử lý sự kiện khi giá trị đánh giá thay đổi
                 rating_result = ratingBar.getRating();
-                tvRating.setText((int) rating_result);
+//                tvRating.setText(Integer.parseInt(String.valueOf(rating_result)));
+
             }
         });
     }
