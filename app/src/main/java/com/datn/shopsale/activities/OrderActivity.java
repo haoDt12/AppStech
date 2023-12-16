@@ -146,8 +146,8 @@ public class OrderActivity extends AppCompatActivity {
             sumMoney = sumMoney + (item.getPrice() + sumPriceProduct) * item.getQuantity();
             sumPriceProduct = 0;
         }
-        tvTotal.setText(String.valueOf(sumMoney));
-        tvSumMoney.setText(String.valueOf(sumMoney));
+        tvTotal.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
+        tvSumMoney.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
         OrderAdapter adapter = new OrderAdapter(listOder);
         recyclerView.setAdapter(adapter);
         onSelectPayAction(btnMoney);
@@ -534,8 +534,8 @@ public class OrderActivity extends AppCompatActivity {
         }
         String price = tvPriceVoucher.getText().toString();
         tvVoucher.setText(CurrencyUtils.formatCurrency(price));
-        tvTotal.setText(String.valueOf(sumMoney));
-        tvSumMoney.setText(String.valueOf(sumMoney - Integer.parseInt(price)));
+        tvTotal.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
+        tvSumMoney.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney - Integer.parseInt(price))));
     }
     @Override
     protected void onNewIntent(Intent intent) {

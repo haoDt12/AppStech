@@ -76,6 +76,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
                     Log.d("zzzzzzzzzzz", "onResponse: "+response.body().getProduct());
                     holder.tvTitleProductOfOrder.setText(response.body().getProduct().getTitle());
 
+
                     holder.tvPriceProductOfOrder.setText(formatCurrency(response.body().getProduct().getPrice()));
                     Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
@@ -98,9 +99,11 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             }
             if (item.type.equals("Rom")){
                 holder.tvRamRomProductOfOrder.setText(String.format("Rom: %s", item.title));
+                holder.tvRamRomProductOfOrder.setVisibility(View.VISIBLE);
             }
             if (item.type.equals("Ram")){
                 holder.tvRamRamProductOfOrder.setText(String.format("Ram: %s", item.title));
+                holder.tvRamRamProductOfOrder.setVisibility(View.VISIBLE);
             }
         }
         holder.tvNumProductOfOrder.setText("Số lượng: "+pro.quantity+"");

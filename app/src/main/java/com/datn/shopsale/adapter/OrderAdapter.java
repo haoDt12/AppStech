@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.squareup.picasso.Picasso;
 
@@ -40,7 +41,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         }
         price = mList.getList().get(position).getPrice() + fee;
         holder.tvName.setText(mList.getList().get(position).getTitle());
-        holder.tvPrice.setText(String.valueOf(price));
+        holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(price)));
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
         holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }

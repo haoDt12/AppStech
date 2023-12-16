@@ -62,15 +62,17 @@
                     android:orientation="vertical"
                     android:layout_height="wrap_content">
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_ramRamProductOfOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=""/>
+                        android:text="Ram: 8Gb/ 128Gb" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_ramRomProductOfOrder"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text=""/>
+                        android:text="Rom: 8Gb/ 128Gb" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </LinearLayout>
 
