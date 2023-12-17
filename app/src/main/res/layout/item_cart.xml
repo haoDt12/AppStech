@@ -46,11 +46,12 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="8dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/img_cart"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/iphone_14_128gb" />
+            android:src="@drawable/iphone_14_128gb"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,6 +60,7 @@
             android:orientation="vertical">
 
             <RelativeLayout
+                android:id="@+id/layout_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center">
@@ -74,7 +76,7 @@
                     android:paddingVertical="12dp"
                     android:text="name"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     tools:ignore="RelativeOverlap" />
 
                 <CheckBox
@@ -85,61 +87,71 @@
 
             </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
                 <TextView
                     android:id="@+id/tv_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
                     android:text="12.000.000"
                     android:textColor="@color/red"
-                    android:textSize="18sp" />
+                    android:textSize="13sp" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:orientation="horizontal">
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_price">
+
 
                     <ImageButton
-                        android:layout_gravity="center_vertical"
                         android:id="@+id/img_decrease"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginStart="25dp"
+                        android:layout_toStartOf="@+id/tv_quantity"
                         android:background="@drawable/bg_corner_img_button_increase"
                         android:minHeight="30dp"
                         android:src="@drawable/icon_decrease_gray"
                         tools:ignore="ContentDescription,DuplicateSpeakableTextCheck,ImageContrastCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
-                  <EditText
-                      android:id="@+id/tv_quantity"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:layout_marginLeft="5dp"
-                      android:layout_marginRight="5dp"
-                      android:gravity="center_vertical"
-                      android:padding="10dp"
-                      android:imeOptions="actionDone"
-                      android:inputType="number"
-                      />
+
+                    <TextView
+                        android:id="@+id/tv_quantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_toStartOf="@+id/img_increase"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        tools:ignore="RelativeOverlap" />
 
                     <ImageButton
-                        android:layout_gravity="center_vertical"
                         android:id="@+id/img_increase"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="10dp"
                         android:background="@drawable/bg_corner_img_button_increase"
                         android:minHeight="30dp"
                         android:src="@drawable/icon_increase_teal"
                         tools:ignore="ContentDescription,ImageContrastCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
-                </LinearLayout>
 
-            </LinearLayout>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
 
             <View
                 android:layout_width="match_parent"

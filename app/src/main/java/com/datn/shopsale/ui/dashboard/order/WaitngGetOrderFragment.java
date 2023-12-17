@@ -22,6 +22,7 @@ import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,7 +63,7 @@ public class WaitngGetOrderFragment extends Fragment {
     }
 
     private void getListOrdeWatingGet() {
-        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
+        LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         String token = preferenceManager.getString("token");
         String userId = preferenceManager.getString("userId");
         ArrayList<Orders> dataOrder = new ArrayList<>();
@@ -72,26 +73,27 @@ public class WaitngGetOrderFragment extends Fragment {
         call.enqueue(new Callback<GetListOrderResponse.Root>() {
             @Override
             public void onResponse(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Response<GetListOrderResponse.Root> response) {
-                assert response.body() != null;
-                requireActivity().runOnUiThread(() -> {
-                    LoadingDialog.dismissProgressDialog();
-                    if (response.body().code == 1) {
-                        for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
-                            Log.d("hhhhhhhh", "onResponse: " + response.body().listOrder);
-                            dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
-                        }
-                        for (Orders item : dataOrder) {
-                            if (item.getStatus().equals("WaitingGet")) {
-                                dataOrderInTransit.add(item);
+                if (response.body() != null) {
+                    requireActivity().runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().code == 1) {
+                            for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
+                                Log.d("hhhhhhhh", "onResponse: " + response.body().listOrder);
+                                dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
                             }
+                            for (Orders item : dataOrder) {
+                                if (item.getStatus().equals("WaitingGet")) {
+                                    dataOrderInTransit.add(item);
+                                }
+                            }
+                            binding.rcvWaitingGet.setLayoutManager(new LinearLayoutManager(requireActivity()));
+                            adapter = new ListOrderAdapter(dataOrderInTransit, requireActivity());
+                            binding.rcvWaitingGet.setAdapter(adapter);
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
                         }
-                        binding.rcvWaitingGet.setLayoutManager(new LinearLayoutManager(requireActivity()));
-                        adapter = new ListOrderAdapter(dataOrderInTransit, requireActivity());
-                        binding.rcvWaitingGet.setAdapter(adapter);
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
-                    }
-                });
+                    });
+                }
             }
 
             @Override

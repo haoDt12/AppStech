@@ -174,6 +174,7 @@ public class HomeFragment extends Fragment {
 
                     if (response.body().getCode() == 1) {
                         dataList = response.body().getProduct();
+
                         productAdapter = new ProductAdapter(dataList, getActivity(), R.layout.item_product);
                         binding.rcvListItemPro.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                         binding.rcvListItemPro.setAdapter(productAdapter);

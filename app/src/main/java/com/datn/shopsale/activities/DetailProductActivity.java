@@ -15,12 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ColorAdapter;
@@ -37,7 +39,10 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.User;
 import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.response.GetProductByIDResponse;
+import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -52,6 +57,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = DetailProductActivity.class.getSimpleName();
+    private static final int OPEN_ORDER = 1812;
     private LinearLayout lnlAllFeedBack;
     private Button btnAddToCart;
     private ImageView imgProduct;
@@ -73,10 +80,14 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private String selectedRams = "";
     private String selectedRoms = "";
     private String id;
+    private String quantity;
     private String imgCover;
     private String title;
     private int price;
     private RecyclerView recy_cmt;
+    private LinearLayout layoutActionBuy;
+    private Button btnOutStock;
+
     private List<FeedBack> listFb;
     private TextView tvTBC;
     private TextView tvReview;
@@ -93,8 +104,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private int feesAriseColor = 0;
     private int feesAriseRam = 0;
     private int feesAriseRom = 0;
+    private boolean isOutOfStock = true;
     private Button btnBuyNow;
     private GetListProductResponse.Product getProduct;
+    private GetProductByIDResponse.Product getProduct1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,60 +174,53 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     }
 
-    private void init() {
-        tvTBC = (TextView) findViewById(R.id.tv_TBC);
-        tvReview = (TextView) findViewById(R.id.tv_review);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-        recy_cmt = findViewById(R.id.recy_cmt);
-        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
-        imgProduct = (ImageView) findViewById(R.id.img_product);
-        tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
-        tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
-        toolbarDetailPro = (Toolbar) findViewById(R.id.toolbar_detail_pro);
-        lnlAllFeedBack = (LinearLayout) findViewById(R.id.lnl_all_feed_back);
-        btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
-        recyColorsProduct = findViewById(R.id.recy_colorsProduct);
-        recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
-        recyRom = (RecyclerView) findViewById(R.id.recy_rom);
-        viewPager2 = findViewById(R.id.vpg_product);
-        tvColor = (TextView) findViewById(R.id.tv_color);
-        tvRam = (TextView) findViewById(R.id.tv_dungLuong);
-        tvRom = (TextView) findViewById(R.id.tv_rom);
-        romList = new ArrayList<>();
-        ramList = new ArrayList<>();
-        colorList = new ArrayList<>();
-        btnBuyNow = (Button) findViewById(R.id.btn_buy_now);
-        setSupportActionBar(toolbarDetailPro);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarDetailPro.setNavigationOnClickListener(v -> onBackPressed());
-        lnlSearch.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+    private void getDataProduct(String token, String proId) {
+        Call<GetProductByIDResponse.Root> call = apiService.getProductByIdV2(token, proId);
+        call.enqueue(new Callback<GetProductByIDResponse.Root>() {
+            @Override
+            public void onResponse(@NonNull Call<GetProductByIDResponse.Root> call, @NonNull Response<GetProductByIDResponse.Root> response) {
+                assert response.body() != null;
+                if (response.body().getCode() == 1) {
+                    GetProductByIDResponse.Product product1 = response.body().getProduct();
+                    title = getIntent().getStringExtra("title");
+                    price = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("price")));
+                    id = getIntent().getStringExtra("id");
+                    quantity = getIntent().getStringExtra("quantity");
+                    imgCover = getIntent().getStringExtra("imgCover");
+                    getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
+
+                    title = product1.getTitle();
+                    price = Integer.parseInt(product1.getPrice());
+                    quantity = product1.getQuantity();
+                    imgCover = product1.getImg_cover();
+                    getProduct1 = product1;
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GetProductByIDResponse.Root> call, @NonNull Throwable t) {
+
+            }
         });
-        LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
-        starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
-        starsDrawable.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+    }
 
-
-        title = getIntent().getStringExtra("title");
-        price = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("price")));
-        id = getIntent().getStringExtra("id");
-        imgCover = getIntent().getStringExtra("imgCover");
-        getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
+    private void displayProduct() {
         if (getProduct != null) {
             optionList = getProduct.getOption();
-            Log.d("zzzzz", "init: " + optionList.toString());
+            Log.d("zzzzzKKKKKKKKKKKKKKKKK", "init: " + optionList.toString());
             if (getProduct.getOption() != null) {
-                for (GetListProductResponse.Option item : getProduct.getOption()
-                ) {
+                for (GetListProductResponse.Option item : getProduct.getOption()) {
+                    Log.d("TAG", "init: " + item.toString());
                     if (item.getType().equals("Color")) {
-                        colorList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getFeesArise()));
+                        colorList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getQuantity(), item.getFeesArise()));
                     }
                     if (item.getType().equals("Rom")) {
-                        romList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getFeesArise()));
+                        romList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getQuantity(), item.getFeesArise()));
                     }
                     if (item.getType().equals("Ram")) {
-                        ramList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getFeesArise()));
+                        ramList.add(new Option(item.getType(), item.getTitle(), item.getContent(), item.getQuantity(), item.getFeesArise()));
                     }
                 }
             }
@@ -244,6 +250,15 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         viewPager2.setAdapter(contentAdapter);
 
         tvNameProduct.setText(title);
+        int quan = Integer.parseInt(quantity);
+        if (quan <= 0) {
+            layoutActionBuy.setVisibility(View.GONE);
+            btnOutStock.setVisibility(View.VISIBLE);
+        } else {
+            layoutActionBuy.setVisibility(View.VISIBLE);
+            btnOutStock.setVisibility(View.GONE);
+        }
+
         String formattedNumber = CurrencyUtils.formatCurrency(String.valueOf(price)); // Format the integer directly
         tvPriceProduct.setText(formattedNumber);
         if (!colorList.isEmpty()) {
@@ -306,6 +321,54 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             tvRom.setVisibility(View.GONE);
             recyRom.setVisibility(View.GONE);
         }
+    }
+
+    private void init() {
+        tvTBC = (TextView) findViewById(R.id.tv_TBC);
+        layoutActionBuy = findViewById(R.id.lnl_action_buy);
+        btnOutStock = findViewById(R.id.btn_out_stock);
+        tvReview = (TextView) findViewById(R.id.tv_review);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        recy_cmt = findViewById(R.id.recy_cmt);
+        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
+        imgProduct = (ImageView) findViewById(R.id.img_product);
+        tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
+        tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
+        toolbarDetailPro = (Toolbar) findViewById(R.id.toolbar_detail_pro);
+        lnlAllFeedBack = (LinearLayout) findViewById(R.id.lnl_all_feed_back);
+        btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
+        recyColorsProduct = findViewById(R.id.recy_colorsProduct);
+        recyDungLuong = (RecyclerView) findViewById(R.id.recy_dungLuong);
+        recyRom = (RecyclerView) findViewById(R.id.recy_rom);
+        viewPager2 = findViewById(R.id.vpg_product);
+        tvColor = (TextView) findViewById(R.id.tv_color);
+        tvRam = (TextView) findViewById(R.id.tv_dungLuong);
+        tvRom = (TextView) findViewById(R.id.tv_rom);
+        romList = new ArrayList<>();
+        ramList = new ArrayList<>();
+        colorList = new ArrayList<>();
+        btnBuyNow = (Button) findViewById(R.id.btn_buy_now);
+        setSupportActionBar(toolbarDetailPro);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
+        toolbarDetailPro.setNavigationOnClickListener(v -> onBackPressed());
+        lnlSearch.setOnClickListener(v -> {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
+        });
+        LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
+        starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
+        starsDrawable.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
+
+        String token = preferenceManager.getString("token");
+        title = getIntent().getStringExtra("title");
+        price = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("price")));
+        id = getIntent().getStringExtra("id");
+        quantity = getIntent().getStringExtra("quantity");
+        imgCover = getIntent().getStringExtra("imgCover");
+        getProduct = (GetListProductResponse.Product) getIntent().getSerializableExtra("product");
+//        getDataProduct(token, id);
+        displayProduct();
+
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
     }
@@ -326,6 +389,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     protected void onDestroy() {
         super.onDestroy();
         contentAdapter.releasePlayer();
+        Toast.makeText(this, "on Destroy", Toast.LENGTH_SHORT).show();
     }
 
     private void AddToCart() {
@@ -347,10 +411,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         objCart.setQuantity(1);
         objCart.setImgCover(imgCover);
         objCart.setStatus(1);
+
+
         ArrayList<Cart.Option> optionArrayList = new ArrayList<>();
         for (GetListProductResponse.Option item : options
         ) {
-            optionArrayList.add(new Cart.Option(item.getType(), item.getTitle(), item.getContent(), item.getFeesArise()));
+            optionArrayList.add(new Cart.Option(item.getType(), item.getTitle(), item.getContent(), item.getQuantity(), item.getFeesArise()));
         }
         objCart.setOption(optionArrayList);
         try {
@@ -397,30 +463,53 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             ArrayList<Cart.Option> optionArrayList = new ArrayList<>();
             if (colorOption != null) {
                 if (colorOption.getFeesArise() != null) {
-                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), colorOption.getFeesArise()));
+                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), colorOption.getQuantity(), colorOption.getFeesArise()));
                 } else {
-                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), "0"));
+                    optionArrayList.add(new Cart.Option(colorOption.getType(), colorOption.getTitle(), colorOption.getContent(), colorOption.getQuantity(), "0"));
                 }
             }
             if (ramOption != null) {
                 if (ramOption.getFeesArise() != null) {
-                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), ramOption.getFeesArise()));
+                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), ramOption.getQuantity(), ramOption.getFeesArise()));
                 } else {
-                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), "0"));
+                    optionArrayList.add(new Cart.Option(ramOption.getType(), ramOption.getTitle(), ramOption.getContent(), ramOption.getQuantity(), "0"));
                 }
             }
             if (romOption != null) {
                 if (romOption.getFeesArise() != null) {
-                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), romOption.getFeesArise()));
+                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), romOption.getQuantity(), romOption.getFeesArise()));
                 } else {
-                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), "0"));
+                    optionArrayList.add(new Cart.Option(romOption.getType(), romOption.getTitle(), romOption.getContent(), romOption.getQuantity(), "0"));
                 }
             }
             List<Cart> list = new ArrayList<>();
-            list.add(new Cart(getProduct.get_id(), preferenceManager.getString("userId"), getProduct.getTitle(), optionArrayList, Integer.parseInt(getProduct.getPrice()), 1, getProduct.getImg_cover(), 1));
-            listOder.setList(list);
-            intent.putExtra("listOder", listOder);
-            startActivity(intent);
+
+            for (Cart.Option op : optionArrayList) {
+                if (Integer.parseInt(op.getQuantity()) == 0) {
+                    AlertDialogUtil.showAlertDialogWithOk(this, "Sản phẩm tạm hết hàng");
+                    isOutOfStock = false;
+                }
+            }
+            if (isOutOfStock) {
+                list.add(new Cart(getProduct.get_id(), preferenceManager.getString("userId"), getProduct.getTitle(), optionArrayList, Integer.parseInt(getProduct.getPrice()), 1, getProduct.getImg_cover(), 1));
+                listOder.setList(list);
+                intent.putExtra("listOder", listOder);
+                startActivity(intent);
+
+            }
+
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, "onActivityResult", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 }

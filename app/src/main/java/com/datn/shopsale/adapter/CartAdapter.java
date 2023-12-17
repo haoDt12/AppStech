@@ -74,7 +74,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             }
         });
         for (Cart.Option option : item.getOption()) {
-            if(option.getFeesArise() != null){
+            if (option.getFeesArise() != null && option.getFeesArise().length() > 0) {
                 feesArise += Integer.parseInt(option.getFeesArise());
             }
         }

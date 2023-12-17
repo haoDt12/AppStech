@@ -241,9 +241,9 @@ public class OrderActivity extends AppCompatActivity {
             ArrayList<OderRequest.Option> optionList = new ArrayList<>();
             for (Cart.Option option : item.getOption()) {
                 if(option.getFeesArise() != null){
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
                 }else {
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), "0"));
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), "0"));
                 }
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
@@ -267,6 +267,7 @@ public class OrderActivity extends AppCompatActivity {
                         LoadingDialog.dismissProgressDialog();
                         setResult(Activity.RESULT_OK);
                         finish();
+
                     });
                 } else {
                     runOnUiThread(() -> {
@@ -310,7 +311,7 @@ public class OrderActivity extends AppCompatActivity {
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
@@ -476,7 +477,7 @@ public class OrderActivity extends AppCompatActivity {
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
+                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
