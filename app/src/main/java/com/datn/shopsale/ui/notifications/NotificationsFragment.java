@@ -80,6 +80,8 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onResponse(Call<GetNotificationResponse.Root> call, Response<GetNotificationResponse.Root> response) {
                 if (response.body().code == 1) {
+                    NotificationCount.count = response.body().notification.size();
+//                    Toast.makeText(getActivity(), "" + NotificationCount.count , Toast.LENGTH_SHORT).show();
                     for (GetNotificationResponse.Notification item : response.body().notification) {
                         Notification notification = new Notification();
                         notification.set_id(item.get_id());
@@ -126,6 +128,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void updateAdapter() {
+        NotificationCount.count = notificationList.size();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

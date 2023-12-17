@@ -155,5 +155,8 @@ public class SignUpActivity extends AppCompatActivity {
         progressbar = findViewById(R.id.progressbar);
         btnSignUp = findViewById(R.id.btn_sign_up);
         edPhoneNumber = findViewById(R.id.ed_phone_number_register);
+        TextView scrollingTextView = findViewById(R.id.tv_msg);
+        scrollingTextView.setSelected(true);
+        scrollingTextView.setSingleLine(true);
     }
 }
