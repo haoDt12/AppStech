@@ -20,7 +20,7 @@
             android:src="@drawable/iphone_14_128gb" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -80,9 +80,16 @@
                 android:id="@+id/btn_danhgia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="5dp"
                 android:text="Đánh giá"
+                android:textAllCaps="false"
+                app:cornerRadius="15dp"
+                android:paddingHorizontal="35dp"
+                android:paddingVertical="15dp"
+                android:layout_marginHorizontal="5dp"
+                android:textColor="@color/mauve"
+                android:backgroundTint="@color/red_less"
                 android:visibility="gone" />
         </LinearLayout>
 

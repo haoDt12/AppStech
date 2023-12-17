@@ -17,7 +17,7 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_productOfOrder"
@@ -37,7 +37,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="15dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:text="@string/address_pay"
+                        android:textSize="13sp"/>
                     <LinearLayout
+                        android:layout_marginVertical="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -79,20 +87,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tongthanhtoan"
-                    android:textSize="20dp"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
                     android:textColor="@color/black"/>
                 <TextView
                     android:id="@+id/tv_orderTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textColor="@color/red"
-                    android:textStyle="bold"
+                    android:textStyle="normal"
                     android:layout_marginLeft="4dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="17dp"
+                    android:textSize="17sp"
                     android:textColor="@color/red"
                     android:textStyle="bold"/>
             </LinearLayout>
@@ -107,14 +116,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/trangthaidonhang"
-                    android:textSize="17dp"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
                     android:textColor="@color/black"/>
                 <TextView
                     android:id="@+id/tv_orderStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đang giao hàng"
-                    android:textSize="17dp"
+                    android:textSize="14sp"
                     android:textColor="@color/black"
                     android:layout_marginLeft="3dp"/>
             </LinearLayout>
@@ -125,9 +135,14 @@
                 android:layout_height="wrap_content"
                 android:text="Hủy đơn hàng"
                 android:textAllCaps="false"
+                app:cornerRadius="15dp"
+                android:paddingHorizontal="35dp"
+                android:paddingVertical="15dp"
                 android:layout_marginTop="30dp"
-                android:textColor="#fff"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_marginHorizontal="20dp"
+                android:textColor="@color/mauve"
+                android:backgroundTint="@color/red_less"
+                android:layout_gravity="center_horizontal|end"/>
             <TextView
                 android:id="@+id/tv_valueAdressId"
                 android:layout_width="wrap_content"

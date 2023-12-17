@@ -96,11 +96,12 @@
     <string name="delete">Delete</string>
     <string name="create">Create</string>
     <string name="address">Địa chỉ</string>
+    <string name="address_pay">Địa chỉ giao hàng</string>
     <string name="search">Tìm kiếm</string>
     <string name="save">Save</string>
     <string name="email_not_authenticated">Email has not been authenticated</string>
     <string name="abate">Thanh toán</string>
-    <string name="submit">Submit</string>
+    <string name="submit">Gửi</string>
     <string name="leave_a_comment">Để lại bình luận</string>
     <string name="comment_for_product">Nhận xét - góp ý</string>
     <string name="comment">Đánh giá</string>
@@ -132,7 +133,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="chitietdonhang">Chi tiết đơn hàng</string>
     <string name="tongthanhtoan">Tổng thanh toán:</string>
-    <string name="trangthaidonhang">Trạng thái đơn hàng:</string>
+    <string name="trangthaidonhang">Trạng thái:</string>
     <!--    <string name="pay">Thanh toán</string>-->
 
     <string name="name_product">Tên sản phẩm</string>
