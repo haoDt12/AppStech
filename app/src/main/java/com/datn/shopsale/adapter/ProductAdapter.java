@@ -3,6 +3,7 @@ package com.datn.shopsale.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +29,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     private List<GetListProductResponse.Product> dataList;
     private Context context;
     private int itemLayout;
-    public ProductAdapter(ArrayList<GetListProductResponse.Product> dataList, Context context, int itemLayout){
+
+    public ProductAdapter(ArrayList<GetListProductResponse.Product> dataList, Context context, int itemLayout) {
         this.dataList = dataList;
         this.context = context;
         this.itemLayout = itemLayout;
     }
+
     @NonNull
     @Override
     public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,29 +47,33 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GetListProductResponse.Product product = dataList.get(position);
-        if (product == null){
+
+        if (product == null) {
             return;
         }
+        Log.d("TAHHHHHHHHHHHHHHHHG", "onBindViewHolder: " + product.toString());
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(product.getImg_cover())).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         String price = product.getPrice();
         String formattedAmount = CurrencyUtils.formatCurrency(price);
         holder.tvPrice.setText(formattedAmount);
-        if(product.getQuantity().equals("0")){
+        if (product.getQuantity().equals("0")) {
             holder.tvStatus.setText(context.getText(R.string.het_hang));
-        }else {
+        } else {
             holder.tvStatus.setText(context.getText(R.string.con_hang));
         }
-        holder.tvSold.setText("Đã bán: "+product.getSold());
-        holder.rltProduct.setOnClickListener(v->{
+        holder.tvSold.setText("Đã bán: " + product.getSold());
+        holder.rltProduct.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailProductActivity.class);
-            intent.putExtra("list_img",product.getList_img());
-            intent.putExtra("video",product.getVideo());
-            intent.putExtra("title",product.getTitle());
-            intent.putExtra("price",product.getPrice());
-            intent.putExtra("id",product.get_id());
-            intent.putExtra("imgCover",product.getImg_cover());
-            intent.putExtra("product",product);
+            intent.putExtra("list_img", product.getList_img());
+            intent.putExtra("video", product.getVideo());
+            intent.putExtra("title", product.getTitle());
+            intent.putExtra("price", product.getPrice());
+            intent.putExtra("id", product.get_id());
+            intent.putExtra("imgCover", product.getImg_cover());
+            intent.putExtra("quantity", product.getQuantity());
+            intent.putExtra("option", product.getOption());
+            intent.putExtra("product", product);
             context.startActivity(intent);
         });
 
@@ -75,11 +82,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return dataList == null?0:dataList.size();
+        return dataList == null ? 0 : dataList.size();
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvName, tvStatus, tvSold;
         private TextView tvPrice;
         private ImageView imgProduct;

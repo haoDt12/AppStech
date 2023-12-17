@@ -23,6 +23,7 @@ import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.response.GetPriceZaloPayResponse;
+import com.datn.shopsale.response.GetProductByIDResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
@@ -169,6 +170,11 @@ public interface ApiService {
     @POST("/api/getProductById")
     Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
                                                  @Field("productId") String productId);
+
+    @FormUrlEncoded
+    @POST("/api/getProductById")
+    Call<GetProductByIDResponse.Root> getProductByIdV2(@Header("Authorization") String token,
+                                                       @Field("productId") String productId);
 
     @FormUrlEncoded
     @POST("/api/getUserById")

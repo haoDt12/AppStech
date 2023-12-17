@@ -100,9 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
-            updateUI();
-//            getInformationUser(acct);
-            showToast(getString(R.string.google_login_session));
+//            updateUI();
+            getInformationUser(acct);
         }
 
         // Facebook
@@ -263,6 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (response.body().code == 1) {
                         runOnUiThread(() -> {
                             Log.d(TAG, "onResponse: " + response.body().message);
+                            showToast(getString(R.string.google_login_session));
                             updateUI();
                         });
 

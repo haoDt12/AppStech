@@ -4,6 +4,7 @@ public class Option {
     private String type;
     private String title;
     private String content;
+    private String quantity;
     private String feesArise;
 
     public String getType() {
@@ -38,10 +39,20 @@ public class Option {
         this.feesArise = feesArise;
     }
 
-    public Option(String type, String title, String content, String feesArise) {
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public Option(String type, String title, String content, String quantity, String feesArise) {
         this.type = type;
         this.title = title;
         this.content = content;
+        this.quantity = quantity;
         this.feesArise = feesArise;
     }
 

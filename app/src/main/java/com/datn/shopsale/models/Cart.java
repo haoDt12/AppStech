@@ -12,10 +12,11 @@ public class Cart implements Serializable {
     private String imgCover;
     private int status;
     private ArrayList<Option> option;
+
     public Cart() {
     }
 
-    public Cart(String productId, String userId, String title,ArrayList<Option> option, int price, int quantity, String imgCover, int status) {
+    public Cart(String productId, String userId, String title, ArrayList<Option> option, int price, int quantity, String imgCover, int status) {
         this.productId = productId;
         this.userId = userId;
         this.title = title;
@@ -49,6 +50,7 @@ public class Cart implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
+
     public int getPrice() {
         return price;
     }
@@ -89,10 +91,11 @@ public class Cart implements Serializable {
         this.option = option;
     }
 
-    public static class Option implements Serializable{
+    public static class Option implements Serializable {
         private String type;
         private String title;
         private String content;
+        private String quantity;
         private String feesArise;
 
         public String getType() {
@@ -127,10 +130,19 @@ public class Cart implements Serializable {
             this.feesArise = feesArise;
         }
 
-        public Option(String type, String title, String content, String feesArise) {
+        public String getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(String quantity) {
+            this.quantity = quantity;
+        }
+
+        public Option(String type, String title, String content, String quantity, String feesArise) {
             this.type = type;
             this.title = title;
             this.content = content;
+            this.quantity = quantity;
             this.feesArise = feesArise;
         }
 

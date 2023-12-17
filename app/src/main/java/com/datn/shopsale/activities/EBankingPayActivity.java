@@ -38,6 +38,7 @@ public class EBankingPayActivity extends AppCompatActivity {
     private String address;
     private ApiService apiService;
     private String voucherId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +66,10 @@ public class EBankingPayActivity extends AppCompatActivity {
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                if(option.getFeesArise() != null){
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getFeesArise()));
-                }else {
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), "0"));
+                if (option.getFeesArise() != null) {
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
+                } else {
+                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), "0"));
                 }
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
@@ -80,7 +81,7 @@ public class EBankingPayActivity extends AppCompatActivity {
         request.setAmount("");
         request.setBankCode("");
         request.setLanguage("vn");
-        if(voucherId != null){
+        if (voucherId != null) {
             request.setVoucherId(voucherId);
         }
         Call<VnPayResponse> call = apiService.createOrderVnPay(preferenceManager.getString("token"), request);
