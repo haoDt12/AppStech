@@ -12,58 +12,59 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
-        <ImageView
-            android:id="@+id/img_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/cart"
-            tools:ignore="ContentDescription" />
-
         <LinearLayout
             android:id="@+id/lnl_search"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:layout_gravity="center"
             android:layout_marginHorizontal="5dp"
-            android:layout_marginVertical="10dp"
             android:background="@drawable/bg_search_view"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/search"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="15dp"
-                android:layout_gravity="center_vertical" />
+                android:src="@drawable/search" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/search"
                 android:layout_marginLeft="10dp"
-                android:textStyle="bold"/>
+                android:text="@string/search"
+                android:textStyle="bold" />
         </LinearLayout>
 
-<!--        <ImageView-->
-<!--            android:id="@+id/img_more"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="10dp"-->
-<!--            android:src="@drawable/menu_dots_24"-->
-<!--            tools:ignore="ContentDescription" />-->
+        <!--        <ImageView-->
+        <!--            android:id="@+id/img_more"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginHorizontal="10dp"-->
+        <!--            android:src="@drawable/menu_dots_24"-->
+        <!--            tools:ignore="ContentDescription" />-->
+
         <ImageView
             android:id="@+id/img_change_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="10dp"
-            android:src="@drawable/icon_grid_view_24"
-            tools:ignore="ContentDescription" />
+            android:layout_marginHorizontal="20dp"
+            android:src="@drawable/icon_grid_view_24" />
+
+        <ImageView
+            android:id="@+id/img_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:visibility="gone"
+            android:layout_gravity="end"
+            android:src="@drawable/cart" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:background="@color/color_app"
         android:id="@+id/rcv_list_product"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/color_app" />
 </LinearLayout>
