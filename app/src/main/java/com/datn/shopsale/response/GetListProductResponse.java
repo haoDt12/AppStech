@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GetListProductResponse {
-    public class Category implements Serializable{
+    public static class Category implements Serializable{
         private String _id;
         private String title;
         private String date;
@@ -56,6 +56,24 @@ public class GetListProductResponse {
         private ArrayList<Option> option;
         private String img_cover;
         private String video;
+
+        @Override
+        public String toString() {
+            return "Product{" +
+                    "_id='" + _id + '\'' +
+                    ", category=" + category +
+                    ", title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", price='" + price + '\'' +
+                    ", quantity='" + quantity + '\'' +
+                    ", sold='" + sold + '\'' +
+                    ", list_img=" + list_img +
+                    ", date='" + date + '\'' +
+                    ", option=" + option +
+                    ", img_cover='" + img_cover + '\'' +
+                    ", video='" + video + '\'' +
+                    '}';
+        }
 
         public String get_id() {
             return _id;
@@ -154,11 +172,12 @@ public class GetListProductResponse {
         }
 
     }
-    public class Option implements Serializable{
-        private String type;
-        private String title;
-        private String content;
-        private String feesArise;
+    public static class Option implements Serializable{
+            private String type;
+            private String title;
+            private String content;
+            private String quantity;
+            private String feesArise;
         public String getType() {
             return type;
         }
@@ -186,15 +205,25 @@ public class GetListProductResponse {
             return feesArise;
         }
 
+        public String getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(String quantity) {
+            this.quantity = quantity;
+        }
+
         public void setFeesArise(String feesArise) {
             this.feesArise = feesArise;
         }
+
         @Override
         public String toString() {
             return "Option{" +
                     "type='" + type + '\'' +
                     ", title='" + title + '\'' +
                     ", content='" + content + '\'' +
+                    ", quantity='" + quantity + '\'' +
                     ", feesArise='" + feesArise + '\'' +
                     '}';
         }

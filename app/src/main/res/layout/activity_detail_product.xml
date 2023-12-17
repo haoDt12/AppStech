@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:backgroundTint="@color/color_app"
+    android:orientation="vertical"
     tools:context=".activities.DetailProductActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_detail_pro"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
+
         <LinearLayout
             android:id="@+id/lnl_search"
             android:layout_width="280dp"
@@ -22,26 +23,29 @@
             android:background="@drawable/bg_search_view"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/search"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="15dp"
-                android:layout_gravity="center_vertical" />
+                android:src="@drawable/search" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/search"
                 android:layout_marginLeft="10dp"
-                android:textStyle="bold"/>
+                android:text="@string/search"
+                android:textStyle="bold" />
         </LinearLayout>
+
         <ImageView
             android:id="@+id/img_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
             android:layout_gravity="end"
-            android:src="@drawable/cart"/>
+            android:layout_marginHorizontal="30dp"
+            android:src="@drawable/cart" />
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
@@ -63,175 +67,209 @@
                     android:id="@+id/vpg_product"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
-                    android:src="@drawable/img_iphone"
+                    android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
-                    android:layout_centerHorizontal="true" />
+                    android:src="@drawable/img_iphone" />
+
                 <TextView
                     android:id="@+id/tv_nameProduct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="Iphone 13 Promax"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:layout_marginTop="20dp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_priceProduct"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="11.500.000đ"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
                     android:textColor="#E10808"
-                    android:layout_marginTop="5dp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="Màu"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:layout_marginTop="5dp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recy_colorsProduct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="4"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="20dp"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="4" />
+
                 <TextView
                     android:id="@+id/tv_dungLuong"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="Ram"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:layout_marginTop="5dp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recy_dungLuong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="4"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="4" />
+
                 <TextView
                     android:id="@+id/tv_rom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:text="Rom"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
                     android:textColor="@color/black"
-                    android:layout_marginTop="5dp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recy_rom"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="4"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="4" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_below="@+id/lnl_product"
+            <FrameLayout
                 android:id="@+id/lnl_action"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="5"
-                android:padding="10dp"
-                android:gravity="center">
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/chat"
-                    android:layout_weight="4"
-                    android:background="@color/mauve"/>
-                <Button
-                    android:id="@+id/btn_buy_now"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:text="Mua ngay"
-                    android:textSize="12sp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="0.5"
-                    android:backgroundTint="#FF9800"
-                    android:textColor="@color/mauve"
-                    android:textAllCaps="false"
-                    app:cornerRadius="30dp" />
+                android:layout_below="@+id/lnl_product">
 
-                <Button
-                    android:id="@+id/btn_add_to_cart"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:backgroundTint="#EC6940"
-                    android:text="Thêm vào giỏ hàng"
-                    android:textAllCaps="false"
-                    android:layout_weight="0.5"
-                    android:layout_margin="5dp"
-                    android:textColor="@color/mauve"
-                    android:textSize="12sp"
-                    app:cornerRadius="30dp" />
-            </LinearLayout>
-
-        <LinearLayout
-            android:layout_below="@+id/lnl_action"
-            android:id="@+id/lnl_review"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_coneradios"
-            android:padding="10dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/lnl_action_buy"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_margin="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:id="@+id/tv_TBC"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:visibility="visible"
+                    android:weightSum="5">
+
+                    <ImageButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:textSize="20sp"
+                        android:layout_weight="4"
+                        android:background="@color/mauve"
+                        android:src="@drawable/chat" />
+
+                    <Button
+                        android:id="@+id/btn_buy_now"
+                        android:layout_width="150dp"
+                        android:layout_height="60dp"
                         android:layout_margin="5dp"
-                        android:text="4.5/5" />
+                        android:layout_weight="0.5"
+                        android:backgroundTint="#FF9800"
+                        android:text="Mua ngay"
+                        android:textAllCaps="false"
+                        android:textColor="@color/mauve"
+                        android:textSize="12sp"
+                        app:cornerRadius="30dp" />
+
+                    <Button
+                        android:id="@+id/btn_add_to_cart"
+                        android:layout_width="150dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.5"
+                        android:backgroundTint="#EC6940"
+                        android:text="Thêm vào giỏ hàng"
+                        android:textAllCaps="false"
+                        android:textColor="@color/mauve"
+                        android:textSize="12sp"
+                        app:cornerRadius="30dp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_out_stock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:layout_weight="0.5"
+                    android:backgroundTint="@color/gray"
+                    android:text="Hết hàng"
+                    android:textAllCaps="false"
+                    android:textColor="@color/mauve"
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    app:cornerRadius="30dp" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/lnl_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lnl_action"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_coneradios"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_TBC"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="4.5/5"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_review"
-                            android:layout_margin="5dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
                             android:text="100 Review" />
 
                         <RatingBar
                             android:id="@+id/ratingBar"
+                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:numStars="5"
                             android:rating="0"
-                            style="@style/Widget.AppCompat.RatingBar.Small"
                             android:transformPivotX="0dp"
                             android:transformPivotY="0dp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/lnl_all_feed_back"
                         android:layout_width="wrap_content"
@@ -241,27 +279,30 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_margin="2dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Xem tất cả"/>
+                            android:layout_margin="2dp"
+                            android:text="Xem tất cả" />
+
                         <ImageButton
-                            android:layout_margin="3dp"
                             android:layout_width="12dp"
                             android:layout_height="12dp"
-                            android:src="@drawable/angle_right"
-                            android:background="@color/white"/>
+                            android:layout_margin="3dp"
+                            android:background="@color/white"
+                            android:src="@drawable/angle_right" />
                     </LinearLayout>
                 </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/blur_gray" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/blur_gray" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recy_cmt"
-                    android:layout_marginVertical="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="5dp" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
