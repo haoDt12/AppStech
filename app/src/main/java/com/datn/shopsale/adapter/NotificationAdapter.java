@@ -40,6 +40,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationAdapterViewHoller holder, int position) {
         Notification notification = notificationList.get(position);
+        holder.tvMessageNotification.setSelected(true);
+        holder.tvMessageNotification.setSingleLine(true);
         if(notification!=null){
             if(notification.getTypePrivatePublic().equals("Public")){
                 holder.tvMessageNotification.setText(notification.getContent());

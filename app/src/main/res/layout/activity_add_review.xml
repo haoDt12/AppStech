@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_toEndOf="@+id/img_product"
             android:text="IPhone 14 Pro max"
             android:textColor="@color/black"
@@ -58,6 +59,7 @@
             android:layout_below="@+id/tv_name"
             android:layout_toEndOf="@+id/img_product"
             android:text="Trắng 128GB"
+            android:layout_marginLeft="10dp"
             android:textColor="@color/black"
             android:textSize="14sp" />
     </RelativeLayout>

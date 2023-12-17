@@ -2,9 +2,15 @@ package com.datn.shopsale.ui.dashboard;
 
 import static android.app.Activity.RESULT_OK;
 
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,11 +24,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.Interface.ApiService;
@@ -79,6 +87,7 @@ public class DashboardFragment extends Fragment {
     private ApiService apiService;
     private GetUserByIdResponse.User user;
     private ActivityResultLauncher<Intent> activityResultLauncher;
+    private LinearLayout lnlCall;
 
     public static DashboardFragment newInstance() {
         DashboardFragment fragment = new DashboardFragment();
@@ -114,6 +123,7 @@ public class DashboardFragment extends Fragment {
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
 
         tvTitle = (TextView) view.findViewById(R.id.tv_title);
+        lnlCall = (LinearLayout) view.findViewById(R.id.lnl_call);
         imgAvatarUsers = view.findViewById(R.id.img_avatarUsers);
         apiService = RetrofitConnection.getApiService();
         getUser();
@@ -135,7 +145,9 @@ public class DashboardFragment extends Fragment {
         lnlProfile.setOnClickListener(view1 -> activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class)));
         lnLocation.setOnClickListener(view1 -> startActivity(new Intent(getContext(), AddressActivity.class)));
         lnChat.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ConversationActivity.class)));
-        lnClause.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ChatScreenAdminActivity.class)));
+        lnClause.setOnClickListener(view1 -> {
+            Toast.makeText(getContext(), "Feature in development", Toast.LENGTH_SHORT).show();
+        });
         lnSetting.setOnClickListener(view1 -> startActivity(new Intent(getContext(), SettingActivity.class)));
         lnOrder.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MyOrderActivity.class)));
         lnStore.setOnClickListener(view1 -> startActivity(new Intent(getContext(), StoreActivity.class)));
@@ -196,8 +208,55 @@ public class DashboardFragment extends Fragment {
                 signOut();
             });
         });
+        lnlCall.setOnClickListener(v -> {
+            requets_permistion();
+            CallPhone();
+        });
     }
+    public boolean requets_permistion() {
+        if (getContext().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.CALL_PHONE
+            }, 1);
+            return false;
+        }
+    }
+    public void CallPhone(){
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_call_phone);
+        dialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.dialog_bg));
+        Window window = dialog.getWindow();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.getAttributes().windowAnimations = R.style.DialogAnimation;
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        window.setAttributes(windowAttributes);
+        windowAttributes.gravity = Gravity.BOTTOM;
+        Button btnCall = (Button) dialog.findViewById(R.id.btn_call);
+        Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
 
+        String phone = "0961803120";
+        btnCall.setText("Gọi: "+phone);
+        btnCall.setOnClickListener(v2 -> {
+            Toast.makeText(getContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+//            Intent intent_call = new Intent(Intent.ACTION_CALL, Uri.parse("tel: " +phone));
+//            startActivity(intent_call);
+        });
+        btnCancel.setOnClickListener(v2 -> {
+            dialog.cancel();
+        });
+        dialog.show();
+    }
     private void updateUI() {
         startActivity(new Intent(getContext(), LoginActivity.class));
         requireActivity().finish();
