@@ -25,6 +25,7 @@ import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.response.GetPriceZaloPayResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
+import com.datn.shopsale.response.GetUserGoogleResponse;
 import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.response.VerifyOtpEditPassResponse;
@@ -72,6 +73,15 @@ public interface ApiService {
     @POST("/api/loginUser")
     Call<ResApi> signin(@Field("username") String username,
                         @Field("password") String passwd
+    );
+
+    @FormUrlEncoded
+    @POST("/api/loginWithGoogle")
+    Call<GetUserGoogleResponse.Root> loginWithGoogle(@Field("email") String email,
+                                                     @Field("id") String id,
+                                                     @Field("displayName") String displayName,
+                                                     @Field("expirationTime") String expirationTime,
+                                                     @Field("photoUrl") String photoUrl
     );
 
     @FormUrlEncoded
@@ -249,6 +259,7 @@ public interface ApiService {
 
     @POST("/api/creatOrderZaloPay")
     Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
+
     @POST("/api/checkToken")
     Call<BaseResponse> checkToken(@Header("Authorization") String token);
 

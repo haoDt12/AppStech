@@ -125,6 +125,8 @@ public class ConversationActivity extends AppCompatActivity {
         getDataLatestMessage(listIdConversation, isLoad, new LatestMessageCallback() {
             @Override
             public void onLatestMessageLoaded(ArrayList<GetMessageResponse.Message> dataMessage) {
+                Log.d(TAG, "onLatestMessageLoaded: " + dataConversation.toString());
+                Log.d(TAG, "onLatestMessageLoaded: " + dataMessage.toString());
                 conversationAdapter = new ConversationAdapter(ConversationActivity.this, dataConversation, dataMessage);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
                 rcvConversation.setLayoutManager(linearLayoutManager);

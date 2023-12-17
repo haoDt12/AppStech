@@ -16,7 +16,7 @@
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
     <string name="dont_have_account">Chưa có tài khoản?</string>
-    <string name="sign_up">Đăng ký.</string>
+    <string name="sign_up">Đăng ký</string>
     <string name="forgot_pass">Quên mật khẩu?</string>
     <!--    <string name="tv_forgot_pass">Quên mật khẩu</string>-->
     <string name="enter_email">Nhập email</string>
@@ -144,7 +144,7 @@
 
     <string name="street">Street</string>
     <string name="city">City</string>
-    <string name="have_account">Đã có tài khoàn ?</string>
+    <string name="have_account">Đã có tài khoản ?</string>
     <string name="e_banking">E-Banking</string>
     <string name="help">Trung tâm hỗ trợ</string>
     <string name="clause">Điều khoản và Chính sách</string>

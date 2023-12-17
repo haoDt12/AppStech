@@ -255,10 +255,10 @@ public class ChatActivity extends AppCompatActivity {
         RequestBody requestBodyMessage = RequestBody.create(MediaType.parse("text/plain"), message);
         Log.d(TAG, "addMessage: message " + requestBodyMessage);
         Log.d(TAG, "addMessage: senderID " + requestBodySenderId);
-        LoadingDialog.showProgressDialog(this, "Loading...");
+//        LoadingDialog.showProgressDialog(this, "Loading...");
         if (imageUri != null) {
 //            Toast.makeText(this, requestBodyMessage.toString(), Toast.LENGTH_SHORT).show();
-            File file = new File(imageUri.getPath());
+            File file = new File(Objects.requireNonNull(imageUri.getPath()));
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images[]", file.getName(), imageRequestBody);
             Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(token, requestBodyConversation, requestBodySenderId, requestBodyReceiverId, requestBodyMessage, imagePart, null);
@@ -295,7 +295,10 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(token, requestBodyConversation, requestBodySenderId, requestBodyReceiverId, requestBodyMessage, null, null);
+            Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(
+                    token, requestBodyConversation, requestBodySenderId,
+                    requestBodyReceiverId, requestBodyMessage, null, null
+            );
             call.enqueue(new Callback<GetMessageResponse.ResponseMessage>() {
                 @Override
                 public void onResponse(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Response<GetMessageResponse.ResponseMessage> response) {
@@ -726,9 +729,11 @@ public class ChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            imageUri = data.getData();
+            if (data != null) {
+                imageUri = data.getData();
 //            Log.d(TAG, "onActivityResult: " + imageUri);
-            addMessage("");
+                addMessage("");
+            }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, "da" + ImagePicker.getError(data), Toast.LENGTH_SHORT).show();
         }
