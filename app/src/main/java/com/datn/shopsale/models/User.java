@@ -1,5 +1,7 @@
 package com.datn.shopsale.models;
 
+import androidx.annotation.NonNull;
+
 public class User {
     private String _id;
     private String avatar;
@@ -76,5 +78,19 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "User{" +
+                "_id='" + _id + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", email='" + email + '\'' +
+                ", full_name='" + full_name + '\'' +
+                ", password='" + password + '\'' +
+                ", phone_number='" + phone_number + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

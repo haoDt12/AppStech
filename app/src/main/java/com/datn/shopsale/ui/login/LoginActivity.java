@@ -1,19 +1,12 @@
 package com.datn.shopsale.ui.login;
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +17,9 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.User;
+import com.datn.shopsale.response.GetUserGoogleResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -43,9 +37,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,8 +63,6 @@ public class LoginActivity extends AppCompatActivity {
     private LoginButton btnLoginWithFacebook;
     private TextView tvSignUp;
     private TextView tvForgotPass;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser currentUser;
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
     private final int RC_SIGN_IN = 2;
@@ -83,40 +79,30 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         initView();
         apiService = RetrofitConnection.getApiService();
-        tvForgotPass.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), ForgotPassActivity.class));
-        });
+
         // Share preference
         preferenceManager = new PreferenceManager(this);
-
         if (preferenceManager.isRemember()) {
             isRemember = preferenceManager.getBoolean(Constants.KEY_REMEMBER);
             if (isRemember) {
-//
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             }
         } else {
             edEmail.setText(preferenceManager.getString(Constants.KEY_EMAIL));
+            edPass.setText(preferenceManager.getString(Constants.KEY_PASS));
         }
 
+        // Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         acct = GoogleSignIn.getLastSignedInAccount(this);
-
         if (acct != null) {
-            getInformationUser(acct);
+            updateUI();
+//            getInformationUser(acct);
             showToast(getString(R.string.google_login_session));
-            updateUI();
-        }
-        // Firebase Auth
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null && currentUser.isEmailVerified()) {
-            showToast(getString(R.string.fb_auth_login_session));
-            updateUI();
         }
 
         // Facebook
@@ -124,13 +110,16 @@ public class LoginActivity extends AppCompatActivity {
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
             showToast(getString(R.string.facebook_login_session) + " with ID: " + accessToken.getUserId());
-            updateUI();
+//            updateUI();
         }
 
         eventClick();
     }
 
     private void eventClick() {
+        tvForgotPass.setOnClickListener(view -> {
+            startActivity(new Intent(getApplicationContext(), ForgotPassActivity.class));
+        });
         cbRemember.setOnClickListener(v -> isRemember = cbRemember.isChecked());
         tvSignUp.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
@@ -180,34 +169,33 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginWithFacebook() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "onSuccess: " + loginResult.toString());
+                // App code
+                accessToken = loginResult.getAccessToken();
+                String userID = accessToken.getUserId();
+                String applicationID = accessToken.getApplicationId();
+                String token = accessToken.getToken();
+                String expires = String.valueOf(accessToken.getExpires());
+                Log.d(TAG, "onSuccess FB: " + "ID: " + userID + " - ApplicationID: " + applicationID + " - token: " + token + " -expires: " + expires);
 
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        // App code
-                        accessToken = loginResult.getAccessToken();
-                        String userID = accessToken.getUserId();
-                        String applicationID = accessToken.getApplicationId();
-                        String token = accessToken.getToken();
-                        String expires = String.valueOf(accessToken.getExpires());
-                        Log.d(TAG, "onSuccess FB: " + "ID: " + userID + " - ApplicationID: " + applicationID + " - token: " + token + " -expires: " + expires);
+                updateUI();
+            }
 
-                        updateUI();
-                    }
+            @Override
+            public void onCancel() {
+                // App code
+                showToast("facebook:onCancel");
+            }
 
-                    @Override
-                    public void onCancel() {
-                        // App code
-                        showToast("facebook:onCancel");
-                    }
-
-                    @Override
-                    public void onError(@NonNull FacebookException exception) {
-                        // App code
-                        showToast(exception.getMessage());
-                    }
-                });
+            @Override
+            public void onError(@NonNull FacebookException exception) {
+                // App code
+                showToast(exception.getMessage());
+            }
+        });
     }
 
     private void login() {
@@ -227,69 +215,118 @@ public class LoginActivity extends AppCompatActivity {
                 Call<ResApi> call = apiService.signin(username, pass);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
-                    public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                        if (response.body().code == 1) {
-                            runOnUiThread(() -> {
-                                Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                                String idUser = response.body().id;
-                                Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
-                                i.putExtra("idUser", idUser);
-                                startActivity(i);
-                                finish();
-                            });
-                        } else {
-                            runOnUiThread(() -> {
-                                Toast.makeText(LoginActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                            });
+                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                        if (response.body() != null) {
+                            if (response.body().code == 1) {
+                                runOnUiThread(() -> {
+                                    Log.d(TAG, "onResponse: " + response.body());
+                                    showToast(response.body().message);
+                                    LoadingDialog.dismissProgressDialog();
+                                    String idUser = response.body().id;
+                                    Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
+                                    i.putExtra("idUser", idUser);
+                                    startActivity(i);
+                                    finish();
+                                });
+                            } else {
+                                runOnUiThread(() -> {
+                                    showToast(response.body().message);
+                                    LoadingDialog.dismissProgressDialog();
+                                });
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ResApi> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
                         runOnUiThread(() -> {
                             Log.e("Error", "onFailure: " + t);
-                            Toast.makeText(LoginActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                            showToast("error: " + t.getMessage());
                             LoadingDialog.dismissProgressDialog();
                         });
                     }
                 });
             } catch (Exception e) {
                 Log.e("Error", "onFailure: " + e);
-                Toast.makeText(LoginActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
+                showToast("error: " + e.getMessage());
                 LoadingDialog.dismissProgressDialog();
             }
-//            firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(task -> {
-//                if (task.isSuccessful()) {
-//                    currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//                    if (currentUser != null) {
-//                        boolean isEmailVerified = currentUser.isEmailVerified();
-//                        if (isEmailVerified) {
-//                            if (isRemember) {
-//                                preferenceManager.putString(Constants.KEY_EMAIL, email);
-//                                preferenceManager.putString(Constants.KEY_PASS, pass);
-//                            }
-//                            preferenceManager.putBoolean(Constants.KEY_REMEMBER, isRemember);
-//                            showToast(getString(R.string.login_success));
-//                            User user = new User();
-//                            String newPass = HashPassword.hashPassword(pass);
-//                            user.setEmail(email);
-//                            user.setPassword(newPass);
-//
-//                            // push data user to db
-//                            updateUI();
-//                        } else {
-//                            //showToast(getString(R.string.verify_email_msg));
-//                            showConfirmVerifyEmail();
-//                        }
-//                    }
-//                } else {
-//                    String message = Objects.requireNonNull(task.getException()).getMessage();
-//                    showToast(message);
-//                }
-//            });
         }
+    }
+
+    private void addTokenFMC(String token, String userId, String fcm) {
+        Call<ResApi> call = apiService.addFCM(token, userId, fcm);
+        call.enqueue(new Callback<ResApi>() {
+            @Override
+            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                if (response.body() != null) {
+                    if (response.body().code == 1) {
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + response.body().message);
+                            updateUI();
+                        });
+
+                    } else {
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + response.body().message);
+                            showToast("onResponse FCM: " + response.body().message);
+                        });
+                    }
+                } else {
+                    showToast("error add FCM");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                });
+            }
+        });
+    }
+
+    private void doLoginWithGoogle(String email, String id, String displayName, String expirationTime, String photoUrl) {
+        LoadingDialog.showProgressDialog(this, "Đang Tải...");
+        Call<GetUserGoogleResponse.Root> call = apiService.loginWithGoogle(email, id, displayName, expirationTime, photoUrl);
+        call.enqueue(new Callback<GetUserGoogleResponse.Root>() {
+            @Override
+            public void onResponse(@NonNull Call<GetUserGoogleResponse.Root> call, @NonNull Response<GetUserGoogleResponse.Root> response) {
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(() -> {
+                            Log.d(TAG, "onResponse: " + response.body().getUser().toString());
+                            String token = response.body().getToken();
+                            String userID = response.body().getUser().get_id();
+                            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                                String fcm = task.getResult();
+                                preferenceManager.putString("token", token);
+                                preferenceManager.putString("fcm", fcm);
+                                preferenceManager.putString("userId", userID);
+                                preferenceManager.putString(Constants.KEY_EMAIL, email);
+                                preferenceManager.putBoolean(Constants.KEY_REMEMBER, true);
+                                addTokenFMC(token, userID, fcm);
+
+                            });
+                        });
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(LoginActivity.this, response.body().getMessage());
+                    }
+                } else {
+                    AlertDialogUtil.showAlertDialogWithOk(LoginActivity.this, "error get response user");
+                }
+                LoadingDialog.dismissProgressDialog();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GetUserGoogleResponse.Root> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(LoginActivity.this, t.getMessage());
+                });
+            }
+        });
     }
 
     private boolean validForm(@NonNull String username, String pass) {
@@ -327,29 +364,40 @@ public class LoginActivity extends AppCompatActivity {
             String typeOfLogin = Objects.requireNonNull(acct.getAccount()).type;
             if (typeOfLogin.equals("com.google")) {
                 /// login with google
+                String zad = acct.zad();
+                try {
+                    JSONObject jsonUser = new JSONObject(zad);
+                    String id = jsonUser.getString("id");
+                    String email = jsonUser.getString("email");
+                    String displayName = jsonUser.getString("displayName");
 
-                String personName = acct.getDisplayName();
-                String personGivenName = acct.getGivenName();
-                String personFamilyName = acct.getFamilyName();
-                String personEmail = acct.getEmail();
-                String personId = acct.getId();
-                Uri personPhoto = acct.getPhotoUrl();
-                String idToken = acct.getIdToken();
-                if (idToken != null) {
-                    showToast(idToken);
+                    String givenName = jsonUser.getString("givenName");
+                    String familyName = jsonUser.getString("familyName");
+
+                    String photoUrl = replaceURLString(jsonUser.getString("photoUrl"));
+                    Log.d(TAG, "getInformationUser: " + photoUrl);
+                    String expirationTime = jsonUser.getString("expirationTime");
+                    String obfuscatedIdentifier = jsonUser.getString("obfuscatedIdentifier");
+
+                    String grantedScopes = jsonUser.getString("grantedScopes");
+                    String newGranted = grantedScopes.replace("[", "").replace("]", "").replaceAll("\"", "");
+                    String[] values = newGranted.split(",");
+                    ArrayList<String> arrayGrantedScopes = new ArrayList<>(Arrays.asList(values));
+//                    Log.d(TAG, "updateUI1: " + givenName + " - " + familyName + " - " + email + " - " + id + " - " + photoUrl);
+//                    Log.d(TAG, "updateUI2: " + displayName + " - " + " - " + zad);
+
+                    doLoginWithGoogle(email, id, displayName, expirationTime, photoUrl);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
-                User user = new User();
-                user.set_id(personId);
-                user.setAvatar(String.valueOf(personPhoto));
-                user.setEmail(personEmail);
-                user.setFull_name(personName);
-                user.setRole("end_user");
-
-                // push data user to db
-                Log.d(TAG, "updateUI: " + personGivenName + " - " + personFamilyName + " - " + personEmail + " - " + personId + " - " + personPhoto);
-                updateUI();
             }
         }
+    }
+
+    @NonNull
+    private String replaceURLString(@NonNull String preURL) {
+        if (preURL.length() == 0) return preURL;
+        return preURL.replace("\\", "");
     }
 
     private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
@@ -391,40 +439,6 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient.revokeAccess().addOnCompleteListener(this, task -> {
             // ...
         });
-    }
-
-    private void sendVerifyEmail() {
-        currentUser.sendEmailVerification().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                showToast(getString(R.string.check_email_verify));
-                Log.d(TAG, "Email sent.");
-            }
-        });
-    }
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private void showConfirmVerifyEmail() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_verify_email);
-        Window window = dialog.getWindow();
-        assert window != null;
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(getDrawable(R.drawable.dialog_bg));
-        window.getAttributes().windowAnimations = R.style.DialogAnimation;
-        WindowManager.LayoutParams windowAttributes = window.getAttributes();
-        window.setAttributes(windowAttributes);
-        windowAttributes.gravity = Gravity.BOTTOM;
-
-        ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
-        Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
-        btnCancel.setOnClickListener(view2 -> {
-            dialog.cancel();
-        });
-        btnConfirm.setOnClickListener(view2 -> {
-            sendVerifyEmail();
-            dialog.dismiss();
-        });
-        dialog.show();
     }
 
     private void setGooglePlusButtonText(@NonNull SignInButton signInButton, String buttonText) {

@@ -143,6 +143,23 @@ public class GetMessageResponse {
         public void setTimestamp(String timestamp) {
             this.timestamp = timestamp;
         }
+
+        @Override
+        public String toString() {
+            return "Message{" +
+                    "_id='" + _id + '\'' +
+                    ", conversation=" + conversation +
+                    ", senderId='" + senderId + '\'' +
+                    ", receiverId='" + receiverId + '\'' +
+                    ", message='" + message + '\'' +
+                    ", filess=" + filess +
+                    ", images=" + images +
+                    ", video='" + video + '\'' +
+                    ", status='" + status + '\'' +
+                    ", deleted=" + deleted +
+                    ", timestamp='" + timestamp + '\'' +
+                    '}';
+        }
     }
 
     public static class Root {
