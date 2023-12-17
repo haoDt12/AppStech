@@ -39,6 +39,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private String status;
+    private boolean check = true;
 
     public ListProductOfOrderAdapter(ArrayList<GetOrderResponse.Product> dataProduct, Context context,String status) {
         this.dataProduct = dataProduct;
@@ -66,17 +67,13 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         preferenceManager = new PreferenceManager(context);
 
         String token = preferenceManager.getString("token");
-        Log.d("xxxxxxxxxx", "onBindViewHolder: "+proId);
 
         Call<GetProductResponse.Root> call = apiService.getProductById(token, proId);
         call.enqueue(new Callback<GetProductResponse.Root>() {
             @Override
             public void onResponse(Call<GetProductResponse.Root> call, Response<GetProductResponse.Root> response) {
                 if (response.body().getCode()==1){
-                    Log.d("zzzzzzzzzzz", "onResponse: "+response.body().getProduct());
                     holder.tvTitleProductOfOrder.setText(response.body().getProduct().getTitle());
-
-
                     holder.tvPriceProductOfOrder.setText(formatCurrency(response.body().getProduct().getPrice()));
                     Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
 
@@ -91,7 +88,11 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             }
         });
         if(status.equals("PayComplete")){
-            holder.btn_danhgia.setVisibility(View.VISIBLE);
+            if (check){
+                holder.btn_danhgia.setVisibility(View.VISIBLE);
+            }else {
+                holder.btn_danhgia.setVisibility(View.GONE);
+            }
         }
         for (GetOrderResponse.Option item: pro.option) {
             if(item.type.equals("Color")){
@@ -126,6 +127,7 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             }
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+            check = false;
         });
     }
 

@@ -103,8 +103,6 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetOrderResponse.Root> call, Response<GetOrderResponse.Root> response) {
                 if (response.body().code == 1) {
-                    Log.d("jjjjjjjjj", "onResponse: "+response.body().order);
-
                     if (response.body().order.status.equals("InTransit")){
                         binding.tvOrderStatus.setText("Đang giao hàng");
                     } else if (response.body().order.status.equals("WaitConfirm")){
