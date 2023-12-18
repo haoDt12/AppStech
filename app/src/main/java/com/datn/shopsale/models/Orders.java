@@ -10,19 +10,29 @@ public class Orders {
     private String userId;
     private ArrayList<GetListOrderResponse.Product> product;
     private String status;
+    private String payment_method;
     private GetListOrderResponse.AddressId addressId;
     private int total;
     private Date date_time;
     public Orders() {
     }
 
-    public Orders(String id, String userId, ArrayList<GetListOrderResponse.Product> product, String status, GetListOrderResponse.AddressId addressId, int total) {
+    public Orders(String id, String userId, ArrayList<GetListOrderResponse.Product> product, String status, GetListOrderResponse.AddressId addressId, int total, String paymentMethod) {
         this.id = id;
         this.userId = userId;
         this.product = product;
         this.status = status;
         this.addressId = addressId;
         this.total = total;
+        this.payment_method = paymentMethod;
+    }
+
+    public String getPayment_method() {
+        return payment_method;
+    }
+
+    public void setPayment_method(String paymentMethod) {
+        this.payment_method = paymentMethod;
     }
 
     public String getId() {

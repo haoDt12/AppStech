@@ -4,35 +4,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_app"
+    android:orientation="vertical"
     tools:context=".activities.SearchActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_search"
         android:layout_width="match_parent"
-        android:background="@color/mauve"
-        android:layout_height="?attr/actionBarSize">
-        <EditText
-            android:id="@+id/id_search"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:textSize="13sp"
-            android:paddingHorizontal="10dp"
-            android:layout_marginHorizontal="5dp"
-            android:background="@drawable/bg_input_text"
-            android:hint="@string/search_hint" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/mauve">
 
-        <TextView
-            android:id="@+id/tv_search"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tìm"
-            android:textStyle="bold"
-            android:paddingHorizontal="15dp"
-            android:paddingVertical="8dp"
-            android:backgroundTint="#EC7C74"
-            android:textColor="@color/mauve"
-            android:background="@drawable/bg_search_view"/>
+            android:layout_marginHorizontal="10dp">
+
+            <EditText
+                android:id="@+id/id_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="5dp"
+                android:layout_toStartOf="@+id/tv_search"
+                android:background="@drawable/bg_input_text"
+                android:hint="@string/search_hint"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp"
+                android:textSize="13sp"
+                tools:ignore="Autofill,TextFields" />
+
+            <TextView
+                android:id="@+id/tv_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/bg_search_view"
+                android:backgroundTint="#EC7C74"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="8dp"
+                android:text="@string/find_search"
+                android:textColor="@color/mauve"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
@@ -41,20 +58,22 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:background="@color/color_app"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/color_app">
 
             <LinearLayout
                 android:id="@+id/lnl_history"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:text="Lịch sử tìm kiếm"
+                    android:text="@string/history_search"
                     android:textColor="@color/black"
                     android:textSize="21sp"
                     android:textStyle="bold" />
@@ -66,26 +85,75 @@
                     android:layout_margin="10dp"
                     android:layout_marginHorizontal="390dp" />
             </LinearLayout>
+
+
+            <FrameLayout
+                android:id="@+id/fr_result_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lnl_history">
+
+                <LinearLayout
+                    android:id="@+id/lnl_result_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/result_search"
+                        android:textColor="@color/black"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_result_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_marginHorizontal="390dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_result_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_below="@+id/lnl_history"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/fr_result_search"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Đề xuất"
-                    android:textStyle="bold"
-                    android:textSize="21sp"
                     android:layout_margin="10dp"
-                    android:textColor="@color/black"/>
+                    android:text="@string/recommend"
+                    android:textColor="@color/black"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_foyyou"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="10dp" />
             </LinearLayout>
+
         </RelativeLayout>
     </ScrollView>
 </LinearLayout>

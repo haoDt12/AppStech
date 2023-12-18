@@ -32,6 +32,7 @@ public class GetListOrderResponse {
         public AddressId addressId;
         public int total;
         public String status;
+        public String payment_method;
         public String date_time;
 
         @Override

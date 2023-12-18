@@ -12,54 +12,51 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
-        <LinearLayout
-            android:id="@+id/lnl_search"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="5dp"
-            android:background="@drawable/bg_search_view"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/lnl_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/img_change_layout"
+                android:background="@drawable/bg_search_view"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
+
+                <ImageView
+                    android:id="@+id/img_search"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/search"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/img_search"
+                    android:text="@string/search"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="15dp"
-                android:src="@drawable/search" />
-
-            <TextView
+                android:id="@+id/img_change_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="@string/search"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="20dp"
+                android:src="@drawable/icon_grid_view_24"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
 
-        <!--        <ImageView-->
-        <!--            android:id="@+id/img_more"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginHorizontal="10dp"-->
-        <!--            android:src="@drawable/menu_dots_24"-->
-        <!--            tools:ignore="ContentDescription" />-->
-
-        <ImageView
-            android:id="@+id/img_change_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="20dp"
-            android:src="@drawable/icon_grid_view_24" />
-
-        <ImageView
-            android:id="@+id/img_cart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:visibility="gone"
-            android:layout_gravity="end"
-            android:src="@drawable/cart" />
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
