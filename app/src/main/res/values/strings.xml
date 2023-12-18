@@ -165,4 +165,11 @@
     <string name="message_user_left">%s left</string>
     <string name="user_action_typing">is typing</string>
     <string name="vnd_0">0 VND</string>
+    <string name="payment_method">Phương thức thanh toán</string>
+    <string name="find_search">Tìm</string>
+    <string name="history_search">Lịch sử tìm kiếm</string>
+    <string name="recommend">Đề xuất</string>
+    <string name="result_search">Kết quả tìm kiếm</string>
+    <string name="not_found">Không tìm thấy kết quả phù hợp</string>
+
 </resources>

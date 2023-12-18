@@ -101,7 +101,8 @@ public class LoginActivity extends AppCompatActivity {
         acct = GoogleSignIn.getLastSignedInAccount(this);
         if (acct != null) {
 //            updateUI();
-            getInformationUser(acct);
+            signOut();
+//            getInformationUser(acct);
         }
 
         // Facebook

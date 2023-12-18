@@ -3,9 +3,14 @@ package com.datn.shopsale.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,12 +24,14 @@ import com.datn.shopsale.databinding.ActivitySearchBinding;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimerTask;
 
@@ -33,6 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
+    private static final String TAG = SearchActivity.class.getSimpleName();
 
     private HistoryInfoAdapter adapter;
     private ActivitySearchBinding binding;
@@ -41,9 +49,13 @@ public class SearchActivity extends AppCompatActivity {
     ProductAdapter productAdapter;
     SearchAdapter searchAdapter;
     private RecyclerView rcvFoyyou;
+    private RecyclerView rcvResult;
+    private LinearLayout lnlResult;
     private EditText idSearch;
+    private TextView tvSearch, tvResult;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
+    private ArrayList<GetListProductResponse.Product> dataList;
 
 
     @Override
@@ -53,9 +65,13 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         rcvFoyyou = (RecyclerView) findViewById(R.id.rcv_foyyou);
         idSearch = findViewById(R.id.id_search);
+        tvSearch = findViewById(R.id.tv_search);
+        rcvResult = findViewById(R.id.rcv_result_search);
+        tvResult = findViewById(R.id.tv_result_search);
+        lnlResult = findViewById(R.id.lnl_result_search);
 
         setSupportActionBar(binding.toolbarSearch);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         binding.toolbarSearch.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -78,6 +94,59 @@ public class SearchActivity extends AppCompatActivity {
         displayProduct();
 //        search();
         showSearchHistory();
+
+
+        tvSearch.setOnClickListener(v -> {
+            String queryText = idSearch.getText().toString().trim();
+            if (queryText.length() == 0) return;
+            doSearch(queryText);
+            saveSearchHistory(queryText);
+        });
+
+    }
+
+    private void displayDataSearch(ArrayList<GetListProductResponse.Product> dataList) {
+        if (dataList.size() == 0) {
+            lnlResult.setVisibility(View.GONE);
+            tvResult.setVisibility(View.VISIBLE);
+            tvResult.setText(getResources().getText(R.string.not_found));
+        } else {
+            lnlResult.setVisibility(View.VISIBLE);
+            tvResult.setVisibility(View.GONE);
+            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
+            binding.rcvResultSearch.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
+            binding.rcvResultSearch.setAdapter(productAdapter);
+        }
+    }
+
+    private void doSearch(String query) {
+        LoadingDialog.showProgressDialog(this, "Loading...");
+        String token = preferenceManager.getString("token");
+        Call<GetListProductResponse.Root> call = apiService.searchProduct(token, query);
+        call.enqueue(new Callback<GetListProductResponse.Root>() {
+            @Override
+            public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(() -> {
+                            dataList = response.body().getProduct();
+                            displayDataSearch(dataList);
+                        });
+                    } else {
+                        AlertDialogUtil.showSimpleAlertDialog(SearchActivity.this, response.body().getMessage());
+                    }
+                }
+                LoadingDialog.dismissProgressDialog();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    AlertDialogUtil.showSimpleAlertDialog(SearchActivity.this, t.getMessage());
+                });
+                LoadingDialog.dismissProgressDialog();
+            }
+        });
 
     }
 
@@ -112,32 +181,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
-
-//    public void search() {
-//        idSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                saveSearchHistory(query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                Log.d("zzzzzz", "onQueryTextChange: " + newText);
-//                List<Product> suggestions = new ArrayList<>();
-//                for (int i = 0; i < productList.size(); i++) {
-//                    if (productList.get(i).getTitle().toLowerCase().contains(newText.toLowerCase())) {
-//                        suggestions.add(productList.get(i));
-//                        Log.d("zzz", "onQueryTextChange: " + productList.get(i));
-//                    }
-//                }
-//                productAdapter = new ProductAdapter((ArrayList<Product>) suggestions, SearchActivity.this, R.layout.item_product);
-//                binding.rcvFoyyou.setAdapter(productAdapter);
-//
-//                return false;
-//            }
-//        });
-//    }
 
     private void saveSearchHistory(String query) {
         SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);

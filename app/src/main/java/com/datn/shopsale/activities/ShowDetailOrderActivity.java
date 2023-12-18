@@ -117,6 +117,7 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
                         binding.btnCancelOrder.setVisibility(View.GONE);
                     }
                     binding.tvOrderTotal.setText(CurrencyUtils.formatCurrency(response.body().order.total+""));
+                    binding.tvPaymentMethod.setText(response.body().order.payment_method);
                     binding.tvNameAddress.setText(response.body().order.addressId.name);
                     binding.tvPhoneAddress.setText(response.body().order.addressId.phone_number);
                     binding.tvCityAddress.setText(response.body().order.addressId.city);

@@ -51,7 +51,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         if (product == null) {
             return;
         }
-        Log.d("TAHHHHHHHHHHHHHHHHG", "onBindViewHolder: " + product.toString());
         Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(product.getImg_cover())).into(holder.imgProduct);
         holder.tvName.setText(product.getTitle());
         String price = product.getPrice();
