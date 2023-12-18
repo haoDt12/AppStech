@@ -226,6 +226,7 @@ public class InformationUserActivity extends AppCompatActivity {
                     }
                 });
             }
+            Cancel();
         });
     }
 
@@ -247,24 +248,31 @@ public class InformationUserActivity extends AppCompatActivity {
     }
     private void onCancel(){
         cancelAction.setOnClickListener(v -> {
-            imgUpdate.setVisibility(View.VISIBLE);
-            lnlLayoutText.setVisibility(View.VISIBLE);
-            lnlLayoutEdit.setVisibility(View.INVISIBLE);
-            imgCamera.setVisibility(View.INVISIBLE);
-            cancelAction.setVisibility(View.INVISIBLE);
-            edEmail.setText(mUser.getEmail());
-            edName.setText(mUser.getFull_name());
-            edPhone.setText(mUser.getPhone_number());
-            Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mUser.getAvatar())).into(imgUser);
+            Cancel();
         });
     }
+
     private void onEdit(){
         imgUpdate.setOnClickListener(view -> {
-            imgUpdate.setVisibility(View.INVISIBLE);
-            lnlLayoutText.setVisibility(View.INVISIBLE);
-            lnlLayoutEdit.setVisibility(View.VISIBLE);
-            imgCamera.setVisibility(View.VISIBLE);
-            cancelAction.setVisibility(View.VISIBLE);
+            Update();
         });
+    }
+    private void Cancel(){
+        imgUpdate.setVisibility(View.VISIBLE);
+        lnlLayoutText.setVisibility(View.VISIBLE);
+        lnlLayoutEdit.setVisibility(View.INVISIBLE);
+        imgCamera.setVisibility(View.INVISIBLE);
+        cancelAction.setVisibility(View.INVISIBLE);
+        edEmail.setText(mUser.getEmail());
+        edName.setText(mUser.getFull_name());
+        edPhone.setText(mUser.getPhone_number());
+        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mUser.getAvatar())).into(imgUser);
+    }
+    private void Update(){
+        imgUpdate.setVisibility(View.INVISIBLE);
+        lnlLayoutText.setVisibility(View.INVISIBLE);
+        lnlLayoutEdit.setVisibility(View.VISIBLE);
+        imgCamera.setVisibility(View.VISIBLE);
+        cancelAction.setVisibility(View.VISIBLE);
     }
 }

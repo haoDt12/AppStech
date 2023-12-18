@@ -50,18 +50,25 @@ public class AddReviewActivity extends AppCompatActivity{
         String url = getIntent().getStringExtra("image");
         Glide.with(this).load(GetImgIPAddress.convertLocalhostToIpAddress(url)).into(imgProduct);
         tvName.setText(getIntent().getStringExtra("name"));
-        tvDescription.setText(getIntent().getStringExtra("color")+"    "+ getIntent().getStringExtra("ram"));
+        String color = getIntent().getStringExtra("color");
+        String option = getIntent().getStringExtra("ram");
+        if (option == null){
+            option = "";
+        }
+        tvDescription.setText(color +"\n"+ option);
         Toast.makeText(this, ""+getIntent().getStringExtra("name"), Toast.LENGTH_SHORT).show();
 
         tvSubmit.setOnClickListener(view -> {
             addFeedback();
+            finish();
         });
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
                 // Xử lý sự kiện khi giá trị đánh giá thay đổi
                 rating_result = ratingBar.getRating();
-//                tvRating.setText(Integer.parseInt(String.valueOf(rating_result)));
+                int text = (int) rating_result;
+                tvRating.setText(String.valueOf(text)+"/5");
 
             }
         });

@@ -492,6 +492,7 @@
                     android:background="#CFCFD5" />
 
                 <LinearLayout
+                    android:id="@+id/lnl_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
