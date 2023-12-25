@@ -77,7 +77,7 @@ public class PayCompleteFragment extends Fragment {
                     if (response.body().code == 1) {
                         for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
                             Log.d("hhhhhhhh", "onResponse: " + response.body().listOrder);
-                            dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total));
+                            dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total, order.payment_method));
                         }
                         for (Orders item : dataOrder) {
                             if (item.getStatus().equals("PayComplete")) {

@@ -260,7 +260,7 @@ public class ChatActivity extends AppCompatActivity {
 //            Toast.makeText(this, requestBodyMessage.toString(), Toast.LENGTH_SHORT).show();
             File file = new File(Objects.requireNonNull(imageUri.getPath()));
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images[]", file.getName(), imageRequestBody);
+            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), imageRequestBody);
             Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(token, requestBodyConversation, requestBodySenderId, requestBodyReceiverId, requestBodyMessage, imagePart, null);
             call.enqueue(new Callback<GetMessageResponse.ResponseMessage>() {
                 @Override
@@ -270,8 +270,32 @@ public class ChatActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 Log.d(TAG, "onResponse: " + response.body().getDataMessage());
                                 mMessages = response.body().getDataMessage();
-                                mSocket.emit("on-chat", mMessages.getMessage());
-                                mSocket.emit("user-chat", mMessages.getMessage());
+                                JSONObject messageAdded = new JSONObject();
+                                try {
+                                    messageAdded.put("conversation", mMessages.getConversation());
+                                    messageAdded.put("senderId", mMessages.getSenderId());
+                                    messageAdded.put("receiverId", mMessages.getReceiverId());
+                                    messageAdded.put("message", mMessages.getMessage());
+                                    messageAdded.put("filess", mMessages.getFiless());
+                                    messageAdded.put("images", mMessages.getImages());
+                                    messageAdded.put("video", mMessages.getVideo());
+                                    messageAdded.put("status", mMessages.getStatus());
+                                    messageAdded.put("deleted", mMessages.isDeleted());
+                                    messageAdded.put("timestamp", mMessages.getTimestamp());
+                                    messageAdded.put("_id", mMessages.get_id());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
+                                JSONObject jsonMessage = new JSONObject();
+                                try {
+                                    jsonMessage.put("message", messageAdded);
+                                    mSocket.emit("on-chat", jsonMessage);
+                                    mSocket.emit("user-chat", mMessages.getMessage());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+
 //                                mAdapter.notifyItemInserted(mMessages.size() - 1);
                                 scrollToBottom();
 

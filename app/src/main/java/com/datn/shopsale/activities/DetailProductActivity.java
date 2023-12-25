@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +44,10 @@ import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.GetProductByIDResponse;
 import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
+import com.datn.shopsale.ui.dashboard.chat.ConversationActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -85,12 +90,13 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private String title;
     private int price;
     private RecyclerView recy_cmt;
-    private LinearLayout layoutActionBuy;
+    private RelativeLayout layoutActionBuy;
     private Button btnOutStock;
 
     private List<FeedBack> listFb;
     private TextView tvTBC;
     private TextView tvReview;
+    private ImageButton btnChat;
     private RatingBar ratingBar;
     private float TBC;
     private float rating;
@@ -209,7 +215,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private void displayProduct() {
         if (getProduct != null) {
             optionList = getProduct.getOption();
-            Log.d("zzzzzKKKKKKKKKKKKKKKKK", "init: " + optionList.toString());
+//            Log.d("zzzzzKKKKKKKKKKKKKKKKK", "init: " + optionList.toString());
             if (getProduct.getOption() != null) {
                 for (GetListProductResponse.Option item : getProduct.getOption()) {
                     Log.d("TAG", "init: " + item.toString());
@@ -328,6 +334,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         layoutActionBuy = findViewById(R.id.lnl_action_buy);
         btnOutStock = findViewById(R.id.btn_out_stock);
         tvReview = (TextView) findViewById(R.id.tv_review);
+        btnChat = findViewById(R.id.btn_chat);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         recy_cmt = findViewById(R.id.recy_cmt);
         lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
@@ -371,6 +378,41 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
+        btnChat.setOnClickListener(this);
+    }
+
+    private void doCreateConversation() {
+        ArrayList<String> listUserInConversation = new ArrayList<>();
+        listUserInConversation.add(Constants.idUserAdmin);
+        String idUser = preferenceManager.getString("userId");
+        String token = preferenceManager.getString("token");
+        Call<ResApi> call = apiService.createConversation(token, "ChatBox", idUser, listUserInConversation);
+        call.enqueue(new Callback<ResApi>() {
+            @Override
+            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                if (response.body() != null) {
+                    if (response.body().code == 1) {
+                        runOnUiThread(() -> {
+                            Intent i = new Intent(DetailProductActivity.this, ChatActivity.class);
+                            i.putExtra("idConversation", response.body().id);
+                            i.putExtra("idUser", listUserInConversation.get(0));
+                            startActivity(i);
+                        });
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().message);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                });
+            }
+        });
     }
 
     @Override
@@ -382,6 +424,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             startActivity(i);
         } else if (view.getId() == R.id.btn_add_to_cart) {
             AddToCart();
+        } else if (view.getId() == R.id.btn_chat) {
+            doCreateConversation();
         }
     }
 
@@ -389,7 +433,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     protected void onDestroy() {
         super.onDestroy();
         contentAdapter.releasePlayer();
-        Toast.makeText(this, "on Destroy", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "on Destroy", Toast.LENGTH_SHORT).show();
     }
 
     private void AddToCart() {
@@ -504,12 +548,12 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, "onActivityResult", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onActivityResult", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 }

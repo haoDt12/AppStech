@@ -42,7 +42,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         final String color = colorList.get(position).getTitle();
-        Log.d("Zzzzz", "onBindViewHolder: " + colorList.get(position).getContent());
+//        Log.d("Zzzzz", "onBindViewHolder: " + colorList.get(position).getContent());
         holder.btnColor.setBackgroundColor(Color.parseColor(colorList.get(position).getContent()));
         holder.tvColor.setText(color);
         if (color.equals(selectedColor)) {

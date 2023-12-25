@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,7 @@ public class ListProductActivity extends AppCompatActivity {
     private ImageView imgCart;
     private ImageView imgChangeLayout;
     private RecyclerView rcvProduct;
-    private LinearLayout lnlSearch;
+    private RelativeLayout lnlSearch;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private ProductAdapter productAdapter;
@@ -60,7 +61,7 @@ public class ListProductActivity extends AppCompatActivity {
 
     private void init() {
         Toolbar toolbarListPro = (Toolbar) findViewById(R.id.toolbar_list_pro);
-        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
+        lnlSearch = (RelativeLayout) findViewById(R.id.lnl_search);
         imgCart = (ImageView) findViewById(R.id.img_cart);
         imgChangeLayout = findViewById(R.id.img_change_layout);
         rcvProduct = findViewById(R.id.rcv_list_product);
@@ -86,8 +87,8 @@ public class ListProductActivity extends AppCompatActivity {
     }
 
     private void setEventClick() {
-        imgCart.setOnClickListener(v -> {
-        });
+//        imgCart.setOnClickListener(v -> {
+//        });
         imgChangeLayout.setOnClickListener(v -> {
             isGirdView = !isGirdView;
             if (isGirdView) {

@@ -269,6 +269,15 @@ public interface ApiService {
     @POST("/api/checkToken")
     Call<BaseResponse> checkToken(@Header("Authorization") String token);
 
+
+    @FormUrlEncoded
+    @POST("/api/createConversation")
+    Call<ResApi> createConversation(@Header("Authorization") String token,
+                                    @Field("name") String name,
+                                    @Field("idUserLoged") String idUserLoged,
+                                    @Field("idUserSelected[]") ArrayList<String> idUserSelected);
+
+
     @FormUrlEncoded
     @POST("/api/getConversationByIDUser")
     Call<GetConversationResponse.Root> getConversationByIDUser(@Header("Authorization") String token,
@@ -300,6 +309,11 @@ public interface ApiService {
     @POST("/api/getMessageByIDConversation")
     Call<GetMessageResponse.Root> getMessageByIDConversation(@Header("Authorization") String token,
                                                              @Field("conversationID") String conversationID);
+
+    @FormUrlEncoded
+    @POST("/api/searchProduct")
+    Call<GetListProductResponse.Root> searchProduct(@Header("Authorization") String token,
+                                                    @Field("txtSearch") String txtSearch);
 
 
 }
