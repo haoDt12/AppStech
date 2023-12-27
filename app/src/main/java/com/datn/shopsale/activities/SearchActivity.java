@@ -3,7 +3,6 @@ package com.datn.shopsale.activities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -113,7 +112,7 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             lnlResult.setVisibility(View.VISIBLE);
             tvResult.setVisibility(View.GONE);
-            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
+//            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
             binding.rcvResultSearch.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
             binding.rcvResultSearch.setAdapter(productAdapter);
         }
@@ -161,7 +160,7 @@ public class SearchActivity extends AppCompatActivity {
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-                            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
+//                            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
                             binding.rcvFoyyou.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
                             binding.rcvFoyyou.setAdapter(productAdapter);
                             LoadingDialog.dismissProgressDialog();

@@ -1,5 +1,7 @@
 package com.datn.shopsale.utils;
 
+import android.annotation.SuppressLint;
+
 import com.google.firebase.Timestamp;
 
 import java.text.SimpleDateFormat;
@@ -40,6 +42,7 @@ public class Constants {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String timestamptoString(Timestamp timestamp) {
         return new SimpleDateFormat("HH:mm").format(timestamp.toDate());
     }

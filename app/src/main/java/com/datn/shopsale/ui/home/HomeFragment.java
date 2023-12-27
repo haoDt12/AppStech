@@ -26,9 +26,10 @@ import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.SliderAdapter;
 import com.datn.shopsale.databinding.FragmentHomeBinding;
 import com.datn.shopsale.models.Category;
+import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetListCategoryResponse;
-import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivityFirebase;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -49,7 +50,7 @@ import retrofit2.Response;
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
 
-    private ArrayList<GetListProductResponse.Product> dataList = new ArrayList<>();
+    private List<Product> dataList = new ArrayList<>();
     private final ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
@@ -163,10 +164,10 @@ public class HomeFragment extends Fragment {
     private void displayProduct() {
         LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         dataList.clear();
-        Call<GetListProductResponse.Root> call = apiService.getListProduct(preferenceManager.getString("token"));
-        call.enqueue(new Callback<GetListProductResponse.Root>() {
+        Call<GetAllProductResponse> call = apiService.getAllProduct(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetAllProductResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
                 assert null != response.body();
                 Log.d("check", "onResponse: 2");
                 requireActivity().runOnUiThread(() -> {
@@ -186,7 +187,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetAllProductResponse> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());

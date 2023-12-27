@@ -9,7 +9,6 @@ import android.view.animation.LayoutAnimationController;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -130,12 +129,12 @@ public class ListProductActivity extends AppCompatActivity {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(ListProductActivity.this, 2);
             gridLayoutManager.setSmoothScrollbarEnabled(true);
             rcvProduct.setLayoutManager(gridLayoutManager);
-            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
+//            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
         } else if (layoutItemProduct == R.layout.item_product_vertical) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ListProductActivity.this, LinearLayoutManager.VERTICAL, false);
             linearLayoutManager.setSmoothScrollbarEnabled(true);
             rcvProduct.setLayoutManager(linearLayoutManager);
-            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
+//            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
         }
 
         rcvProduct.setAdapter(productAdapter);

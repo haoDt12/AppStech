@@ -37,6 +37,8 @@ import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
+import com.datn.shopsale.responsev2.GetAllProductResponse;
+import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
@@ -329,4 +331,10 @@ public interface ApiService {
     @POST("/apiv2/addFCM")
     Call<AddFcmResponse> addFCMCus(@Header("Authorization") String token,
                                    @Body AddFcmRequest request);
+    @POST("/apiv2/getAllProduct")
+    Call<GetAllProductResponse> getAllProduct(@Header("Authorization") String token);
+    @FormUrlEncoded
+    @POST("/apiv2/getDetailProduct")
+    Call<GetDetailProductResponse> getDetailProduct(@Header("Authorization") String token,
+                                                    @Field("productId") String productId);
 }
