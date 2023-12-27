@@ -17,7 +17,9 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.MainActivity;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.response.GetUserGoogleResponse;
+import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.Constants;
@@ -212,17 +214,20 @@ public class LoginActivity extends AppCompatActivity {
             }
             try {
                 LoadingDialog.showProgressDialog(this, "Đang Tải...");
-                Call<ResApi> call = apiService.signin(username, pass);
-                call.enqueue(new Callback<ResApi>() {
+                CusLoginRequest request = new CusLoginRequest();
+                request.setUsername(username);
+                request.setPassword(pass);
+                Call<CusLoginResponse> call = apiService.loginCus(request);
+                call.enqueue(new Callback<CusLoginResponse>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                    public void onResponse(@NonNull Call<CusLoginResponse> call, @NonNull Response<CusLoginResponse> response) {
                         if (response.body() != null) {
-                            if (response.body().code == 1) {
+                            if (response.body().getCode() == 1) {
                                 runOnUiThread(() -> {
                                     Log.d(TAG, "onResponse: " + response.body());
-                                    showToast(response.body().message);
+                                    showToast(response.body().getMessage());
                                     LoadingDialog.dismissProgressDialog();
-                                    String idUser = response.body().id;
+                                    String idUser = response.body().getId();
                                     Intent i = new Intent(LoginActivity.this, VerifyOTPSignInActivity.class);
                                     i.putExtra("idUser", idUser);
                                     startActivity(i);
@@ -230,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                                 });
                             } else {
                                 runOnUiThread(() -> {
-                                    showToast(response.body().message);
+                                    showToast(response.body().getMessage());
                                     LoadingDialog.dismissProgressDialog();
                                 });
                             }
@@ -238,7 +243,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<CusLoginResponse> call, @NonNull Throwable t) {
                         runOnUiThread(() -> {
                             Log.e("Error", "onFailure: " + t);
                             showToast("error: " + t.getMessage());
