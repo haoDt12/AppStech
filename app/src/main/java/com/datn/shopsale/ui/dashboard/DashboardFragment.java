@@ -145,9 +145,6 @@ public class DashboardFragment extends Fragment {
         lnlProfile.setOnClickListener(view1 -> activityResultLauncher.launch(new Intent(getContext(), InformationUserActivity.class)));
         lnLocation.setOnClickListener(view1 -> startActivity(new Intent(getContext(), AddressActivity.class)));
         lnChat.setOnClickListener(view1 -> startActivity(new Intent(getContext(), ConversationActivity.class)));
-        lnClause.setOnClickListener(view1 -> {
-            Toast.makeText(getContext(), "Feature in development", Toast.LENGTH_SHORT).show();
-        });
         lnSetting.setOnClickListener(view1 -> startActivity(new Intent(getContext(), SettingActivity.class)));
         lnOrder.setOnClickListener(view1 -> startActivity(new Intent(getContext(), MyOrderActivity.class)));
         lnStore.setOnClickListener(view1 -> startActivity(new Intent(getContext(), StoreActivity.class)));
@@ -211,6 +208,28 @@ public class DashboardFragment extends Fragment {
         lnlCall.setOnClickListener(v -> {
             requets_permistion();
             CallPhone();
+        });
+        lnClause.setOnClickListener(view1 -> {
+            Dialog dialog = new Dialog(view1.getContext());
+            dialog.setContentView(R.layout.dialog_chose_option);
+            Window window = dialog.getWindow();
+
+            if (window != null) {
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(view1.getContext().getDrawable(R.drawable.dialog_bg));
+                window.getAttributes().windowAnimations = R.style.DialogAnimation;
+                WindowManager.LayoutParams windowAttributes = window.getAttributes();
+                window.setAttributes(windowAttributes);
+                windowAttributes.gravity = Gravity.BOTTOM;
+                dialog.show();
+
+                ImageButton btnCancel = (ImageButton) dialog.findViewById(R.id.btn_cancel);
+                Button btnBuy = (Button) dialog.findViewById(R.id.btn_buy);
+                btnCancel.setOnClickListener(view2 -> dialog.cancel());
+                btnBuy.setOnClickListener(view2 -> {
+                    dialog.dismiss();
+                });
+            }
         });
     }
     public boolean requets_permistion() {
