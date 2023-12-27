@@ -6,7 +6,10 @@ import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.ResponseCart;
+import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.AddressRequest;
+import com.datn.shopsale.request.CusLoginRequest;
+import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
@@ -31,6 +34,9 @@ import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
+import com.datn.shopsale.responsev2.AddFcmResponse;
+import com.datn.shopsale.responsev2.CusLoginResponse;
+import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
@@ -315,5 +321,12 @@ public interface ApiService {
     Call<GetListProductResponse.Root> searchProduct(@Header("Authorization") String token,
                                                     @Field("txtSearch") String txtSearch);
 
+    @POST("/apiv2/loginCustomer")
+    Call<CusLoginResponse> loginCus(@Body CusLoginRequest request);
 
+    @POST("/apiv2/verifyCusLogin")
+    Call<CusVerifyLoginResponse> verifyCusLogin(@Body CusVerifyLoginRequest request);
+    @POST("/apiv2/addFCM")
+    Call<AddFcmResponse> addFCMCus(@Header("Authorization") String token,
+                                   @Body AddFcmRequest request);
 }
