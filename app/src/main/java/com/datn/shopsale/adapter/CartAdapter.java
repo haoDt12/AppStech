@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Cart;
+import com.datn.shopsale.modelsv2.ProductCart;
 import com.datn.shopsale.ui.cart.CartFragment;
 import com.datn.shopsale.ui.cart.IChangeQuantity;
 import com.datn.shopsale.utils.Animation;
@@ -29,13 +30,13 @@ import java.util.List;
 @SuppressLint("StaticFieldLeak")
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
-    private static List<Cart> listItem;
+    private static List<ProductCart> listItem;
     private static Context mContext;
     private static CartFragment cartFragment;
     private static IChangeQuantity iChangeQuantity;
     private boolean isExpanded = false;
 
-    public CartAdapter(List<Cart> listItem, Context context, IChangeQuantity IChangeQuantity) {
+    public CartAdapter(List<ProductCart> listItem, Context context, IChangeQuantity IChangeQuantity) {
         CartAdapter.listItem = listItem;
         CartAdapter.mContext = context;
         CartAdapter.iChangeQuantity = IChangeQuantity;
@@ -54,14 +55,11 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         Animation animation = new Animation();
-        Cart item = listItem.get(position);
+        ProductCart item = listItem.get(position);
         int _index = position;
         int status = item.getStatus();
-        int quantity = item.getQuantity();
-        int free = item.getPrice();
-        int feesArise = 0;
         holder.cbCheck.setChecked(status != 1);
-        holder.tvName.setText(item.getTitle());
+        holder.tvName.setText(item.getProductCart().getName());
 
 
         holder.tvName.setOnClickListener(view -> {
@@ -73,15 +71,16 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 isExpanded = true;
             }
         });
-        for (Cart.Option option : item.getOption()) {
-            if (option.getFeesArise() != null && option.getFeesArise().length() > 0) {
-                feesArise += Integer.parseInt(option.getFeesArise());
-            }
-        }
-        int totalPrice = quantity * (free + feesArise);
-        holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(totalPrice)));
+//        for (Cart.Option option : item.getOption()) {
+//            if (option.getFeesArise() != null && option.getFeesArise().length() > 0) {
+//                feesArise += Integer.parseInt(option.getFeesArise());
+//            }
+//        }
+//        int totalPrice = quantity * (free + feesArise);
+        int price = Integer.parseInt(item.getProductCart().getPrice()) * item.getQuantity();
+        holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(price)));
         holder.tvQuantity.setText(item.getQuantity() + "");
-        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(item.getImgCover())).into(holder.img_product);
+        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(item.getProductCart().getImg_cover())).into(holder.img_product);
         holder.cbCheck.setOnClickListener(v -> {
             boolean isSelected = holder.cbCheck.isChecked();
             if (isSelected) {

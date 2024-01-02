@@ -41,6 +41,7 @@ import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
+import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.responsev2.RegisterCustomerResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
@@ -348,4 +349,21 @@ public interface ApiService {
     Call<RegisterCustomerResponse> registerCustomer(@Body RegisterCusRequest request);
     @POST("/apiv2/getInfoCus")
     Call<GetCusInfoResponse> getInfoCus(@Header("Authorization") String token);
+    @FormUrlEncoded
+    @POST("/apiv2/getCartByIdCustomer")
+    Call<ProductCartResponse> getProductCart(@Header("Authorization") String token,
+                                             @Field("customer_id") String customer_id);
+    @FormUrlEncoded
+    @POST("/apiv2/addCart")
+    Call<com.datn.shopsale.responsev2.BaseResponse> addProductCart(@Header("Authorization") String token,
+                                                                   @Field("customer_id") String customer_id,
+                                                                   @Field("product_id") String product_id,
+                                                                   @Field("quantity") String quantity);
+    @FormUrlEncoded
+    @POST("/apiv2/updateCart")
+    Call<com.datn.shopsale.responsev2.BaseResponse> updateCart(@Header("Authorization") String token,
+                                                               @Field("customer_id") String customer_id,
+                                                               @Field("product_id") String product_id,
+                                                               @Field("calculation") String calculation);
+
 }

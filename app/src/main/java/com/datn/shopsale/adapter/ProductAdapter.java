@@ -58,13 +58,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         holder.tvSold.setText("Đã bán: " + product.getSold());
         holder.rltProduct.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailProductActivity.class);
-//            intent.putExtra("list_img", product.getList_img());
+            intent.putExtra("img_cover", product.getImg_cover());
 //            intent.putExtra("video", product.getVideo());
 //            intent.putExtra("title", product.getTitle());
-//            intent.putExtra("price", product.getPrice());
+            intent.putExtra("price", product.getPrice());
             intent.putExtra("id", product.get_id());
 //            intent.putExtra("imgCover", product.getImg_cover());
-//            intent.putExtra("quantity", product.getQuantity());
+            intent.putExtra("quantity", product.getQuantity());
 //            intent.putExtra("option", product.getOption());
 //            intent.putExtra("product", product);
             context.startActivity(intent);

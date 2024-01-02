@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ContentAdapter;
@@ -33,6 +35,7 @@ import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.modelsv2.Img;
+import com.datn.shopsale.responsev2.BaseResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
@@ -41,6 +44,7 @@ import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +84,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private float rating;
     private Button btnBuyNow;
     private String token;
+    private String img_cover;
+    private String quantity;
+    private String price;
+    int quantityselect = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +161,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(@NonNull Call<GetDetailProductResponse> call, @NonNull Response<GetDetailProductResponse> response) {
                 if (response.body() != null) {
-                    if(response.body().getCode() == 1){
+                    if (response.body().getCode() == 1) {
                         ArrayList<String> listImg = new ArrayList<>();
                         for (Img img : response.body().getData().get(0).getImg()) {
                             listImg.add(img.getImg());
@@ -193,30 +201,30 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
                             String formattedNumber = CurrencyUtils.formatCurrency(product.getPrice()); // Format the integer directly
                             tvPriceProduct.setText(formattedNumber);
-                            if(product.getColor() != null){
+                            if (product.getColor() != null) {
                                 tvColor.setText(String.format("Màu: %s", product.getColor()));
                                 tvColor.setVisibility(View.VISIBLE);
-                            }else {
+                            } else {
                                 tvColor.setVisibility(View.GONE);
                             }
-                            if(product.getRam() != null){
+                            if (product.getRam() != null) {
                                 tvRam.setText(String.format("Ram: %s", product.getRam()));
                                 tvRam.setVisibility(View.VISIBLE);
 
-                            }else {
+                            } else {
                                 tvRam.setVisibility(View.GONE);
                             }
-                            if(product.getRom() != null){
+                            if (product.getRom() != null) {
                                 tvRom.setText(String.format("Màu: %s", product.getRom()));
                                 tvRom.setVisibility(View.VISIBLE);
-                            }else {
+                            } else {
                                 tvRom.setVisibility(View.GONE);
                             }
                         });
-                    }else {
+                    } else {
                         runOnUiThread(() -> {
                             LoadingDialog.dismissProgressDialog();
-                            AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this,response.body().getMessage());
+                            AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
                         });
                     }
                 }
@@ -265,6 +273,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
         token = preferenceManager.getString("token");
         id = getIntent().getStringExtra("id");
+        img_cover = getIntent().getStringExtra("img_cover");
+        price = getIntent().getStringExtra("price");
+        quantity = getIntent().getStringExtra("quantity");
 //        getDataProduct(token, id);
         displayProduct();
 
@@ -329,7 +340,86 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void AddToCart() {
-        AlertDialogUtil.showAlertDialogWithOk(this, "Add cart");
+        quantityselect = 1;
+        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(view);
+        bottomSheetDialog.show();
+        bottomSheetDialog.setCancelable(false);
+        ImageView imgProduct;
+        TextView tvPrice;
+        TextView tv_kho;
+        ImageButton imgDecrease;
+        ImageButton imgIncrease;
+        Button btnHuy;
+        Button btnThem;
+        EditText ed_quantity;
+        ed_quantity = view.findViewById(R.id.ed_quantity_cart);
+        imgProduct = view.findViewById(R.id.img_product);
+        tvPrice = view.findViewById(R.id.tv_price);
+        tv_kho = view.findViewById(R.id.tv_kho);
+        imgDecrease = view.findViewById(R.id.img_decrease);
+        imgIncrease = view.findViewById(R.id.img_increase);
+        btnHuy = view.findViewById(R.id.btn_huy);
+        btnThem = view.findViewById(R.id.btn_them);
+        Glide.with(this).load(img_cover).into(imgProduct);
+        tv_kho.setText("Kho: " + quantity);
+        tvPrice.setText(  CurrencyUtils.formatCurrency(price));
+
+        ed_quantity.setText(quantityselect + "");
+        if (quantityselect == 1) {
+            imgDecrease.setEnabled(false);
+        }
+        if (quantityselect == Integer.parseInt(quantity)) {
+            imgIncrease.setEnabled(false);
+        }
+        btnHuy.setOnClickListener(view1 -> {
+            bottomSheetDialog.dismiss();
+        });
+        imgIncrease.setOnClickListener(view1 -> {
+            quantityselect = quantityselect + 1;
+            ed_quantity.setText(quantityselect + "");
+            if (quantityselect > 1) {
+                imgDecrease.setEnabled(true);
+            }
+        });
+        imgDecrease.setOnClickListener(view1 -> {
+            quantityselect = quantityselect - 1;
+            ed_quantity.setText(quantityselect + "");
+            if (quantityselect == 1) {
+                imgDecrease.setEnabled(false);
+            }
+        });
+        btnThem.setOnClickListener(view1 -> {
+            bottomSheetDialog.dismiss();
+            addtoCart(ed_quantity.getText().toString());
+        });
+    }
+
+    private void addtoCart(String quantity) {
+        try {
+            Call<BaseResponse> call = apiService.addProductCart(preferenceManager.getString("token"),
+                    preferenceManager.getString("userId"), id, quantity);
+            call.enqueue(new Callback<BaseResponse>() {
+                @Override
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                    if (response.body().getCode() == 1) {
+                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add cart");
+
+                    }else {
+                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage()));
+                }
+            });
+        }catch (Exception e){
+            Log.e("Error", "onFailure: " + e);
+            Toast.makeText(DetailProductActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onclickByNow() {
