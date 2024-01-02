@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,16 +21,21 @@ import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.response.ResponseAddress;
+import com.datn.shopsale.modelsv2.Customer;
+import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.MediaType;
@@ -40,9 +46,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class InformationUserActivity extends AppCompatActivity {
+    private static final String TAG = "UploadImageActivity";
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private FirebaseStorage mStorage;
     private static final int REQUEST_IMAGE_PICKER = 100;
     private Uri imageUri;
-    private Toolbar toolbarInfoUser;
     private ImageView imgCamera;
     private TextView tvName;
     private TextView tvEmail;
@@ -58,17 +67,18 @@ public class InformationUserActivity extends AppCompatActivity {
     private LinearLayout lnlLayoutEdit;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
-    private ArrayList<ResponseAddress.User> list = new ArrayList<>();
-    private ResponseAddress.User mUser;
+    private Customer mCustomer;
     private String newName = null;
     private String newNumberPhone = null;
     private String newEmail = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_user);
         preferenceManager = new PreferenceManager(getApplicationContext());
         apiService = RetrofitConnection.getApiService();
+        FirebaseApp.initializeApp(this);
         FindViewById();
         getDataUser();
         onEdit();
@@ -78,61 +88,58 @@ public class InformationUserActivity extends AppCompatActivity {
     }
 
     private void FindViewById() {
-        toolbarInfoUser = (Toolbar) findViewById(R.id.toolbar_info_user);
-        imgCamera = (ImageView) findViewById(R.id.img_camera);
+        Toolbar toolbarInfoUser = findViewById(R.id.toolbar_info_user);
+        imgCamera = findViewById(R.id.img_camera);
         imgUser = findViewById(R.id.img_user);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvEmail = (TextView) findViewById(R.id.tv_email);
-        tvPhone = (TextView) findViewById(R.id.tv_phone);
-        edName = (EditText) findViewById(R.id.ed_name);
-        edEmail = (EditText) findViewById(R.id.ed_email);
-        edPhone = (EditText) findViewById(R.id.ed_phone);
-        btnSave = (Button) findViewById(R.id.btn_save);
-        cancelAction = (ImageView) findViewById(R.id.cancel_action);
-        imgUpdate = (ImageView) findViewById(R.id.img_update);
-        lnlLayoutText = (LinearLayout) findViewById(R.id.lnl_layout_text);
-        lnlLayoutEdit = (LinearLayout) findViewById(R.id.lnl_layout_edit);
+        tvName = findViewById(R.id.tv_name);
+        tvEmail = findViewById(R.id.tv_email);
+        tvPhone = findViewById(R.id.tv_phone);
+        edName = findViewById(R.id.ed_name);
+        edEmail = findViewById(R.id.ed_email);
+        edPhone = findViewById(R.id.ed_phone);
+        btnSave = findViewById(R.id.btn_save);
+        cancelAction = findViewById(R.id.cancel_action);
+        imgUpdate = findViewById(R.id.img_update);
+        lnlLayoutText = findViewById(R.id.lnl_layout_text);
+        lnlLayoutEdit = findViewById(R.id.lnl_layout_edit);
 
         setSupportActionBar(toolbarInfoUser);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarInfoUser.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbarInfoUser.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void getDataUser() {
         LoadingDialog.showProgressDialog(InformationUserActivity.this, "Loading...");
-        list.clear();
-        String idUser = preferenceManager.getString("userId");
-
-        Call<ResponseAddress.Root> call = apiService.getAddress(preferenceManager.getString("token"), idUser);
-        call.enqueue(new Callback<ResponseAddress.Root>() {
+        Call<GetCusInfoResponse> call = apiService.getInfoCus(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetCusInfoResponse>() {
             @Override
-            public void onResponse(Call<ResponseAddress.Root> call, Response<ResponseAddress.Root> response) {
-                if (response.body().getCode() == 1) {
-                    runOnUiThread(() -> {
-                        ResponseAddress.User user = response.body().getUser();
-                        Glide.with(getApplicationContext()).load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgUser);
-                        tvEmail.setText(user.getEmail());
-                        tvName.setText(user.getFull_name());
-                        tvPhone.setText(user.getPhone_number());
-                        edEmail.setText(user.getEmail());
-                        edName.setText(user.getFull_name());
-                        edPhone.setText(user.getPhone_number());
-                        mUser = user;
-                        LoadingDialog.dismissProgressDialog();
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        Toast.makeText(InformationUserActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+            public void onResponse(@NonNull Call<GetCusInfoResponse> call, @NonNull Response<GetCusInfoResponse> response) {
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(() -> {
+                            Customer customer = response.body().getCus();
+                            Glide.with(getApplicationContext()).load(GetImgIPAddress.convertLocalhostToIpAddress(customer.getAvatar())).into(imgUser);
+                            tvEmail.setText(customer.getEmail());
+                            tvName.setText(customer.getFull_name());
+                            tvPhone.setText(customer.getPhone_number());
+                            edEmail.setText(customer.getEmail());
+                            edName.setText(customer.getFull_name());
+                            edPhone.setText(customer.getPhone_number());
+                            mCustomer = customer;
+                            LoadingDialog.dismissProgressDialog();
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            LoadingDialog.dismissProgressDialog();
+                            Toast.makeText(InformationUserActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseAddress.Root> call, Throwable t) {
+            public void onFailure(@NonNull Call<GetCusInfoResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     Toast.makeText(InformationUserActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     LoadingDialog.dismissProgressDialog();
@@ -145,80 +152,84 @@ public class InformationUserActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String token = preferenceManager.getString("token");
             String userId = preferenceManager.getString("userId");
-            if(!edEmail.getText().toString().isEmpty()){
+            if (!edEmail.getText().toString().isEmpty()) {
                 newEmail = edEmail.getText().toString();
-            }else {
+            } else {
                 Toast.makeText(this, "new email is required", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(!edPhone.getText().toString().isEmpty()){
+            if (!edPhone.getText().toString().isEmpty()) {
                 newNumberPhone = edPhone.getText().toString();
-            }else {
+            } else {
                 Toast.makeText(this, "new number phone is required", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(!edName.getText().toString().isEmpty()){
+            if (!edName.getText().toString().isEmpty()) {
                 newName = edName.getText().toString();
-            }else {
+            } else {
                 Toast.makeText(this, "new name is required", Toast.LENGTH_SHORT).show();
                 return;
             }
-            RequestBody requestBodyName = RequestBody.create(MediaType.parse("text/plain"),newName);
-            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"),newEmail);
-            RequestBody requestBodyPhone = RequestBody.create(MediaType.parse("text/plain"),newNumberPhone);
-            RequestBody requestBodyId = RequestBody.create(MediaType.parse("text/plain"),userId);
-            LoadingDialog.showProgressDialog(this,"Loading...");
-            if(imageUri == null){
-                Call<ResApi> call = apiService.editUser(token,requestBodyEmail,requestBodyName,requestBodyPhone,requestBodyId);
+            RequestBody requestBodyName = RequestBody.create(MediaType.parse("text/plain"), newName);
+            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), newEmail);
+            RequestBody requestBodyPhone = RequestBody.create(MediaType.parse("text/plain"), newNumberPhone);
+            RequestBody requestBodyId = RequestBody.create(MediaType.parse("text/plain"), userId);
+            LoadingDialog.showProgressDialog(this, "Loading...");
+            if (imageUri == null) {
+                Call<ResApi> call = apiService.editUser(token, requestBodyEmail, requestBodyName, requestBodyPhone, requestBodyId);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
-                    public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                        if(response.body().code == 1){
-                            runOnUiThread(()->{
-                                Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                                getDataUser();
-                            });
-                        }else {
-                            runOnUiThread(() -> {
-                                Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                            });
+                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                        if (response.body() != null) {
+                            if (response.body().code == 1) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                    LoadingDialog.dismissProgressDialog();
+                                    getDataUser();
+                                });
+                            } else {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                    LoadingDialog.dismissProgressDialog();
+                                });
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ResApi> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
                         runOnUiThread(() -> {
                             Log.d("onFailure", "onFailure: " + t.getMessage());
                             LoadingDialog.dismissProgressDialog();
                         });
                     }
                 });
-            }else {
-                File file = new File(imageUri.getPath());
+            } else {
+                File file = new File(Objects.requireNonNull(imageUri.getPath()));
                 RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
                 MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), imageRequestBody);
-                Call<ResApi> call = apiService.editUserImg(token,requestBodyEmail,requestBodyName,requestBodyPhone,imagePart,requestBodyId);
+                Call<ResApi> call = apiService.editUserImg(token, requestBodyEmail, requestBodyName, requestBodyPhone, imagePart, requestBodyId);
                 call.enqueue(new Callback<ResApi>() {
                     @Override
-                    public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                        if(response.body().code == 1){
-                            runOnUiThread(()->{
-                                Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                                getDataUser();
-                            });
-                        }else {
-                            runOnUiThread(() -> {
-                                Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                LoadingDialog.dismissProgressDialog();
-                            });
+                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+                        if (response.body() != null) {
+                            if (response.body().code == 1) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                    LoadingDialog.dismissProgressDialog();
+                                    getDataUser();
+                                });
+                            } else {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                                    LoadingDialog.dismissProgressDialog();
+                                });
+                            }
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ResApi> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
                         runOnUiThread(() -> {
                             Log.d("onFailure", "onFailure: " + t.getMessage());
                             LoadingDialog.dismissProgressDialog();
@@ -231,44 +242,43 @@ public class InformationUserActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
-        imgCamera.setOnClickListener(view -> {
-            ImagePicker.Companion.with(this)
-                    .cropSquare() // Cắt hình ảnh thành hình vuông
-                    .start(REQUEST_IMAGE_PICKER);
-        });
+        imgCamera.setOnClickListener(view -> ImagePicker.Companion.with(this)
+                .cropSquare() // Cắt hình ảnh thành hình vuông
+                .start(REQUEST_IMAGE_PICKER));
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_PICKER && resultCode == RESULT_OK) {
-            imageUri = data.getData();
-            imgUser.setImageURI(imageUri);
+            if (data != null) {
+                imageUri = data.getData();
+                imgUser.setImageURI(imageUri);
+            }
         }
     }
-    private void onCancel(){
-        cancelAction.setOnClickListener(v -> {
-            Cancel();
-        });
+
+    private void onCancel() {
+        cancelAction.setOnClickListener(v -> Cancel());
     }
 
-    private void onEdit(){
-        imgUpdate.setOnClickListener(view -> {
-            Update();
-        });
+    private void onEdit() {
+        imgUpdate.setOnClickListener(view -> Update());
     }
-    private void Cancel(){
+
+    private void Cancel() {
         imgUpdate.setVisibility(View.VISIBLE);
         lnlLayoutText.setVisibility(View.VISIBLE);
         lnlLayoutEdit.setVisibility(View.INVISIBLE);
         imgCamera.setVisibility(View.INVISIBLE);
         cancelAction.setVisibility(View.INVISIBLE);
-        edEmail.setText(mUser.getEmail());
-        edName.setText(mUser.getFull_name());
-        edPhone.setText(mUser.getPhone_number());
-        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mUser.getAvatar())).into(imgUser);
+        edEmail.setText(mCustomer.getEmail());
+        edName.setText(mCustomer.getFull_name());
+        edPhone.setText(mCustomer.getPhone_number());
+        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mCustomer.getAvatar())).into(imgUser);
     }
-    private void Update(){
+
+    private void Update() {
         imgUpdate.setVisibility(View.INVISIBLE);
         lnlLayoutText.setVisibility(View.INVISIBLE);
         lnlLayoutEdit.setVisibility(View.VISIBLE);

@@ -1,7 +1,6 @@
 package com.datn.shopsale.ui.login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +13,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.request.RegisterCusRequest;
+import com.datn.shopsale.responsev2.RegisterCustomerResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,45 +65,46 @@ public class SignUpActivity extends AppCompatActivity {
         progressbar.setVisibility(View.VISIBLE);
         btnSignUp.setVisibility(View.INVISIBLE);
         try {
-            RequestBody emailRequestBody = RequestBody.create(MediaType.parse("text/plain"),edEmail.getText().toString().trim());
-            RequestBody nameRequestBody = RequestBody.create(MediaType.parse("text/plain"),edFullname.getText().toString().trim());
-            RequestBody phoneRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPhoneNumber.getText().toString().trim());
-            RequestBody passwdRequestBody = RequestBody.create(MediaType.parse("text/plain"),edPassword.getText().toString().trim());
-            Call<ResApi>call = apiService.register(emailRequestBody,nameRequestBody,passwdRequestBody,phoneRequestBody);
-            call.enqueue(new Callback<ResApi>() {
+            RegisterCusRequest request = new RegisterCusRequest();
+            request.setPassword(edPassword.getText().toString().trim());
+            request.setEmail(edEmail.getText().toString().trim());
+            request.setFull_name(edFullname.getText().toString().trim());
+            request.setPhone_number(edPhoneNumber.getText().toString().trim());
+            Call<RegisterCustomerResponse> call = apiService.registerCustomer(request);
+            call.enqueue(new Callback<RegisterCustomerResponse>() {
                 @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if (response.body().code ==1){
-                        progressbar.setVisibility(View.INVISIBLE);
-                        btnSignUp.setVisibility(View.VISIBLE);
-                        Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                        String idUserTemp = response.body().id;
-                        Intent i  = new Intent(SignUpActivity.this, VerifyOTPActivity.class);
-                        i.putExtra("idUserTemp",idUserTemp);
-                        startActivity(i);
-
-                    }else {
-                        progressbar.setVisibility(View.INVISIBLE);
-                        btnSignUp.setVisibility(View.VISIBLE);
-                        Toast.makeText(SignUpActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                public void onResponse(@NonNull Call<RegisterCustomerResponse> call, @NonNull Response<RegisterCustomerResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 1) {
+                            progressbar.setVisibility(View.INVISIBLE);
+                            btnSignUp.setVisibility(View.VISIBLE);
+                            new AlertDialog.Builder(SignUpActivity.this)
+                                    .setTitle("Notification")
+                                    .setMessage(response.body().getMessage())
+                                    .setPositiveButton("OK", (dialog, which) -> finish())
+                                    .show();
+                        } else {
+                            progressbar.setVisibility(View.INVISIBLE);
+                            btnSignUp.setVisibility(View.VISIBLE);
+                            runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(SignUpActivity.this, response.body().getMessage()));
+                        }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
+                public void onFailure(@NonNull Call<RegisterCustomerResponse> call, @NonNull Throwable t) {
                     progressbar.setVisibility(View.INVISIBLE);
                     btnSignUp.setVisibility(View.VISIBLE);
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(SignUpActivity.this, "error: "+t, Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(SignUpActivity.this, t.getMessage()));
                 }
             });
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             progressbar.setVisibility(View.INVISIBLE);
             btnSignUp.setVisibility(View.VISIBLE);
             Log.e("Error", "onFailure: " + e);
-            Toast.makeText(SignUpActivity.this, "error: "+e, Toast.LENGTH_SHORT).show();
+            Toast.makeText(SignUpActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
         }
 
     }

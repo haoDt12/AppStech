@@ -13,6 +13,7 @@ import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.response.BaseResponse;
 import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
@@ -38,7 +39,9 @@ import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
+import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
+import com.datn.shopsale.responsev2.RegisterCustomerResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
@@ -328,13 +331,21 @@ public interface ApiService {
 
     @POST("/apiv2/verifyCusLogin")
     Call<CusVerifyLoginResponse> verifyCusLogin(@Body CusVerifyLoginRequest request);
+
     @POST("/apiv2/addFCM")
     Call<AddFcmResponse> addFCMCus(@Header("Authorization") String token,
                                    @Body AddFcmRequest request);
+
     @POST("/apiv2/getAllProduct")
     Call<GetAllProductResponse> getAllProduct(@Header("Authorization") String token);
+
     @FormUrlEncoded
     @POST("/apiv2/getDetailProduct")
     Call<GetDetailProductResponse> getDetailProduct(@Header("Authorization") String token,
                                                     @Field("productId") String productId);
+
+    @POST("/apiv2/registerCustomer")
+    Call<RegisterCustomerResponse> registerCustomer(@Body RegisterCusRequest request);
+    @POST("/apiv2/getInfoCus")
+    Call<GetCusInfoResponse> getInfoCus(@Header("Authorization") String token);
 }

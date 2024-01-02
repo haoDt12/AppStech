@@ -2,15 +2,11 @@ package com.datn.shopsale.ui.dashboard;
 
 import static android.app.Activity.RESULT_OK;
 
-import static androidx.core.content.PermissionChecker.checkSelfPermission;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,9 +31,9 @@ import androidx.fragment.app.Fragment;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.activities.ChatScreenAdminActivity;
 import com.datn.shopsale.activities.VoucherActivity;
-import com.datn.shopsale.response.GetUserByIdResponse;
+import com.datn.shopsale.modelsv2.Customer;
+import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.ui.dashboard.chat.ConversationActivity;
@@ -55,8 +51,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -68,30 +65,16 @@ public class DashboardFragment extends Fragment {
 
     private GoogleSignInClient mGoogleSignInClient;
     private GoogleSignInAccount acct;
-    private AccessToken accessToken;
     private LoginButton btnLoginWithFacebook;
-    private Button btnLogOut;
-    private FrameLayout lnChat;
-    private FrameLayout lnVoucher;
-    private FrameLayout lnLocation;
-    private FrameLayout lnClause;
-    private FrameLayout lnSetting;
-    private FrameLayout lnOrder;
-    private FrameLayout lnStore;
-    private LinearLayout lnlProfile;
     private TextView tvName;
     private TextView tvEmail;
     private PreferenceManager preferenceManager;
-    private TextView tvTitle;
     private CircleImageView imgAvatarUsers;
     private ApiService apiService;
-    private GetUserByIdResponse.User user;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    private LinearLayout lnlCall;
 
     public static DashboardFragment newInstance() {
-        DashboardFragment fragment = new DashboardFragment();
-        return fragment;
+        return new DashboardFragment();
     }
 
     public DashboardFragment() {
@@ -119,24 +102,23 @@ public class DashboardFragment extends Fragment {
         acct = GoogleSignIn.getLastSignedInAccount(requireActivity());
         preferenceManager = new PreferenceManager(requireActivity());
 
-        btnLogOut = view.findViewById(R.id.btn_log_out);
+        Button btnLogOut = view.findViewById(R.id.btn_log_out);
         btnLoginWithFacebook = view.findViewById(R.id.login_button);
 
-        tvTitle = (TextView) view.findViewById(R.id.tv_title);
-        lnlCall = (LinearLayout) view.findViewById(R.id.lnl_call);
+        LinearLayout lnlCall = view.findViewById(R.id.lnl_call);
         imgAvatarUsers = view.findViewById(R.id.img_avatarUsers);
         apiService = RetrofitConnection.getApiService();
         getUser();
 
-        lnlProfile = view.findViewById(R.id.lnl_profile);
-        lnChat = view.findViewById(R.id.ln_chat);
-        lnLocation = view.findViewById(R.id.ln_location);
-        lnClause = view.findViewById(R.id.ln_clause);
-        lnSetting = view.findViewById(R.id.ln_setting);
-        lnOrder = view.findViewById(R.id.ln_order);
-        lnStore = view.findViewById(R.id.ln_store);
+        LinearLayout lnlProfile = view.findViewById(R.id.lnl_profile);
+        FrameLayout lnChat = view.findViewById(R.id.ln_chat);
+        FrameLayout lnLocation = view.findViewById(R.id.ln_location);
+        FrameLayout lnClause = view.findViewById(R.id.ln_clause);
+        FrameLayout lnSetting = view.findViewById(R.id.ln_setting);
+        FrameLayout lnOrder = view.findViewById(R.id.ln_order);
+        FrameLayout lnStore = view.findViewById(R.id.ln_store);
         tvName = view.findViewById(R.id.tv_name);
-        lnVoucher = view.findViewById(R.id.ln_voucher);
+        FrameLayout lnVoucher = view.findViewById(R.id.ln_voucher);
 
         tvEmail = view.findViewById(R.id.tv_email);
         tvEmail.setText("");
@@ -154,7 +136,7 @@ public class DashboardFragment extends Fragment {
             startActivity(intent);
         });
 
-        accessToken = AccessToken.getCurrentAccessToken();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken != null && !accessToken.isExpired()) {
             btnLogOut.setVisibility(View.GONE);
             btnLoginWithFacebook.setVisibility(View.VISIBLE);
@@ -164,21 +146,7 @@ public class DashboardFragment extends Fragment {
         }
 
         btnLoginWithFacebook.setOnClickListener(v -> {
-            Thread thread = new Thread(() -> {
-                while (true) {
-                    try {
-                        String result = btnLoginWithFacebook.getText().toString();
-                        if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
-                            updateUI();
-                            break;
-                        }
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            });
+            Thread thread = new Thread(this::run);
 
             thread.start();
         });
@@ -223,57 +191,49 @@ public class DashboardFragment extends Fragment {
                 windowAttributes.gravity = Gravity.BOTTOM;
                 dialog.show();
 
-                ImageButton btnCancel = (ImageButton) dialog.findViewById(R.id.btn_cancel);
-                Button btnBuy = (Button) dialog.findViewById(R.id.btn_buy);
+                ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+                Button btnBuy = dialog.findViewById(R.id.btn_buy);
                 btnCancel.setOnClickListener(view2 -> dialog.cancel());
-                btnBuy.setOnClickListener(view2 -> {
-                    dialog.dismiss();
-                });
+                btnBuy.setOnClickListener(view2 -> dialog.dismiss());
             }
         });
     }
-    public boolean requets_permistion() {
-        if (getContext().checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                && getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && getContext().checkSelfPermission(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED
-                && getContext().checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.CALL_PHONE
-            }, 1);
-            return false;
-        }
+    public void requets_permistion() {
+        if (requireContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                || requireContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || requireContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || requireContext().checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || requireContext().checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.INTERNET,
+                            Manifest.permission.CALL_PHONE
+                    }, 1);
+                }
     }
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void CallPhone(){
-        Dialog dialog = new Dialog(getContext());
+        Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_call_phone);
-        dialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.dialog_bg));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(requireContext().getDrawable(R.drawable.dialog_bg));
         Window window = dialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.getAttributes().windowAnimations = R.style.DialogAnimation;
         WindowManager.LayoutParams windowAttributes = window.getAttributes();
         window.setAttributes(windowAttributes);
         windowAttributes.gravity = Gravity.BOTTOM;
-        Button btnCall = (Button) dialog.findViewById(R.id.btn_call);
-        Button btnCancel = (Button) dialog.findViewById(R.id.btn_cancel);
+        Button btnCall = dialog.findViewById(R.id.btn_call);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel);
 
         String phone = "0961803120";
-        btnCall.setText("Gọi: "+phone);
+        btnCall.setText(String.format("Gọi: %s", phone));
         btnCall.setOnClickListener(v2 -> {
             Toast.makeText(getContext(), "Tính năng đang phát triển", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
-//            Intent intent_call = new Intent(Intent.ACTION_CALL, Uri.parse("tel: " +phone));
-//            startActivity(intent_call);
         });
-        btnCancel.setOnClickListener(v2 -> {
-            dialog.cancel();
-        });
+        btnCancel.setOnClickListener(v2 -> dialog.cancel());
         dialog.show();
     }
     private void updateUI() {
@@ -294,17 +254,17 @@ public class DashboardFragment extends Fragment {
 
     private void getUser() {
         LoadingDialog.showProgressDialog(getActivity(), "Loading...");
-        Call<GetUserByIdResponse.Root> call = apiService.getUserById(preferenceManager.getString("token"), preferenceManager.getString("userId"));
-        call.enqueue(new Callback<GetUserByIdResponse.Root>() {
+        Call<GetCusInfoResponse> call = apiService.getInfoCus(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetCusInfoResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Response<GetUserByIdResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetCusInfoResponse> call, @NonNull Response<GetCusInfoResponse> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     requireActivity().runOnUiThread(() -> {
-                        user = response.body().getUser();
-                        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(user.getAvatar())).into(imgAvatarUsers);
-                        tvName.setText(user.getFull_name());
-                        tvEmail.setText(user.getEmail());
+                        Customer customer = response.body().getCus();
+                        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(customer.getAvatar())).into(imgAvatarUsers);
+                        tvName.setText(customer.getFull_name());
+                        tvEmail.setText(customer.getEmail());
                         LoadingDialog.dismissProgressDialog();
                     });
                 } else {
@@ -316,7 +276,7 @@ public class DashboardFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetCusInfoResponse> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
@@ -333,4 +293,19 @@ public class DashboardFragment extends Fragment {
         });
     }
 
+    private void run() {
+        while (true) {
+            try {
+                String result = btnLoginWithFacebook.getText().toString();
+                if (result.equals("Continue with Facebook") || result.equals("Tiếp tục với Facebook")) {
+                    updateUI();
+                    break;
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 }
