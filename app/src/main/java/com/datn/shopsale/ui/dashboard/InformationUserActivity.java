@@ -1,12 +1,19 @@
 package com.datn.shopsale.ui.dashboard;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,27 +27,27 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.modelsv2.Customer;
+import com.datn.shopsale.request.EditCusRequest;
+import com.datn.shopsale.responsev2.EditCusResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.firebase.FirebaseApp;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,14 +78,17 @@ public class InformationUserActivity extends AppCompatActivity {
     private String newName = null;
     private String newNumberPhone = null;
     private String newEmail = null;
+    private String newAvt = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_user);
         preferenceManager = new PreferenceManager(getApplicationContext());
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance();
+        mStorage = FirebaseStorage.getInstance();
         apiService = RetrofitConnection.getApiService();
-        FirebaseApp.initializeApp(this);
         FindViewById();
         getDataUser();
         onEdit();
@@ -150,94 +160,106 @@ public class InformationUserActivity extends AppCompatActivity {
 
     private void getUpdateUser() {
         btnSave.setOnClickListener(v -> {
-            String token = preferenceManager.getString("token");
-            String userId = preferenceManager.getString("userId");
+            EditCusRequest request = new EditCusRequest();
             if (!edEmail.getText().toString().isEmpty()) {
                 newEmail = edEmail.getText().toString();
+                request.setEmail(newEmail);
             } else {
                 Toast.makeText(this, "new email is required", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!edPhone.getText().toString().isEmpty()) {
                 newNumberPhone = edPhone.getText().toString();
+                request.setPhone_number(newNumberPhone);
             } else {
                 Toast.makeText(this, "new number phone is required", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!edName.getText().toString().isEmpty()) {
                 newName = edName.getText().toString();
+                request.setFull_name(newName);
             } else {
                 Toast.makeText(this, "new name is required", Toast.LENGTH_SHORT).show();
                 return;
             }
-            RequestBody requestBodyName = RequestBody.create(MediaType.parse("text/plain"), newName);
-            RequestBody requestBodyEmail = RequestBody.create(MediaType.parse("text/plain"), newEmail);
-            RequestBody requestBodyPhone = RequestBody.create(MediaType.parse("text/plain"), newNumberPhone);
-            RequestBody requestBodyId = RequestBody.create(MediaType.parse("text/plain"), userId);
-            LoadingDialog.showProgressDialog(this, "Loading...");
-            if (imageUri == null) {
-                Call<ResApi> call = apiService.editUser(token, requestBodyEmail, requestBodyName, requestBodyPhone, requestBodyId);
-                call.enqueue(new Callback<ResApi>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
-                        if (response.body() != null) {
-                            if (response.body().code == 1) {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                    LoadingDialog.dismissProgressDialog();
-                                    getDataUser();
-                                });
-                            } else {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                    LoadingDialog.dismissProgressDialog();
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
-                        runOnUiThread(() -> {
-                            Log.d("onFailure", "onFailure: " + t.getMessage());
-                            LoadingDialog.dismissProgressDialog();
-                        });
-                    }
-                });
-            } else {
-                File file = new File(Objects.requireNonNull(imageUri.getPath()));
-                RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
-                MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), imageRequestBody);
-                Call<ResApi> call = apiService.editUserImg(token, requestBodyEmail, requestBodyName, requestBodyPhone, imagePart, requestBodyId);
-                call.enqueue(new Callback<ResApi>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
-                        if (response.body() != null) {
-                            if (response.body().code == 1) {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                    LoadingDialog.dismissProgressDialog();
-                                    getDataUser();
-                                });
-                            } else {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(InformationUserActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                                    LoadingDialog.dismissProgressDialog();
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
-                        runOnUiThread(() -> {
-                            Log.d("onFailure", "onFailure: " + t.getMessage());
-                            LoadingDialog.dismissProgressDialog();
-                        });
-                    }
-                });
+            if (imageUri != null) {
+                request.setAvatar(newAvt);
             }
-            Cancel();
+            LoadingDialog.showProgressDialog(this, "Loading...");
+            Call<EditCusResponse> call = apiService.sendOtpEditCus(preferenceManager.getString("token"), request);
+            call.enqueue(new Callback<EditCusResponse>() {
+                @SuppressLint("UseCompatLoadingForDrawables")
+                @Override
+                public void onResponse(@NonNull Call<EditCusResponse> call, @NonNull Response<EditCusResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 1) {
+                            runOnUiThread(() -> {
+                                LoadingDialog.dismissProgressDialog();
+                                Dialog dialog = new Dialog(InformationUserActivity.this);
+                                dialog.setContentView(R.layout.dialog_otp_change_password);
+                                Window window = dialog.getWindow();
+                                if (window != null) {
+                                    window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                                    window.setBackgroundDrawable(InformationUserActivity.this.getDrawable(R.drawable.dialog_bg));
+                                    window.getAttributes().windowAnimations = R.style.DialogAnimation;
+                                    WindowManager.LayoutParams windowAttributes = window.getAttributes();
+                                    window.setAttributes(windowAttributes);
+                                    windowAttributes.gravity = Gravity.BOTTOM;
+                                }
+                                TextInputEditText edOtp = dialog.findViewById(R.id.ed_otp);
+                                Button btnSendOtp = dialog.findViewById(R.id.btn_sendOtp);
+                                ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+                                btnCancel.setOnClickListener(view -> dialog.dismiss());
+                                btnSendOtp.setOnClickListener(view -> {
+                                    if (TextUtils.isEmpty(edOtp.getText().toString().trim())) {
+                                        Toast.makeText(InformationUserActivity.this, "otp không được để trống", Toast.LENGTH_SHORT).show();
+                                    }
+                                    request.setOtp(edOtp.getText().toString().trim());
+                                    Call<EditCusResponse> call1 = apiService.editCus(preferenceManager.getString("token"), request);
+                                    LoadingDialog.showProgressDialog(InformationUserActivity.this, "Loading....");
+                                    call1.enqueue(new Callback<EditCusResponse>() {
+                                        @Override
+                                        public void onResponse(@NonNull Call<EditCusResponse> call, @NonNull Response<EditCusResponse> response) {
+                                            runOnUiThread(LoadingDialog::dismissProgressDialog);
+                                            if (response.body() != null) {
+                                                if (response.body().getCode() == 1) {
+                                                    runOnUiThread(() -> {
+                                                        dialog.dismiss();
+                                                        onCancel();
+                                                        getDataUser();
+                                                        AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                                                    });
+                                                } else {
+                                                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage()));
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(@NonNull Call<EditCusResponse> call, @NonNull Throwable t) {
+                                            runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, t.getMessage()));
+                                        }
+                                    });
+                                });
+                                dialog.show();
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                LoadingDialog.dismissProgressDialog();
+                                AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<EditCusResponse> call, @NonNull Throwable t) {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, t.getMessage());
+                    });
+                }
+            });
         });
     }
 
@@ -254,6 +276,7 @@ public class InformationUserActivity extends AppCompatActivity {
             if (data != null) {
                 imageUri = data.getData();
                 imgUser.setImageURI(imageUri);
+                uploadImageToFirebase(imageUri);
             }
         }
     }
@@ -284,5 +307,30 @@ public class InformationUserActivity extends AppCompatActivity {
         lnlLayoutEdit.setVisibility(View.VISIBLE);
         imgCamera.setVisibility(View.VISIBLE);
         cancelAction.setVisibility(View.VISIBLE);
+    }
+
+    public Task<String> uploadImageToFirebase(Uri imageUri) {
+        String userId = mCustomer.get_id();
+        String imageName = "image_" + System.currentTimeMillis() + ".jpg";
+        StorageReference storageRef = mStorage.getReference().child("images").child(userId).child(imageName);
+
+        return storageRef.putFile(imageUri)
+                .continueWithTask(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return storageRef.getDownloadUrl();
+                })
+                .continueWith(task -> {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return task.getResult().toString();
+                })
+                .addOnSuccessListener(imageUrl -> {
+                    newAvt = imageUrl;
+                    Log.d(TAG, "Image URL on Firebase: " + imageUrl);
+                })
+                .addOnFailureListener(exception -> Log.e(TAG, "Upload failed: " + exception.getMessage()));
     }
 }
