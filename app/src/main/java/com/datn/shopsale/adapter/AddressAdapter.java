@@ -1,17 +1,13 @@
 package com.datn.shopsale.adapter;
 
 
-import static android.content.Context.MODE_PRIVATE;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,13 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.OrderActivity;
-import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.User;
+import com.datn.shopsale.modelsv2.Address;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressViewHolder> {
     private ArrayList<Address> dataList;
@@ -34,7 +27,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
     private Context context;
     private int selectedItemPosition = -1;
     private boolean isAddressSelect;
-    public AddressAdapter(ArrayList<Address> dataList,Context context,Callback callback) {
+    @SuppressLint("NotifyDataSetChanged")
+    public AddressAdapter(ArrayList<Address> dataList, Context context, Callback callback) {
         this.dataList = dataList;
         this.context = context;
         this.callback = callback;
@@ -95,19 +89,20 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
         }
 
 
-        public void bind(Address address,int position) {
+        @SuppressLint({"NotifyDataSetChanged", "ClickableViewAccessibility"})
+        public void bind(Address address, int position) {
             tvName.setText(address.getName());
-            tvPhoneNumber.setText(address.getPhone_number());
+            tvPhoneNumber.setText(address.getPhone());
             tvAddressCity.setText(address.getCity());
             tvAddressStreet.setText(address.getStreet());
             mainLayout.setBackgroundResource(selectedItemPosition == position ? R.color.red : R.color.mauve);
             mainLayout.setOnClickListener(v -> {
-                if(isAddressSelect==true) {
+                if(isAddressSelect) {
                     selectedItemPosition = position;
                     notifyDataSetChanged(); // Notify the adapter that the data set changed
                     Intent intent = new Intent(context, OrderActivity.class);
                     intent.putExtra("nameAddress", address.getName());
-                    intent.putExtra("phoneAddress", address.getPhone_number());
+                    intent.putExtra("phoneAddress", address.getPhone());
                     intent.putExtra("cityAddress", address.getCity());
                     intent.putExtra("streetAddress", address.getStreet());
                     intent.putExtra("addressId", address.get_id());
@@ -116,17 +111,10 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AddressV
                 }
             });
 
-            tvEdit.setOnClickListener(v->{
-                callback.editAddress(address);
-            });
-            tvDelete.setOnClickListener(v->{
-                callback.deleteAddress(address);
-            });
-            dragLayout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return true; // Consume touch events
-                }
+            tvEdit.setOnClickListener(v-> callback.editAddress(address));
+            tvDelete.setOnClickListener(v-> callback.deleteAddress(address));
+            dragLayout.setOnTouchListener((v, event) -> {
+                return true; // Consume touch events
             });
             swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
             swipeLayout.addDrag(SwipeLayout.DragEdge.Right, dragLayout);

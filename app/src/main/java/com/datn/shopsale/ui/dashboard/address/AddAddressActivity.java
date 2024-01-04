@@ -7,17 +7,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.request.AddAddressRequest;
+import com.datn.shopsale.responsev2.AddAddressResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,11 +32,12 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
     private static final int REQUEST_CODE_CITY = 123;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private Toolbar toolbarCreAddress;
-    private EditText edName, edPhoneNumber, edCity, edStreet;
+    private EditText edName, edPhoneNumber, edStreet;
+    private TextView edCity;
     private Button btnSave;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
-    private  Address address = new Address();
+    private AddAddressRequest address = new AddAddressRequest();
     private boolean isCurrentLocationSelected = false;
 
     @Override
@@ -47,14 +53,14 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
         toolbarCreAddress = (Toolbar) findViewById(R.id.toolbar_cre_address);
         edName = (EditText) findViewById(R.id.ed_name);
         edPhoneNumber = (EditText) findViewById(R.id.ed_phone_number);
-        edCity = (EditText) findViewById(R.id.ed_city);
+        edCity = (TextView) findViewById(R.id.ed_city);
         edStreet = (EditText) findViewById(R.id.ed_street);
         btnSave = (Button) findViewById(R.id.btn_save);
 
         btnSave.setOnClickListener(this);
         edCity.setOnClickListener(this);
         setSupportActionBar(toolbarCreAddress);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarCreAddress.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -67,51 +73,50 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
             if (validate()) {
                 addAddress();
             }
-        }else if(view.getId() == R.id.ed_city){
+        } else if (view.getId() == R.id.ed_city) {
             startActivityForResult(new Intent(this, CityActivity.class), REQUEST_CODE_CITY);
         }
     }
 
 
     private void addAddress() {
+        LoadingDialog.showProgressDialog(AddAddressActivity.this, "Loading...");
         String token = preferenceManager.getString("token");
-        String idUser = preferenceManager.getString("userId");
-
         String name = edName.getText().toString().trim();
         String phone = edPhoneNumber.getText().toString().trim();
         String street = edStreet.getText().toString().trim();
-
-
-        address.setUserId(idUser);
         address.setPhone_number(phone);
         address.setName(name);
         address.setStreet(street);
 
         try {
-            Call<ResApi> call = apiService.addAddress(token, address);
-            call.enqueue(new Callback<ResApi>() {
+            Call<AddAddressResponse> call = apiService.addDeliveryAddress(token, address);
+            call.enqueue(new Callback<AddAddressResponse>() {
                 @Override
-                public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                    if (response.body().code == 1) {
-                        Toast.makeText(AddAddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
-                        Intent resultIntent = new Intent();
-                        setResult(Activity.RESULT_OK, resultIntent);
-                        finish();
-                    } else {
-                        Toast.makeText(AddAddressActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                public void onResponse(@NonNull Call<AddAddressResponse> call, @NonNull Response<AddAddressResponse> response) {
+                    runOnUiThread(LoadingDialog::dismissProgressDialog);
 
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 1) {
+                            Toast.makeText(AddAddressActivity.this, "Thêm địa chỉ thành công", Toast.LENGTH_SHORT).show();
+                            Intent resultIntent = new Intent();
+                            setResult(Activity.RESULT_OK, resultIntent);
+                            finish();
+                        } else {
+                            Toast.makeText(AddAddressActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ResApi> call, Throwable t) {
-                    Log.e("error", t.getMessage());
+                public void onFailure(@NonNull Call<AddAddressResponse> call, @NonNull Throwable t) {
+                    Log.e("error", Objects.requireNonNull(t.getMessage()));
                     Toast.makeText(AddAddressActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
             });
         } catch (Exception e) {
-            Log.e("error", e.getMessage());
+            Log.e("error", Objects.requireNonNull(e.getMessage()));
             Toast.makeText(AddAddressActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -130,6 +135,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
             return true;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -142,7 +148,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                 // Nếu đã chọn vị trí hiện tại
                 String currentLocation = data.getStringExtra("currentLocation");
                 edCity.setText(currentLocation);
-                Log.d("TAG", "onActivityResult1: "+currentLocation);
+                Log.d("TAG", "onActivityResult1: " + currentLocation);
                 address.setCity(currentLocation);
                 // Thực hiện các xử lý khác cho vị trí hiện tại nếu cần
             } else {
@@ -155,7 +161,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                 if (selectedCity != null && selectedDistrict != null && selectedWard != null) {
                     String addressText = selectedCity + ", " + selectedDistrict + ", " + selectedWard;
                     edCity.setText(addressText);
-                    Log.d("TAG", "onActivityResult2: "+addressText);
+                    Log.d("TAG", "onActivityResult2: " + addressText);
                     address.setCity(addressText);
                 }
             }

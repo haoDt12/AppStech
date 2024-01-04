@@ -6,10 +6,13 @@ import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
 import com.datn.shopsale.models.ResponseCart;
+import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
+import com.datn.shopsale.request.DeleteAddressRequest;
+import com.datn.shopsale.request.EditAddressRequest;
 import com.datn.shopsale.request.EditCusRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
@@ -36,12 +39,16 @@ import com.datn.shopsale.response.ResponseAddress;
 import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
+import com.datn.shopsale.responsev2.AddAddressResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
+import com.datn.shopsale.responsev2.DeleteAddressResponse;
+import com.datn.shopsale.responsev2.EditAddressResponse;
 import com.datn.shopsale.responsev2.EditCusResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
+import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.responsev2.RegisterCustomerResponse;
@@ -375,4 +382,12 @@ public interface ApiService {
 
     @POST("/apiv2/editCus")
     Call<EditCusResponse> editCus(@Header("Authorization") String token, @Body EditCusRequest request);
+    @POST("/apiv2/getDeliveryAddress")
+    Call<GetDeliveryAddressResponse> getDeliveryAddress(@Header("Authorization") String token);
+    @POST("/apiv2/addDeliveryAddress")
+    Call<AddAddressResponse> addDeliveryAddress(@Header("Authorization") String token, @Body AddAddressRequest request);
+    @POST("/apiv2/editDeliveryAddress")
+    Call<EditAddressResponse> editDeliveryAddress(@Header("Authorization") String token, @Body EditAddressRequest request);
+    @POST("/apiv2/deleteDeliveryAddress")
+    Call<DeleteAddressResponse> deleteDeliveryAddress(@Header("Authorization") String token, @Body DeleteAddressRequest request);
 }
