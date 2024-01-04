@@ -37,7 +37,6 @@ import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -183,7 +182,7 @@ public class InformationUserActivity extends AppCompatActivity {
                 return;
             }
             if (imageUri != null) {
-                request.setAvatar(newAvt);
+                uploadImageToFirebase(imageUri,request);
             }
             LoadingDialog.showProgressDialog(this, "Loading...");
             Call<EditCusResponse> call = apiService.sendOtpEditCus(preferenceManager.getString("token"), request);
@@ -276,7 +275,6 @@ public class InformationUserActivity extends AppCompatActivity {
             if (data != null) {
                 imageUri = data.getData();
                 imgUser.setImageURI(imageUri);
-                uploadImageToFirebase(imageUri);
             }
         }
     }
@@ -309,26 +307,26 @@ public class InformationUserActivity extends AppCompatActivity {
         cancelAction.setVisibility(View.VISIBLE);
     }
 
-    public Task<String> uploadImageToFirebase(Uri imageUri) {
+    public void uploadImageToFirebase(Uri imageUri, EditCusRequest request) {
         String userId = mCustomer.get_id();
         String imageName = "image_" + System.currentTimeMillis() + ".jpg";
         StorageReference storageRef = mStorage.getReference().child("images").child(userId).child(imageName);
 
-        return storageRef.putFile(imageUri)
+        storageRef.putFile(imageUri)
                 .continueWithTask(task -> {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     return storageRef.getDownloadUrl();
                 })
                 .continueWith(task -> {
                     if (!task.isSuccessful()) {
-                        throw task.getException();
+                        throw Objects.requireNonNull(task.getException());
                     }
                     return task.getResult().toString();
                 })
                 .addOnSuccessListener(imageUrl -> {
-                    newAvt = imageUrl;
+                    request.setAvatar(imageUrl);
                     Log.d(TAG, "Image URL on Firebase: " + imageUrl);
                 })
                 .addOnFailureListener(exception -> Log.e(TAG, "Upload failed: " + exception.getMessage()));
