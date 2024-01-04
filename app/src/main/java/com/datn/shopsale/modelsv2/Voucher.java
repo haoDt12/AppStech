@@ -1,6 +1,8 @@
 package com.datn.shopsale.modelsv2;
 
-public class Voucher {
+import java.io.Serializable;
+
+public class Voucher implements Serializable {
     private String _id;
     private String name;
     private String content;

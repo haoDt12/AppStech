@@ -12,13 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.VoucherAdapter;
-import com.datn.shopsale.response.GetListVoucher;
+import com.datn.shopsale.modelsv2.MapVoucherCus;
+import com.datn.shopsale.responsev2.GetVoucherResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,7 +47,7 @@ public class VoucherActivity extends AppCompatActivity {
         }
         Log.d("zzz", "onCreate: " + action);
         setSupportActionBar(toolbarVoucher);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarVoucher.setNavigationOnClickListener(v -> onBackPressed());
         getListVoucher();
@@ -53,15 +55,15 @@ public class VoucherActivity extends AppCompatActivity {
     }
     private void getListVoucher(){
         LoadingDialog.showProgressDialog(this,"Loading...");
-        Call<GetListVoucher.Root> call = apiService.getListVoucher(preferenceManager.getString("token"),preferenceManager.getString("userId"));
-        call.enqueue(new Callback<GetListVoucher.Root>() {
+        Call<GetVoucherResponse> call = apiService.getVoucherByIdV2(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetVoucherResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetListVoucher.Root> call, @NonNull Response<GetListVoucher.Root> response) {
+            public void onResponse(@NonNull Call<GetVoucherResponse> call, @NonNull Response<GetVoucherResponse> response) {
                 assert response.body() != null;
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     if(response.body().getCode() == 1){
-                        List<GetListVoucher.ListVoucher> voucherList = response.body().getListVoucher();
+                        List<MapVoucherCus> voucherList = response.body().getVoucher();
                         voucherAdapter = new VoucherAdapter(voucherList, VoucherActivity.this,action);
                         rcvMyVoucher.setAdapter(voucherAdapter);
                         rcvMyVoucher.setLayoutManager(new LinearLayoutManager(VoucherActivity.this));
@@ -72,7 +74,7 @@ public class VoucherActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListVoucher.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetVoucherResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(VoucherActivity.this,t.getMessage());

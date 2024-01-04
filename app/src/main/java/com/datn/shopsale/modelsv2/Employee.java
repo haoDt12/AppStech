@@ -1,16 +1,14 @@
 package com.datn.shopsale.modelsv2;
 
-import java.io.Serializable;
-
-public class Customer implements Serializable {
+public class Employee {
     private String _id;
     private String avatar;
     private String email;
     private String password;
     private String full_name;
     private String phone_number;
-    private String status;
-    private String create_time;
+    private String date;
+    private int __v;
     private String otp;
 
     public String get_id() {
@@ -61,20 +59,20 @@ public class Customer implements Serializable {
         this.phone_number = phone_number;
     }
 
-    public String getStatus() {
-        return status;
+    public String getDate() {
+        return date;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getCreate_time() {
-        return create_time;
+    public int get__v() {
+        return __v;
     }
 
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
+    public void set__v(int __v) {
+        this.__v = __v;
     }
 
     public String getOtp() {

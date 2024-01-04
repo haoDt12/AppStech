@@ -9,6 +9,7 @@ import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.AddressRequest;
+import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.request.DeleteAddressRequest;
@@ -41,6 +42,7 @@ import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddAddressResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
+import com.datn.shopsale.responsev2.CreateOrderResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.responsev2.DeleteAddressResponse;
@@ -50,6 +52,8 @@ import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
+import com.datn.shopsale.responsev2.GetOrderResponseV2;
+import com.datn.shopsale.responsev2.GetVoucherResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.responsev2.RegisterCustomerResponse;
 import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
@@ -390,4 +394,10 @@ public interface ApiService {
     Call<EditAddressResponse> editDeliveryAddress(@Header("Authorization") String token, @Body EditAddressRequest request);
     @POST("/apiv2/deleteDeliveryAddress")
     Call<DeleteAddressResponse> deleteDeliveryAddress(@Header("Authorization") String token, @Body DeleteAddressRequest request);
+    @POST("/apiv2/getVoucherByIdV2")
+    Call<GetVoucherResponse> getVoucherByIdV2(@Header("Authorization") String token);
+    @POST("/apiv2/createOrder")
+    Call<CreateOrderResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+    @POST("/apiv2/getOderByUser")
+    Call<GetOrderResponseV2> getOderByUser(@Header("Authorization") String token);
 }

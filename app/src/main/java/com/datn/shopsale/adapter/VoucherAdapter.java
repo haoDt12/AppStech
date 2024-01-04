@@ -7,23 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.datn.shopsale.R;
-import com.datn.shopsale.response.GetListVoucher;
+import com.datn.shopsale.modelsv2.MapVoucherCus;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherViewHolder> {
-    private List<GetListVoucher.ListVoucher> list;
+    private List<MapVoucherCus> list;
     private Context context;
     private int actionCode;
-    public VoucherAdapter(List<GetListVoucher.ListVoucher> list, Context context,int actionCode) {
+
+    public VoucherAdapter(List<MapVoucherCus> list, Context context, int actionCode) {
         this.list = list;
         this.context = context;
         this.actionCode = actionCode;
@@ -32,51 +32,44 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
     @NonNull
     @Override
     public VoucherAdapter.VoucherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_voucher,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_voucher, parent, false);
         return new VoucherViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull VoucherAdapter.VoucherViewHolder holder, int position) {
-        GetListVoucher.ListVoucher voucher = list.get(position);
-        if(voucher == null){
+        MapVoucherCus voucher = list.get(position);
+        if (voucher == null) {
             return;
         }
-        if(actionCode == 1){
+        if (actionCode == 1) {
             holder.btnUse.setVisibility(View.GONE);
         }
-        holder.tvTitle.setText(voucher.getTitle());
-        holder.tvContent.setText(voucher.getContent());
-        holder.tvDate.setText(String.format("Từ %s đến %s", voucher.getFromDate(), voucher.getToDate()));
+        holder.tvTitle.setText(voucher.getVocher_id().getName());
+        holder.tvContent.setText(voucher.getVocher_id().getContent());
+        holder.tvDate.setText(String.format("Từ %s đến %s", voucher.getVocher_id().getFromDate(), voucher.getVocher_id().getToDate()));
         holder.btnUse.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrderAdapter.class);
-            intent.putExtra("voucher",voucher);
-            intent.putExtra("price", voucher.getPrice()+ "");
-            ((Activity) context).setResult(Activity.RESULT_OK,intent);
+            intent.putExtra("voucher", (Serializable) voucher.getVocher_id());
+            intent.putExtra("price", voucher.getVocher_id().getPrice());
+            ((Activity) context).setResult(Activity.RESULT_OK, intent);
             ((Activity) context).finish();
         });
     }
 
     @Override
     public int getItemCount() {
-        return list==null?0: list.size();
+        return list == null ? 0 : list.size();
     }
 
     public class VoucherViewHolder extends RecyclerView.ViewHolder {
-        private SwipeLayout layoutSwipe;
-        private LinearLayout dragLayout;
-        private LinearLayout mainLayout;
-        private LinearLayout lnlLeft;
         private TextView tvTitle;
         private TextView tvContent;
         private TextView tvDate;
         private Button btnUse;
+
         public VoucherViewHolder(@NonNull View itemView) {
             super(itemView);
-            layoutSwipe = (SwipeLayout) itemView.findViewById(R.id.layout_swipe);
-            dragLayout = (LinearLayout) itemView.findViewById(R.id.dragLayout);
-            mainLayout = (LinearLayout) itemView.findViewById(R.id.mainLayout);
-            lnlLeft = (LinearLayout) itemView.findViewById(R.id.lnl_left);
             tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
             tvDate = (TextView) itemView.findViewById(R.id.tv_date);
