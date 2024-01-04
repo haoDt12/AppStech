@@ -10,6 +10,7 @@ import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
+import com.datn.shopsale.request.EditCusRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
@@ -38,6 +39,7 @@ import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
+import com.datn.shopsale.responsev2.EditCusResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
@@ -346,6 +348,13 @@ public interface ApiService {
 
     @POST("/apiv2/registerCustomer")
     Call<RegisterCustomerResponse> registerCustomer(@Body RegisterCusRequest request);
+
     @POST("/apiv2/getInfoCus")
     Call<GetCusInfoResponse> getInfoCus(@Header("Authorization") String token);
+
+    @POST("/apiv2/sendOtpEditCus")
+    Call<EditCusResponse> sendOtpEditCus(@Header("Authorization") String token, @Body EditCusRequest request);
+
+    @POST("/apiv2/editCus")
+    Call<EditCusResponse> editCus(@Header("Authorization") String token, @Body EditCusRequest request);
 }

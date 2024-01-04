@@ -1,7 +1,5 @@
 package com.datn.shopsale.ui.dashboard;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -198,23 +196,25 @@ public class DashboardFragment extends Fragment {
             }
         });
     }
+
     public void requets_permistion() {
         if (requireContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
                 || requireContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || requireContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 || requireContext().checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
                 || requireContext().checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.INTERNET,
-                            Manifest.permission.CALL_PHONE
-                    }, 1);
-                }
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.CALL_PHONE
+            }, 1);
+        }
     }
+
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void CallPhone(){
+    public void CallPhone() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_call_phone);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(requireContext().getDrawable(R.drawable.dialog_bg));
@@ -236,6 +236,7 @@ public class DashboardFragment extends Fragment {
         btnCancel.setOnClickListener(v2 -> dialog.cancel());
         dialog.show();
     }
+
     private void updateUI() {
         startActivity(new Intent(getContext(), LoginActivity.class));
         requireActivity().finish();
@@ -287,9 +288,7 @@ public class DashboardFragment extends Fragment {
 
     private void onFragmentResult() {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == RESULT_OK) {
-                getUser();
-            }
+            getUser();
         });
     }
 
