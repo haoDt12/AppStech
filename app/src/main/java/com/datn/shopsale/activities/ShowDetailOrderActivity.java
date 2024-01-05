@@ -1,6 +1,5 @@
 package com.datn.shopsale.activities;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +14,15 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ListProductOfOrderAdapter;
 import com.datn.shopsale.databinding.ActivityShowDetailOrderBinding;
+import com.datn.shopsale.modelsv2.ListDetailOrder;
+import com.datn.shopsale.modelsv2.Order;
+import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.PreferenceManager;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -31,8 +33,7 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private ActivityShowDetailOrderBinding binding;
-    private ArrayList<GetOrderResponse.Product> dataProduct = new ArrayList<>();
-    private ListProductOfOrderAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,18 +42,19 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbarDetailOder);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        binding.toolbarDetailOder.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        binding.toolbarDetailOder.setNavigationOnClickListener(v -> onBackPressed());
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
-
-        String orderId = getIntent().getStringExtra("orderId");
-
-        getOrder(orderId);
-
+        Bundle bundle = getIntent().getExtras();
+//        assert bundle != null;
+        if (bundle != null) {
+            ListDetailOrder listOrderDetail = (ListDetailOrder) bundle.getSerializable("detail_order");
+            if (listOrderDetail != null) {
+                getOrder(listOrderDetail);
+            }
+        }
         binding.btnCancelOrder.setOnClickListener(view -> {
-            editOrder();
+//            editOrder();
         });
     }
 
@@ -65,81 +67,64 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
             String orderId = getIntent().getStringExtra("orderId");
             String userId = binding.tvValueUserId.getText().toString().trim();
             String addressId = binding.tvValueAdressId.getText().toString().trim();
-            Call<GetOrderResponse.Root> call = apiService.editOrderStatus(token,orderId,userId,addressId,"Cancel");
+            Call<GetOrderResponse.Root> call = apiService.editOrderStatus(token, orderId, userId, addressId, "Cancel");
             call.enqueue(new Callback<GetOrderResponse.Root>() {
                 @Override
                 public void onResponse(@NonNull Call<GetOrderResponse.Root> call, @NonNull Response<GetOrderResponse.Root> response) {
-                    if (response.body().code == 1){
-                        Log.d("jjjjjjjjj", "onResponse: "+response.body().message);
-                        dialogInterface.cancel();
-                        getOrder(orderId);
-                    } else {
-                        Log.d("jjjjjjjjj", "onResponse: "+response.body().message);
-                        dialogInterface.cancel();
+                    if (response.body() != null) {
+                        if (response.body().code == 1) {
+                            Log.d("jjjjjjjjj", "onResponse: " + response.body().message);
+                            dialogInterface.cancel();
+//                        getOrder(orderId);
+                        } else {
+                            Log.d("jjjjjjjjj", "onResponse: " + response.body().message);
+                            dialogInterface.cancel();
+                        }
                     }
                 }
+
                 @Override
-                public void onFailure(Call<GetOrderResponse.Root> call, Throwable t) {
+                public void onFailure(@NonNull Call<GetOrderResponse.Root> call, @NonNull Throwable t) {
                     Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     dialogInterface.cancel();
                 }
             });
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
+        builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 
-    private void getOrder(String orderId){
-        String token = preferenceManager.getString("token");
-
-        Call<GetOrderResponse.Root> call = apiService.getOrderByOrderId(token,orderId);
-        call.enqueue(new Callback<GetOrderResponse.Root>() {
-            @Override
-            public void onResponse(Call<GetOrderResponse.Root> call, Response<GetOrderResponse.Root> response) {
-                if (response.body().code == 1) {
-                    if (response.body().order.status.equals("InTransit")){
-                        binding.tvOrderStatus.setText("Đang giao hàng");
-                    } else if (response.body().order.status.equals("WaitConfirm")){
-                        binding.tvOrderStatus.setText("Chờ xác nhận");
-                        binding.btnCancelOrder.setVisibility(View.VISIBLE);
-                    } else if (response.body().order.status.equals("PayComplete")){
-                        binding.tvOrderStatus.setText("Đã thanh toán");
-                    } else if (response.body().order.status.equals("WaitingGet")){
-                        binding.tvOrderStatus.setText("Chờ lấy hàng");
-                    } else if (response.body().order.status.equals("Cancel")){
-                        binding.tvOrderStatus.setText("Đã hủy");
-                        binding.btnCancelOrder.setVisibility(View.GONE);
-                    }
-                    binding.tvOrderTotal.setText(CurrencyUtils.formatCurrency(response.body().order.total+""));
-                    binding.tvPaymentMethod.setText(response.body().order.payment_method);
-                    binding.tvNameAddress.setText(response.body().order.addressId.name);
-                    binding.tvPhoneAddress.setText(response.body().order.addressId.phone_number);
-                    binding.tvCityAddress.setText(response.body().order.addressId.city);
-                    binding.tvStreetAddress.setText(response.body().order.addressId.street);
-                    binding.tvValueUserId.setText(response.body().order.userId);
-                    binding.tvValueAdressId.setText(response.body().order.addressId._id);
-                    dataProduct = response.body().order.product;
-                    Log.d("wwwwww", "onResponse: "+dataProduct.toString());
-
-                    runOnUiThread(() -> {
-                        binding.rcvProductOfOrder.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        adapter = new ListProductOfOrderAdapter(dataProduct,getApplicationContext(),response.body().order.status);
-                        binding.rcvProductOfOrder.setAdapter(adapter);
-                    });
-                } else {
-                    Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<GetOrderResponse.Root> call, @NonNull Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void getOrder(ListDetailOrder listDetailOrder) {
+        Order order = listDetailOrder.getOrder();
+        List<Product> productList = listDetailOrder.getListProduct();
+        switch (order.getStatus()) {
+            case "InTransit":
+                binding.tvOrderStatus.setText(getResources().getText(R.string.dang_giao_hang));
+                break;
+            case "WaitConfirm":
+                binding.tvOrderStatus.setText(getResources().getText(R.string.doi_xac_nhan));
+                binding.btnCancelOrder.setVisibility(View.VISIBLE);
+                break;
+            case "PayComplete":
+                binding.tvOrderStatus.setText(getResources().getText(R.string.da_thanh_toan));
+                break;
+            case "WaitingGet":
+                binding.tvOrderStatus.setText(getResources().getText(R.string.cho_lay_hang));
+                break;
+            case "Cancel":
+                binding.tvOrderStatus.setText(getResources().getText(R.string.da_huy));
+                binding.btnCancelOrder.setVisibility(View.GONE);
+                break;
+        }
+        binding.tvOrderTotal.setText(CurrencyUtils.formatCurrency(order.getTotal_amount()));
+        binding.tvPaymentMethod.setText(order.getPayment_methods());
+        binding.tvNameAddress.setText(String.format("Người nhận: %s", order.getDelivery_address_id().getName()));
+        binding.tvPhoneAddress.setText(String.format("Số điện thoại: %s", order.getDelivery_address_id().getPhone()));
+        binding.tvCityAddress.setText(String.format("Địa chỉ nhận: %s", order.getDelivery_address_id().getCity()));
+        binding.tvStreetAddress.setText(order.getDelivery_address_id().getStreet());
+        binding.rcvProductOfOrder.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        ListProductOfOrderAdapter adapter = new ListProductOfOrderAdapter(productList, getApplicationContext(), order.getStatus());
+        binding.rcvProductOfOrder.setAdapter(adapter);
     }
 }

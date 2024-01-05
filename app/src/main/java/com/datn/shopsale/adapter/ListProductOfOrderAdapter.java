@@ -1,47 +1,36 @@
 package com.datn.shopsale.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.AddReviewActivity;
-import com.datn.shopsale.response.GetOrderResponse;
-import com.datn.shopsale.response.GetProductResponse;
-import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.modelsv2.Product;
+import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
-import com.datn.shopsale.utils.PreferenceManager;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
 
 public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductOfOrderAdapter.ViewHolder> {
 
-    private ArrayList<GetOrderResponse.Product> dataProduct;
-    private Context context;
-    private ApiService apiService;
-    private PreferenceManager preferenceManager;
-    private String status;
+    private final List<Product> dataProduct;
+    private final Context context;
+    private final String status;
     private boolean check = true;
 
-    public ListProductOfOrderAdapter(ArrayList<GetOrderResponse.Product> dataProduct, Context context,String status) {
+    @SuppressLint("NotifyDataSetChanged")
+    public ListProductOfOrderAdapter(List<Product> dataProduct, Context context, String status) {
         this.dataProduct = dataProduct;
         this.context = context;
         this.status = status;
@@ -51,80 +40,45 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_productoforder,parent,false);
-        return new ListProductOfOrderAdapter.ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_productoforder, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        GetOrderResponse.Product pro = dataProduct.get(position);
-        if (pro == null){
+        Product pro = dataProduct.get(position);
+        if (pro == null) {
             return;
         }
-        String proId = pro.productId._id;
-
-        apiService = RetrofitConnection.getApiService();
-        preferenceManager = new PreferenceManager(context);
-
-        String token = preferenceManager.getString("token");
-
-        Call<GetProductResponse.Root> call = apiService.getProductById(token, proId);
-        call.enqueue(new Callback<GetProductResponse.Root>() {
-            @Override
-            public void onResponse(Call<GetProductResponse.Root> call, Response<GetProductResponse.Root> response) {
-                if (response.body().getCode()==1){
-                    holder.tvTitleProductOfOrder.setText(response.body().getProduct().getTitle());
-                    holder.tvPriceProductOfOrder.setText(formatCurrency(response.body().getProduct().getPrice()));
-                    Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(response.body().getProduct().getImg_cover())).into(holder.imgProduct);
-
-                } else {
-                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<GetProductResponse.Root> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        if(status.equals("PayComplete")){
-            if (check){
+        holder.tvTitleProductOfOrder.setText(String.format("Tên sản phẩm: %s", pro.getName()));
+        holder.tvPriceProductOfOrder.setText(String.format("Giá: %s", CurrencyUtils.formatCurrency(pro.getPrice())));
+        Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(pro.getImg_cover())).into(holder.imgProduct);
+        if (status.equals("PayComplete")) {
+            if (check) {
                 holder.btn_danhgia.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.btn_danhgia.setVisibility(View.GONE);
             }
         }
-        for (GetOrderResponse.Option item: pro.option) {
-            if(item.type.equals("Color")){
-                holder.tvColorProductOfOrder.setText(String.format("Màu: %s", item.title));
-            }
-            if (item.type.equals("Rom")){
-                holder.tvRamRomProductOfOrder.setText(String.format("Rom: %s", item.title));
-                holder.tvRamRomProductOfOrder.setVisibility(View.VISIBLE);
-            }
-            if (item.type.equals("Ram")){
-                holder.tvRamRamProductOfOrder.setText(String.format("Ram: %s", item.title));
-                holder.tvRamRamProductOfOrder.setVisibility(View.VISIBLE);
-            }
+        holder.tvColorProductOfOrder.setText(String.format("Màu: %s", pro.getColor()));
+        if(pro.getRom() != null){
+            holder.tvRamRomProductOfOrder.setText(String.format("Rom: %s", pro.getRom()));
+            holder.tvRamRomProductOfOrder.setVisibility(View.VISIBLE);
         }
-        holder.tvNumProductOfOrder.setText("Số lượng: "+pro.quantity+"");
+        if(pro.getRam() != null){
+            holder.tvRamRamProductOfOrder.setText(String.format("Ram: %s", pro.getRam()));
+            holder.tvRamRamProductOfOrder.setVisibility(View.VISIBLE);
+        }
+        holder.tvNumProductOfOrder.setText(String.format("Số lượng: %s", pro.getQuantity()));
         holder.btn_danhgia.setOnClickListener(view -> {
             Intent intent = new Intent(context, AddReviewActivity.class);
-            intent.putExtra("id",pro.productId._id);
-            intent.putExtra("image",pro.productId.img_cover);
-            intent.putExtra("name",pro.productId.title);
-            intent.putExtra("price",pro.productId.price);
-            for (GetOrderResponse.Option item: pro.option) {
-                if(item.type.equals("Color")){
-                    intent.putExtra("color",item.title);
-                }
-                if (item.type.equals("Rom")){
-                    intent.putExtra("ram",item.title);
-                }
-                if (item.type.equals("Ram")){
-                    intent.putExtra("rom",item.title);
-                }
-            }
+            intent.putExtra("id", pro.get_id());
+            intent.putExtra("image", pro.getImg_cover());
+            intent.putExtra("name", pro.getName());
+            intent.putExtra("price", pro.getPrice());
+            intent.putExtra("color", pro.getColor());
+            intent.putExtra("ram", pro.getRam());
+            intent.putExtra("rom", pro.getRom());
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
             check = false;
@@ -136,15 +90,15 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
         return dataProduct == null ? 0 : dataProduct.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tvTitleProductOfOrder;
-        private TextView tvPriceProductOfOrder;
-        private TextView tvColorProductOfOrder;
-        private TextView tvNumProductOfOrder;
-        private TextView tvRamRomProductOfOrder;
-        private TextView tvRamRamProductOfOrder;
-        private ImageView imgProduct;
-        private Button btn_danhgia;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvTitleProductOfOrder;
+        private final TextView tvPriceProductOfOrder;
+        private final TextView tvColorProductOfOrder;
+        private final TextView tvNumProductOfOrder;
+        private final TextView tvRamRomProductOfOrder;
+        private final TextView tvRamRamProductOfOrder;
+        private final ImageView imgProduct;
+        private final Button btn_danhgia;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -157,14 +111,5 @@ public class ListProductOfOrderAdapter extends RecyclerView.Adapter<ListProductO
             tvRamRamProductOfOrder = (TextView) itemView.findViewById(R.id.tv_ramRamProductOfOrder);
             btn_danhgia = itemView.findViewById(R.id.btn_danhgia);
         }
-    }
-    public String formatCurrency(String price) {
-        // Tạo một đối tượng DecimalFormat với mẫu số mong muốn
-        long number = Long.parseLong(price);
-        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols();
-        formatSymbols.setGroupingSeparator('.'); // Set '.' as the grouping separator
-        DecimalFormat decimalFormat = new DecimalFormat("#,###,###.###", formatSymbols);
-        String formattedNumber = decimalFormat.format(number);
-        return formattedNumber;
     }
 }

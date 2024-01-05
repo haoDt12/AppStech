@@ -1,15 +1,26 @@
 package com.datn.shopsale.modelsv2;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
     private String _id;
-    private MapVoucherCus map_voucher_cus_id;
+    private MapVoucherCusId map_voucher_cus_id;
     private Customer customer_id;
     private Employee employee_id;
     private DeliveryAddress delivery_address_id;
     private String status;
     private String total_amount;
     private String create_time;
+    private String payment_methods;
     private int __v;
+
+    public String getPayment_methods() {
+        return payment_methods;
+    }
+
+    public void setPayment_methods(String payment_methods) {
+        this.payment_methods = payment_methods;
+    }
 
     public String get_id() {
         return _id;
@@ -19,11 +30,11 @@ public class Order {
         this._id = _id;
     }
 
-    public MapVoucherCus getMap_voucher_cus_id() {
+    public MapVoucherCusId getMap_voucher_cus_id() {
         return map_voucher_cus_id;
     }
 
-    public void setMap_voucher_cus_id(MapVoucherCus map_voucher_cus_id) {
+    public void setMap_voucher_cus_id(MapVoucherCusId map_voucher_cus_id) {
         this.map_voucher_cus_id = map_voucher_cus_id;
     }
 

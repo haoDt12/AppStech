@@ -1,6 +1,8 @@
 package com.datn.shopsale.modelsv2;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private String _id;
     private String category_id;
     private String name;

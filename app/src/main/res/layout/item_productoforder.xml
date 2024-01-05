@@ -20,6 +20,7 @@
             android:src="@drawable/iphone_14_128gb" />
 
         <LinearLayout
+            android:layout_marginStart="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -28,69 +29,63 @@
                 android:id="@+id/tv_titleProductOfOrder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Iphone 15 pro max"
                 android:textColor="@color/black"
-                android:textSize="17dp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/tv_priceProductOfOrder"
                 android:layout_width="wrap_content"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:text="21.000.000" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/tv_colorProductOfOrder"
                 android:layout_width="wrap_content"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:text="Colo: mau dep" />
+                android:textSize="17sp" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/tv_numProductOfOrder"
                 android:layout_width="wrap_content"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_gravity="center_vertical"
+                android:textSize="17sp" />
 
-                <TextView
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/tv_numProductOfOrder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="20dp"
-                    android:text="Số lượng: 2" />
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/tv_ramRamProductOfOrder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ram: 8Gb/ 128Gb" />
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/tv_ramRomProductOfOrder"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rom: 8Gb/ 128Gb" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_ramRamProductOfOrder"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_ramRomProductOfOrder"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_danhgia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_marginHorizontal="5dp"
                 android:layout_marginTop="5dp"
-                android:text="Đánh giá"
-                android:textAllCaps="false"
-                app:cornerRadius="15dp"
+                android:backgroundTint="@color/red_less"
                 android:paddingHorizontal="35dp"
                 android:paddingVertical="15dp"
-                android:layout_marginHorizontal="5dp"
+                android:text="@string/danh_gia"
+                android:textAllCaps="false"
                 android:textColor="@color/mauve"
-                android:backgroundTint="@color/red_less"
-                android:visibility="gone" />
+                android:visibility="gone"
+                app:cornerRadius="15dp" />
         </LinearLayout>
 
     </LinearLayout>

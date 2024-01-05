@@ -10,16 +10,16 @@ import com.datn.shopsale.adapter.ViewPagerAdapter;
 import com.datn.shopsale.databinding.ActivityMyOrderBinding;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.Objects;
+
 public class MyOrderActivity extends AppCompatActivity implements View.OnClickListener {
-    private ActivityMyOrderBinding binding;
-    private ViewPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMyOrderBinding.inflate(getLayoutInflater());
+        com.datn.shopsale.databinding.ActivityMyOrderBinding binding = ActivityMyOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        adapter = new ViewPagerAdapter(this);
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         binding.vpgMyOrder.setAdapter(adapter);
 
         TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(binding.tlMyOrder, binding.vpgMyOrder, (tab, position) -> {
@@ -43,11 +43,9 @@ public class MyOrderActivity extends AppCompatActivity implements View.OnClickLi
         });
         tabLayoutMediator.attach();
         setSupportActionBar(binding.toolbarMyOder);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        binding.toolbarMyOder.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        binding.toolbarMyOder.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override

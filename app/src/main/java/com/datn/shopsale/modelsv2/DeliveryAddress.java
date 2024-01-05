@@ -1,6 +1,8 @@
 package com.datn.shopsale.modelsv2;
 
-public class DeliveryAddress {
+import java.io.Serializable;
+
+public class DeliveryAddress implements Serializable {
     private String _id;
     private String customer_id;
     private String name;

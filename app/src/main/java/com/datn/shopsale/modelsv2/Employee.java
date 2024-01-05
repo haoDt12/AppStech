@@ -1,6 +1,8 @@
 package com.datn.shopsale.modelsv2;
 
-public class Employee {
+import java.io.Serializable;
+
+public class Employee implements Serializable {
     private String _id;
     private String avatar;
     private String email;

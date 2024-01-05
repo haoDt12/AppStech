@@ -171,5 +171,13 @@
     <string name="recommend">Đề xuất</string>
     <string name="result_search">Kết quả tìm kiếm</string>
     <string name="not_found">Không tìm thấy kết quả phù hợp</string>
+    <string name="doi_xac_nhan">Đang đợi xác nhận</string>
+    <string name="dang_giao_hang">Đang giao hàng</string>
+    <string name="da_thanh_toan">Đã thanh toán</string>
+    <string name="cho_lay_hang">Chờ lấy hàng</string>
+    <string name="da_huy">Đã hủy</string>
+    <string name="huy_don_hang">Hủy đơn hàng</string>
+    <string name="danh_gia">Đánh giá</string>
+    <string name="xem_them">--Xem thêm--</string>
 
 </resources>

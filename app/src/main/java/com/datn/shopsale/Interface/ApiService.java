@@ -16,6 +16,7 @@ import com.datn.shopsale.request.DeleteAddressRequest;
 import com.datn.shopsale.request.EditAddressRequest;
 import com.datn.shopsale.request.EditCusRequest;
 import com.datn.shopsale.request.EditPassRequest;
+import com.datn.shopsale.request.GetOrderByStatusRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
@@ -398,6 +399,6 @@ public interface ApiService {
     Call<GetVoucherResponse> getVoucherByIdV2(@Header("Authorization") String token);
     @POST("/apiv2/createOrder")
     Call<CreateOrderResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
-    @POST("/apiv2/getOderByUser")
-    Call<GetOrderResponseV2> getOderByUser(@Header("Authorization") String token);
+    @POST("/apiv2/getOrderByStatus")
+    Call<GetOrderResponseV2> getOrderByStatus(@Header("Authorization") String token, @Body GetOrderByStatusRequest request);
 }

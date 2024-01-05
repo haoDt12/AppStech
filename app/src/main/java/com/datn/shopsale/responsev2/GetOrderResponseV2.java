@@ -1,17 +1,17 @@
 package com.datn.shopsale.responsev2;
 
-import com.datn.shopsale.modelsv2.DataOrder;
+import com.datn.shopsale.modelsv2.ListDetailOrder;
 
 import java.util.List;
 
 public class GetOrderResponseV2 extends BaseResponse{
-    public List<DataOrder> dataOrder;
+    private List<ListDetailOrder> listDetailOrder;
 
-    public List<DataOrder> getDataOrder() {
-        return dataOrder;
+    public List<ListDetailOrder> getListDetailOrder() {
+        return listDetailOrder;
     }
 
-    public void setDataOrder(List<DataOrder> dataOrder) {
-        this.dataOrder = dataOrder;
+    public void setListDetailOrder(List<ListDetailOrder> listDetailOrder) {
+        this.listDetailOrder = listDetailOrder;
     }
 }

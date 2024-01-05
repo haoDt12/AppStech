@@ -1,7 +1,6 @@
 package com.datn.shopsale.ui.dashboard.order;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.adapter.ListOrderAdapter;
 import com.datn.shopsale.databinding.FragmentCancelOrderBinding;
-import com.datn.shopsale.models.Orders;
-import com.datn.shopsale.response.GetListOrderResponse;
+import com.datn.shopsale.modelsv2.ListDetailOrder;
+import com.datn.shopsale.request.GetOrderByStatusRequest;
+import com.datn.shopsale.responsev2.GetOrderResponseV2;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,40 +63,29 @@ public class CancelOrderFragment extends Fragment {
 
     private void getListOrdeCancel() {
         LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
+        GetOrderByStatusRequest request = new GetOrderByStatusRequest();
+        request.setStatus("Cancel");
         String token = preferenceManager.getString("token");
-        String userId = preferenceManager.getString("userId");
-        ArrayList<Orders> dataOrder = new ArrayList<>();
-        ArrayList<Orders> dataOrderInTransit = new ArrayList<>();
-
-        Call<GetListOrderResponse.Root> call = apiService.getOrderByUserId(token, userId);
-        call.enqueue(new Callback<GetListOrderResponse.Root>() {
+        Call<GetOrderResponseV2> call = apiService.getOrderByStatus(token, request);
+        call.enqueue(new Callback<GetOrderResponseV2>() {
             @Override
-            public void onResponse(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Response<GetListOrderResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetOrderResponseV2> call, @NonNull Response<GetOrderResponseV2> response) {
                 assert response.body() != null;
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    if (response.body().code == 1) {
-                        for (GetListOrderResponse.ListOrder order : response.body().listOrder) {
-                            Log.d("zzz", "onResponse: " + order.total);
-                            Log.d("hhhhhhhh", "onResponse: " + response.body().listOrder);
-                            dataOrder.add(new Orders(order._id, order.userId, order.product, order.status, order.addressId, order.total, order.payment_method));
-                        }
-                        for (Orders item : dataOrder) {
-                            if (item.getStatus().equals("Cancel")) {
-                                dataOrderInTransit.add(item);
-                            }
-                        }
-                        binding.rcvCancel.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        adapter = new ListOrderAdapter(dataOrderInTransit, getActivity());
+                    if (response.body().getCode() == 1) {
+                        List<ListDetailOrder> listOrder = response.body().getListDetailOrder();
+                        binding.rcvCancel.setLayoutManager(new LinearLayoutManager(requireActivity()));
+                        adapter = new ListOrderAdapter(listOrder, requireActivity());
                         binding.rcvCancel.setAdapter(adapter);
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     }
                 });
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListOrderResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetOrderResponseV2> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());

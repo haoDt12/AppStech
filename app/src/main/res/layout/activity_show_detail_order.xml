@@ -47,35 +47,33 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_nameAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
-                            android:textSize="17dp"
+                            android:textSize="17sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" - " />
-
-                        <TextView
                             android:id="@+id/tv_phoneAddress"
+                            android:textColor="@color/black"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/tv_cityAddress"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp" />
 
                     <TextView
                         android:id="@+id/tv_streetAddress"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
@@ -94,22 +92,22 @@
                     android:layout_height="wrap_content"
                     android:text="@string/tongthanhtoan"
                     android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_orderTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:textColor="@color/red"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/red"
-                    android:textSize="17dp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -126,22 +124,22 @@
                     android:layout_height="wrap_content"
                     android:text="@string/payment_method"
                     android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_payment_method"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:textColor="@color/red"
-                    android:textSize="20dp"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/red"
-                    android:textSize="17dp"
+                    android:textSize="17sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -158,16 +156,15 @@
                     android:layout_height="wrap_content"
                     android:text="@string/trangthaidonhang"
                     android:textColor="@color/black"
-                    android:textSize="17dp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_orderStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:text="Đang giao hàng"
+                    android:layout_marginStart="3dp"
                     android:textColor="@color/black"
-                    android:textSize="17dp" />
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <Button
@@ -176,7 +173,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="30dp"
-                android:text="Hủy đơn hàng"
+                android:text="@string/huy_don_hang"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:visibility="gone" />
