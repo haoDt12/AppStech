@@ -18,7 +18,9 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -26,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddReviewActivity extends AppCompatActivity{
+public class AddReviewActivity extends AppCompatActivity {
     private Toolbar toolbarFeedback;
     private TextView tvSubmit;
     private ImageView imgProduct;
@@ -37,8 +39,9 @@ public class AddReviewActivity extends AppCompatActivity{
     private String idProduct;
     private ApiService apiService;
     private TextView tvRating;
-    PreferenceManager preferenceManager ;
+    PreferenceManager preferenceManager;
     private double rating_result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +55,11 @@ public class AddReviewActivity extends AppCompatActivity{
         tvName.setText(getIntent().getStringExtra("name"));
         String color = getIntent().getStringExtra("color");
         String option = getIntent().getStringExtra("ram");
-        if (option == null){
+        if (option == null) {
             option = "";
         }
-        tvDescription.setText(color +"\n"+ option);
-        Toast.makeText(this, ""+getIntent().getStringExtra("name"), Toast.LENGTH_SHORT).show();
+        tvDescription.setText(color + "\n" + option);
+        Toast.makeText(this, "" + getIntent().getStringExtra("name"), Toast.LENGTH_SHORT).show();
 
         tvSubmit.setOnClickListener(view -> {
             addFeedback();
@@ -68,37 +71,38 @@ public class AddReviewActivity extends AppCompatActivity{
                 // Xử lý sự kiện khi giá trị đánh giá thay đổi
                 rating_result = ratingBar.getRating();
                 int text = (int) rating_result;
-                tvRating.setText(String.valueOf(text)+"/5");
+                tvRating.setText(String.valueOf(text) + "/5");
 
             }
         });
     }
-    private void addFeedback() {
-        String idUser = preferenceManager.getString("userId");
-        FeedBack objFeedBack = new FeedBack();
-        objFeedBack.setComment(edComment.getText().toString());
-        objFeedBack.setRating((int) rating_result);
-        objFeedBack.setProductId(idProduct);
-        objFeedBack.setUserId(idUser);
-        objFeedBack.setAvtUser(preferenceManager.getString("avatarLogin"));
-        objFeedBack.setNameUser(preferenceManager.getString("nameLogin"));
-        Call<ResApi> call = apiService.addCmt(preferenceManager.getString("token"),objFeedBack);
-        call.enqueue(new Callback<ResApi>() {
-            @Override
-            public void onResponse(Call<ResApi> call, Response<ResApi> response) {
-                if (response.body().code ==1){
-                    Toast.makeText(AddReviewActivity.this, "FeedBack thanh cong", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(AddReviewActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResApi> call, Throwable t) {
-                Log.e("Error", "onFailure: " + t);
-                Toast.makeText(AddReviewActivity.this, "error: "+t, Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void addFeedback() {
+        try {
+            Call<FeedBackResponse> call = apiService.addFeedback(preferenceManager.getString("token"),
+                    preferenceManager.getString("userId"), idProduct, String.valueOf(rating_result), edComment.getText().toString().trim()
+            );
+            call.enqueue(new Callback<FeedBackResponse>() {
+                @Override
+                public void onResponse(Call<FeedBackResponse> call, Response<FeedBackResponse> response) {
+                    if (response.body().getCode() == 1) {
+                        Toast.makeText(AddReviewActivity.this, "Đánh giá sản phẩm thành công", Toast.LENGTH_SHORT).show();
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(AddReviewActivity.this, response.body().getMessage());
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<FeedBackResponse> call, Throwable t) {
+                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(AddReviewActivity.this, t.getMessage()));
+
+                }
+            });
+        } catch (Exception e) {
+            Log.e("Error", "onFailure: " + e);
+            Toast.makeText(AddReviewActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void findId() {
@@ -110,7 +114,6 @@ public class AddReviewActivity extends AppCompatActivity{
         tvRating = (TextView) findViewById(R.id.tv_rating);
         tvDescription = (TextView) findViewById(R.id.tv_description);
         edComment = (EditText) findViewById(R.id.ed_comment);
-
         setSupportActionBar(toolbarFeedback);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);

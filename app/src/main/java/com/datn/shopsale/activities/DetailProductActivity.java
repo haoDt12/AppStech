@@ -30,12 +30,13 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.ReviewAdapter;
-import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.models.ResponeFeedBack;
+import com.datn.shopsale.modelsv2.FeedBack;
 import com.datn.shopsale.modelsv2.Img;
 import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
@@ -75,7 +76,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private RelativeLayout layoutActionBuy;
     private Button btnOutStock;
 
-    private List<FeedBack> listFb;
+    private List<com.datn.shopsale.modelsv2.FeedBack> listFb;
     private TextView tvTBC;
     private TextView tvReview;
     private ImageButton btnChat;
@@ -102,30 +103,37 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     private void getCmt() {
         listFb = new ArrayList<>();
-        Call<ResponeFeedBack> call = apiService.getFeedBackByProductId(preferenceManager.getString("token"), id);
-        call.enqueue(new Callback<ResponeFeedBack>() {
+        Call<FeedBackResponse> call = apiService.getFeedBack(preferenceManager.getString("token"), id);
+        call.enqueue(new Callback<FeedBackResponse>() {
             @SuppressLint("DefaultLocale")
             @Override
-            public void onResponse(@NonNull Call<ResponeFeedBack> call, @NonNull Response<ResponeFeedBack> response) {
+            public void onResponse(@NonNull Call<FeedBackResponse> call, @NonNull Response<FeedBackResponse> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (FeedBack objFeedBack : response.body().getListFeedBack()) {
+//                        com.datn.shopsale.modelsv2.FeedBack feedBack = new FeedBack(
+//                                objFeedBack.getUserId(),
+//                                objFeedBack.getProductId(),
+//                                objFeedBack.getRating(),
+//                                objFeedBack.getComment(),
+//                                objFeedBack.getNameUser(),
+//                                objFeedBack.getAvtUser(),
+//                                objFeedBack.getDate()
+//
+//                        );
                         FeedBack feedBack = new FeedBack(
-                                objFeedBack.getUserId(),
-                                objFeedBack.getProductId(),
-                                objFeedBack.getRating(),
+                                objFeedBack.getCustomer_id(),
+                                objFeedBack.getProduct_id(), objFeedBack.getRating(),
                                 objFeedBack.getComment(),
-                                objFeedBack.getNameUser(),
-                                objFeedBack.getAvtUser(),
-                                objFeedBack.getDate()
-
+                                objFeedBack.getCreate_time()
                         );
+
                         listFb.add(feedBack);
                     }
                     runOnUiThread(() -> {
                         float tong = 0;
                         for (FeedBack objFeedBack : listFb) {
-                            tong += objFeedBack.getRating();
+                            tong += Float.parseFloat(objFeedBack.getRating());
                         }
                         if (listFb.size() == 0) {
                             TBC = 0;
@@ -133,7 +141,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                             TBC = tong / listFb.size();
                         }
                         rating = tong / listFb.size();
-                        tvTBC.setText(String.format("%s/5", TBC));
+                        String formattedText = String.format("%.1f", TBC);
+                        tvTBC.setText(formattedText+"/5");
                         tvReview.setText(String.format("%d Review", listFb.size()));
                         ratingBar.setRating(rating);
                         adapterRV = new ReviewAdapter(listFb, getApplicationContext());
@@ -148,7 +157,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponeFeedBack> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<FeedBackResponse> call, @NonNull Throwable t) {
             }
         });
 
@@ -364,7 +373,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         btnThem = view.findViewById(R.id.btn_them);
         Glide.with(this).load(img_cover).into(imgProduct);
         tv_kho.setText("Kho: " + quantity);
-        tvPrice.setText(  CurrencyUtils.formatCurrency(price));
+        tvPrice.setText(CurrencyUtils.formatCurrency(price));
 
         ed_quantity.setText(quantityselect + "");
         if (quantityselect == 1) {
@@ -406,7 +415,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                     if (response.body().getCode() == 1) {
                         AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add cart");
 
-                    }else {
+                    } else {
                         AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
                     }
                 }
@@ -416,7 +425,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                     runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage()));
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", "onFailure: " + e);
             Toast.makeText(DetailProductActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
         }

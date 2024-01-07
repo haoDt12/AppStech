@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.FeedBack;
+import com.datn.shopsale.modelsv2.FeedBack;
 import com.datn.shopsale.ui.cart.CartFragment;
 import com.datn.shopsale.ui.cart.IChangeQuantity;
 import com.datn.shopsale.utils.Animation;
@@ -37,10 +37,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
 
-    private  List<FeedBack> list;
+    private  List<com.datn.shopsale.modelsv2.FeedBack> list;
     private  Context mContext;
 
-    public ReviewAdapter(List<FeedBack> list, Context mContext) {
+    public ReviewAdapter(List<com.datn.shopsale.modelsv2.FeedBack> list, Context mContext) {
         this.list = list;
         this.mContext = mContext;
         notifyDataSetChanged();
@@ -58,9 +58,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         FeedBack objFeedBack = list.get(position);
         holder.cmt.setText(objFeedBack.getComment());
-        holder.nameUser.setText(objFeedBack.getNameUser());
-        holder.ratingBar.setRating((float) objFeedBack.getRating());
-        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(objFeedBack.getAvtUser())).into(holder.imgDoctor);
+        holder.nameUser.setText(objFeedBack.getCustomer_id().getFull_name());
+        holder.ratingBar.setRating(Float.parseFloat(objFeedBack.getRating()));
+        Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(objFeedBack.getCustomer_id().getAvatar())).into(holder.imgDoctor);
         LayerDrawable starsDrawable = (LayerDrawable) holder.ratingBar.getProgressDrawable();
         starsDrawable.getDrawable(2).setColorFilter(mContext.getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
         starsDrawable.getDrawable(0).setColorFilter(mContext.getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
