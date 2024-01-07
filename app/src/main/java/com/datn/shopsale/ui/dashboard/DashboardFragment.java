@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.VoucherActivity;
@@ -40,7 +41,6 @@ import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
-import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
@@ -49,7 +49,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -263,7 +262,7 @@ public class DashboardFragment extends Fragment {
                 if (response.body().getCode() == 1) {
                     requireActivity().runOnUiThread(() -> {
                         Customer customer = response.body().getCus();
-                        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(customer.getAvatar())).into(imgAvatarUsers);
+                        Glide.with(requireActivity()).load(customer.getAvatar()).into(imgAvatarUsers);
                         tvName.setText(customer.getFull_name());
                         tvEmail.setText(customer.getEmail());
                         LoadingDialog.dismissProgressDialog();

@@ -148,7 +148,7 @@ public class OrderActivity extends AppCompatActivity {
         }
         tvTotal.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
         tvSumMoney.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
-        OrderAdapter adapter = new OrderAdapter(listOder);
+        OrderAdapter adapter = new OrderAdapter(listOder,this);
         recyclerView.setAdapter(adapter);
         onSelectPayAction(btnMoney);
         onMoney();

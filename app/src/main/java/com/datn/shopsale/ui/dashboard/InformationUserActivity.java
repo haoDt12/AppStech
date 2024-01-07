@@ -296,7 +296,7 @@ public class InformationUserActivity extends AppCompatActivity {
         edEmail.setText(mCustomer.getEmail());
         edName.setText(mCustomer.getFull_name());
         edPhone.setText(mCustomer.getPhone_number());
-        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mCustomer.getAvatar())).into(imgUser);
+        Glide.with(this).load(GetImgIPAddress.convertLocalhostToIpAddress(mCustomer.getAvatar())).into(imgUser);
     }
 
     private void Update() {

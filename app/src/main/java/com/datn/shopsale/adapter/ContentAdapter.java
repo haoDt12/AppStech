@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.VideoDetailActivity;
 import com.datn.shopsale.models.Product;
@@ -23,14 +24,13 @@ import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
-    private ArrayList<Product> items;
-    private Context context;
-    private SimpleExoPlayer exoPlayer;
+    private final ArrayList<Product> items;
+    private final Context context;
+    private final SimpleExoPlayer exoPlayer;
     private boolean isPlaying = false;
 
     public ContentAdapter(ArrayList<Product> items, Context context) {
@@ -67,19 +67,16 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
             holder.playerView.requestFocus();
 
             // Sử dụng nút tùy chỉnh để điều khiển phát/dừng
-            holder.lnlVideo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isPlaying) {
-                        exoPlayer.setPlayWhenReady(false); // Dừng phát
-                        isPlaying = false;
-                        holder.imagePlay.setImageResource(R.drawable.ic_exo_play);
-                        holder.imagePlay.setVisibility(View.VISIBLE);
-                    } else {
-                        exoPlayer.setPlayWhenReady(true); // Tiếp tục phát
-                        isPlaying = true;
-                        holder.imagePlay.setVisibility(View.INVISIBLE);
-                    }
+            holder.lnlVideo.setOnClickListener(v -> {
+                if (isPlaying) {
+                    exoPlayer.setPlayWhenReady(false); // Dừng phát
+                    isPlaying = false;
+                    holder.imagePlay.setImageResource(R.drawable.ic_exo_play);
+                    holder.imagePlay.setVisibility(View.VISIBLE);
+                } else {
+                    exoPlayer.setPlayWhenReady(true); // Tiếp tục phát
+                    isPlaying = true;
+                    holder.imagePlay.setVisibility(View.INVISIBLE);
                 }
             });
             exoPlayer.addListener(new Player.Listener() {
@@ -99,16 +96,11 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         } else if (contentItem.getList_img() != null && !contentItem.getList_img().isEmpty()) {
             holder.playerView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
-
-            Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(contentItem.getList_img().get(0))) // Hiển thị hình ảnh đầu tiên
-                    .into(holder.imageView);
+            Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(contentItem.getList_img().get(0))).into(holder.imageView);
         }
-        holder.imgFull.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Gọi phương thức để xử lý sự kiện bấm vào imgFull
-                onImgFullClick(position);
-            }
+        holder.imgFull.setOnClickListener(v -> {
+            // Gọi phương thức để xử lý sự kiện bấm vào imgFull
+            onImgFullClick(position);
         });
     }
 
@@ -124,7 +116,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHold
         return items.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView, imagePlay,imgFull;
         PlayerView playerView;
         LinearLayout lnlVideo;

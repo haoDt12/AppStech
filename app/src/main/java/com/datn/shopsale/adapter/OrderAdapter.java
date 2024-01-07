@@ -1,5 +1,6 @@
 package com.datn.shopsale.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
-import com.squareup.picasso.Picasso;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
-    private ListOder mList;
-
-    public OrderAdapter(ListOder mList) {
+    private final ListOder mList;
+    private final Context context;
+    public OrderAdapter(ListOder mList, Context context) {
         this.mList = mList;
+        this.context = context;
     }
 
     @NonNull
@@ -42,7 +44,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         price = mList.getList().get(position).getPrice() + fee;
         holder.tvName.setText(mList.getList().get(position).getTitle());
         holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(price)));
-        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
+        Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(mList.getList().get(position).getImgCover())).into(holder.imgProduct);
         holder.tvQuantity.setText(String.valueOf(mList.getList().get(position).getQuantity()));
     }
 

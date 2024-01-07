@@ -8,15 +8,15 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.utils.GetImgIPAddress;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class SliderAdapter extends PagerAdapter {
-    private Context context;
+    private final Context context;
 //    private List<Integer> imageList;
-    private List<String> imageList;
+    private final List<String> imageList;
 
     public SliderAdapter(Context context, List<String> imageList) {
         this.context = context;
@@ -37,8 +37,7 @@ public class SliderAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
-//        imageView.setImageResource(Integer.parseInt(imageList.get(position)));
-        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(imageList.get(position))).into(imageView);
+        Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(imageList.get(position))).into(imageView);
         container.addView(imageView);
         return imageView;
     }

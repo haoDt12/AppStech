@@ -11,12 +11,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Category;
 import com.datn.shopsale.ui.home.HomeFragment;
 import com.datn.shopsale.utils.GetImgIPAddress;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ca
     public void onBindViewHolder(@NonNull categoriesViewHolder holder, int position) {
         Category category = listCate.get(position);
         holder.tvTitle.setText(category.getTitle());
-        Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(category.getImg())).into(holder.img);
+        Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(category.getImg())).into(holder.img);
         if (category.getId().equals("-1")) {
             int paddingImage = 40;
             holder.img.setPadding(paddingImage, paddingImage, paddingImage, paddingImage);

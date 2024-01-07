@@ -10,18 +10,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
 import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.utils.DateUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationAdapterViewHoller>{
    private List<Notification> notificationList;
 
-   private Context context;
+   private final Context context;
 
     public NotificationAdapter(List<Notification> notificationList, Context context) {
         this.notificationList = notificationList;
@@ -49,7 +49,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 String formattedDate = DateUtils.formatDate(notification.getDate());
                 holder.tvMonthNotification.setText(formattedDate);
             }else{
-                Picasso.get().load(GetImgIPAddress.convertLocalhostToIpAddress(notification.getImg())).into(holder.imgNotification);
+                Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(notification.getImg())).into(holder.imgNotification);
                 holder.tvMessageNotification.setText(notification.getContent());
                 holder.tvTitleNotification.setText(notification.getTitle());
                 String formattedDate = DateUtils.formatDate(notification.getDate());
@@ -66,11 +66,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return 0;
     }
 
-    public class NotificationAdapterViewHoller extends RecyclerView.ViewHolder {
-        private ImageView imgNotification;
-        private TextView tvTitleNotification;
-        private TextView tvMessageNotification;
-        private TextView tvMonthNotification;
+    public static class NotificationAdapterViewHoller extends RecyclerView.ViewHolder {
+        private final ImageView imgNotification;
+        private final TextView tvTitleNotification;
+        private final TextView tvMessageNotification;
+        private final TextView tvMonthNotification;
         public NotificationAdapterViewHoller(@NonNull View itemView) {
             super(itemView);
             imgNotification = (ImageView) itemView.findViewById(R.id.img_notification);
