@@ -81,7 +81,11 @@ public class GetOrderAdapter extends RecyclerView.Adapter<GetOrderAdapter.GetOrd
 
     @Override
     public int getItemCount() {
-        return listDetailOrder == null ? 0 : 2;
+        if (listDetailOrder != null && listDetailOrder.getListProduct() != null) {
+            return Math.min(listDetailOrder.getListProduct().size(), 2);
+        } else {
+            return 0;
+        }
     }
 
     public static class GetOrderViewHolder extends RecyclerView.ViewHolder {
