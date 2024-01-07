@@ -49,6 +49,7 @@ import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.responsev2.DeleteAddressResponse;
 import com.datn.shopsale.responsev2.EditAddressResponse;
 import com.datn.shopsale.responsev2.EditCusResponse;
+import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
@@ -364,16 +365,19 @@ public interface ApiService {
 
     @POST("/apiv2/getInfoCus")
     Call<GetCusInfoResponse> getInfoCus(@Header("Authorization") String token);
+
     @FormUrlEncoded
     @POST("/apiv2/getCartByIdCustomer")
     Call<ProductCartResponse> getProductCart(@Header("Authorization") String token,
                                              @Field("customer_id") String customer_id);
+
     @FormUrlEncoded
     @POST("/apiv2/addCart")
     Call<com.datn.shopsale.responsev2.BaseResponse> addProductCart(@Header("Authorization") String token,
                                                                    @Field("customer_id") String customer_id,
                                                                    @Field("product_id") String product_id,
                                                                    @Field("quantity") String quantity);
+
     @FormUrlEncoded
     @POST("/apiv2/updateCart")
     Call<com.datn.shopsale.responsev2.BaseResponse> updateCart(@Header("Authorization") String token,
@@ -387,18 +391,44 @@ public interface ApiService {
 
     @POST("/apiv2/editCus")
     Call<EditCusResponse> editCus(@Header("Authorization") String token, @Body EditCusRequest request);
+
     @POST("/apiv2/getDeliveryAddress")
     Call<GetDeliveryAddressResponse> getDeliveryAddress(@Header("Authorization") String token);
+
     @POST("/apiv2/addDeliveryAddress")
     Call<AddAddressResponse> addDeliveryAddress(@Header("Authorization") String token, @Body AddAddressRequest request);
+
     @POST("/apiv2/editDeliveryAddress")
     Call<EditAddressResponse> editDeliveryAddress(@Header("Authorization") String token, @Body EditAddressRequest request);
+
     @POST("/apiv2/deleteDeliveryAddress")
     Call<DeleteAddressResponse> deleteDeliveryAddress(@Header("Authorization") String token, @Body DeleteAddressRequest request);
+
     @POST("/apiv2/getVoucherByIdV2")
     Call<GetVoucherResponse> getVoucherByIdV2(@Header("Authorization") String token);
+
     @POST("/apiv2/createOrder")
     Call<CreateOrderResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
     @POST("/apiv2/getOrderByStatus")
     Call<GetOrderResponseV2> getOrderByStatus(@Header("Authorization") String token, @Body GetOrderByStatusRequest request);
+
+    @FormUrlEncoded
+    @POST("/apiv2/addFeedback")
+    Call<FeedBackResponse> addFeedback(@Header("Authorization") String token,
+                                       @Field("customer_id") String customer_id,
+                                       @Field("product_id") String product_id,
+                                       @Field("rating") String rating,
+                                       @Field("comment") String comment);
+
+    @FormUrlEncoded
+    @POST("/apiv2/getFeedBackByProductId")
+    Call<FeedBackResponse> getFeedBack(@Header("Authorization") String token,
+                                       @Field("product_id") String product_id
+    );
+    @FormUrlEncoded
+    @POST("/apiv2/getAllFeedBackByProductId")
+    Call<FeedBackResponse> getAllFeedBack(@Header("Authorization") String token,
+                                       @Field("product_id") String product_id
+    );
 }

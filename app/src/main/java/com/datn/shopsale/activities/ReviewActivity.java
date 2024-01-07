@@ -17,8 +17,9 @@ import android.widget.Toast;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ReviewAdapter;
-import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResponeFeedBack;
+import com.datn.shopsale.modelsv2.FeedBack;
+import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -32,6 +33,7 @@ import retrofit2.Response;
 public class ReviewActivity extends AppCompatActivity {
     private Toolbar toolbarReview;
     private TextView TBC;
+    private float sumTBC;
     private RatingBar ratingBar;
     private TextView tvReview;
     private LinearLayout lnlAllFeedBack;
@@ -48,7 +50,7 @@ public class ReviewActivity extends AppCompatActivity {
     private RecyclerView recyReview;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
-    private List<FeedBack> listFb;
+    private List<com.datn.shopsale.modelsv2.FeedBack> listFb;
     private ReviewAdapter adapter;
     private String id;
     private double cout1 = 0;
@@ -75,48 +77,58 @@ public class ReviewActivity extends AppCompatActivity {
 
     private void getCmt() {
         listFb = new ArrayList<>();
-        Call<ResponeFeedBack> call = apiService.getAllFeedBackByProductId(preferenceManager.getString("token"), id);
-        call.enqueue(new Callback<ResponeFeedBack>() {
+        Call<FeedBackResponse> call = apiService.getAllFeedBack(preferenceManager.getString("token"), id);
+        call.enqueue(new Callback<FeedBackResponse>() {
             @Override
-            public void onResponse(Call<ResponeFeedBack> call, Response<ResponeFeedBack> response) {
+            public void onResponse(Call<FeedBackResponse> call, Response<FeedBackResponse> response) {
                 if (response.body().getCode() == 1) {
                     for (FeedBack objFeedBack : response.body().getListFeedBack()) {
+//
                         FeedBack feedBack = new FeedBack(
-                                objFeedBack.getUserId(),
-                                objFeedBack.getProductId(),
-                                objFeedBack.getRating(),
+                                objFeedBack.getCustomer_id(),
+                                objFeedBack.getProduct_id(), objFeedBack.getRating(),
                                 objFeedBack.getComment(),
-                                objFeedBack.getNameUser(),
-                                objFeedBack.getAvtUser(),
-                                objFeedBack.getDate()
-
+                                objFeedBack.getCreate_time()
                         );
+
                         listFb.add(feedBack);
                     }
                     runOnUiThread(() -> {
+                        float tong = 0;
+                        for (FeedBack objFeedBack : listFb) {
+                            tong += Float.parseFloat(objFeedBack.getRating());
+                        }
+                        if (listFb.size() == 0) {
+                            sumTBC = 0;
+                        } else {
+                            sumTBC = tong / listFb.size();
+                        }
                         adapter = new ReviewAdapter(listFb, getApplicationContext());
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
                         recyReview.setLayoutManager(linearLayoutManager);
                         recyReview.setAdapter(adapter);
                         tvReview.setText(listFb.size() + " Reviews");
                         for (int i = 0; i < listFb.size(); i++) {
-                            if (listFb.get(i).getRating() == 1) {
+
+                            if (listFb.get(i).getRating().equals("1.0")) {
                                 cout1++;
                             }
-                            if (listFb.get(i).getRating() == 2) {
+                            if (listFb.get(i).getRating().equals("2.0")) {
                                 cout2++;
                             }
-                            if (listFb.get(i).getRating() == 3) {
+                            if (listFb.get(i).getRating().equals("3.0")) {
                                 cout3++;
                             }
-                            if (listFb.get(i).getRating() == 4) {
+                            if (listFb.get(i).getRating().equals("4.0")) {
                                 cout4++;
                             }
-                            if (listFb.get(i).getRating() == 5) {
+                            if (listFb.get(i).getRating().equals("5.0")) {
                                 cout5++;
                             }
                         }
-//                        progress_1 = Math.round((cout1/listFb.size())*100);
+                        String formattedText = String.format("%.1f", sumTBC);
+                        TBC.setText(formattedText+"/5");
+
                         tv1.setText(Math.round(cout1) + "");
                         tv2.setText(Math.round(cout2) + "");
                         tv3.setText(Math.round(cout3) + "");
@@ -135,7 +147,7 @@ public class ReviewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponeFeedBack> call, Throwable t) {
+            public void onFailure(Call<FeedBackResponse> call, Throwable t) {
 
             }
         });
