@@ -1,7 +1,6 @@
 package com.datn.shopsale.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,8 +16,10 @@ import com.datn.shopsale.databinding.ActivityShowDetailOrderBinding;
 import com.datn.shopsale.modelsv2.ListDetailOrder;
 import com.datn.shopsale.modelsv2.Order;
 import com.datn.shopsale.modelsv2.Product;
-import com.datn.shopsale.response.GetOrderResponse;
+import com.datn.shopsale.request.CancelOrderRequest;
+import com.datn.shopsale.responsev2.CancelOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -33,7 +34,7 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private ActivityShowDetailOrderBinding binding;
-
+    private ListDetailOrder listOrderDetail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +49,13 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 //        assert bundle != null;
         if (bundle != null) {
-            ListDetailOrder listOrderDetail = (ListDetailOrder) bundle.getSerializable("detail_order");
+            listOrderDetail = (ListDetailOrder) bundle.getSerializable("detail_order");
             if (listOrderDetail != null) {
                 getOrder(listOrderDetail);
             }
         }
         binding.btnCancelOrder.setOnClickListener(view -> {
-//            editOrder();
+            editOrder();
         });
     }
 
@@ -64,27 +65,31 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
         builder.setMessage("Bạn có thực sự muốn hủy đơn hàng?");
         builder.setPositiveButton("Ok", (dialogInterface, i) -> {
             String token = preferenceManager.getString("token");
-            String orderId = getIntent().getStringExtra("orderId");
-            String userId = binding.tvValueUserId.getText().toString().trim();
-            String addressId = binding.tvValueAdressId.getText().toString().trim();
-            Call<GetOrderResponse.Root> call = apiService.editOrderStatus(token, orderId, userId, addressId, "Cancel");
-            call.enqueue(new Callback<GetOrderResponse.Root>() {
+            String orderId = listOrderDetail.getOrder().get_id();
+            CancelOrderRequest request = new CancelOrderRequest();
+            request.setOrderId(orderId);
+            Call<CancelOrderResponse> call = apiService.cancelOrder(token, request);
+            call.enqueue(new Callback<CancelOrderResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<GetOrderResponse.Root> call, @NonNull Response<GetOrderResponse.Root> response) {
+                public void onResponse(@NonNull Call<CancelOrderResponse> call, @NonNull Response<CancelOrderResponse> response) {
                     if (response.body() != null) {
-                        if (response.body().code == 1) {
-                            Log.d("jjjjjjjjj", "onResponse: " + response.body().message);
-                            dialogInterface.cancel();
-//                        getOrder(orderId);
+                        if (response.body().getCode() == 1) {
+                            runOnUiThread(() -> {
+                                dialogInterface.cancel();
+                                AlertDialogUtil.showAlertDialogWithOk(ShowDetailOrderActivity.this,response.body().getMessage());
+                                finish();
+                            });
                         } else {
-                            Log.d("jjjjjjjjj", "onResponse: " + response.body().message);
-                            dialogInterface.cancel();
+                            runOnUiThread(() -> {
+                                AlertDialogUtil.showAlertDialogWithOk(ShowDetailOrderActivity.this,response.body().getMessage());
+                                dialogInterface.cancel();
+                            });
                         }
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<GetOrderResponse.Root> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<CancelOrderResponse> call, @NonNull Throwable t) {
                     Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                     dialogInterface.cancel();
                 }

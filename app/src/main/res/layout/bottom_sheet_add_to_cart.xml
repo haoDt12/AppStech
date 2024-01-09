@@ -3,23 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:padding="7dp"
+    android:background="@drawable/bg_bottom_dialog"
     app:layout_behavior="com.google.android.material.bottomshet.BottomSheetBehavior"
     >
 
+    <TextView
+        android:id="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="7dp"
+        android:gravity="center"
+        android:text="Thêm vào giỏ hàng"
+        android:textColor="@color/red"
+        android:textSize="20dp"
+        android:textStyle="bold" />
     <ImageView
-        android:layout_margin="7dp"
+        android:layout_below="@id/title"
         android:id="@+id/img_product"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/chat"
         android:layout_alignParentLeft="true"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="7dp"
+ />
+    <TextView
+        android:layout_margin="7dp"
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tên Sản Phẩm"
+        android:textSize="20dp"
+        android:textColor="@color/red"
+        android:layout_below="@id/img_product"
+        android:textStyle="bold"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="10dp"
         />
     <TextView
         android:id="@+id/tv_price"
+        android:layout_marginTop="7dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100.000 VND"
+        android:layout_below="@id/title"
         android:textSize="20dp"
         android:textColor="@color/red"
         android:textStyle="bold"
@@ -43,7 +74,7 @@
         android:layout_height="wrap_content"
         app:dividerColor="#ccc"
         android:id="@+id/divider"
-        android:layout_below="@+id/img_product"
+        android:layout_below="@+id/tv_name"
 
         />
     <TextView

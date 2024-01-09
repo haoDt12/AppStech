@@ -283,4 +283,10 @@ public class HomeFragment extends Fragment {
         binding = null;
         timer.cancel();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        displayProduct();
+    }
 }

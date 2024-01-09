@@ -1,12 +1,11 @@
 package com.datn.shopsale.modelsv2;
 
-import java.util.List;
-
 public class ProductCart {
+    private String _id;
     private String customer_id;
     private Product product_id;
     private int quantity;
-    private int status;
+    private int status = 1;
     private String create_time;
 
     public ProductCart(String customer_id, Product productCart, int quantity,int status, String create_time) {
@@ -18,6 +17,22 @@ public class ProductCart {
     }
 
     public ProductCart() {
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public Product getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(Product product_id) {
+        this.product_id = product_id;
     }
 
     public int getStatus() {

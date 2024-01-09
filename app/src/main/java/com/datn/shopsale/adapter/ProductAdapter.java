@@ -18,15 +18,14 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.activities.DetailProductActivity;
 import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.utils.CurrencyUtils;
-import com.datn.shopsale.utils.GetImgIPAddress;
 
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
-    private List<Product> dataList;
-    private Context context;
-    private int itemLayout;
+    private final List<Product> dataList;
+    private final Context context;
+    private final int itemLayout;
 
     public ProductAdapter(List<Product> dataList, Context context, int itemLayout) {
         this.dataList = dataList;
@@ -46,31 +45,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = dataList.get(position);
 
-        if (product == null) {
-            return;
+        if (product != null) {
+            Glide.with(context).load(product.getImg_cover()).into(holder.imgProduct);
+            holder.tvName.setText(product.getName());
+            String price = product.getPrice();
+            String formattedAmount = CurrencyUtils.formatCurrency(price);
+            holder.tvPrice.setText(formattedAmount);
+            holder.tvStatus.setText(product.getStatus());
+            holder.tvSold.setText("Đã bán: " + product.getSold());
+            holder.rltProduct.setOnClickListener(v -> {
+                Intent intent = new Intent(context, DetailProductActivity.class);
+                intent.putExtra("img_cover", product.getImg_cover());
+                intent.putExtra("price", product.getPrice());
+                intent.putExtra("id", product.get_id());
+                intent.putExtra("quantity", product.getQuantity());
+                context.startActivity(intent);
+            });
+
         }
-        Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(product.getImg_cover())).into(holder.imgProduct);
-        holder.tvName.setText(product.getName());
-        String price = product.getPrice();
-        String formattedAmount = CurrencyUtils.formatCurrency(price);
-        holder.tvPrice.setText(formattedAmount);
-        holder.tvStatus.setText(product.getStatus());
-        holder.tvSold.setText("Đã bán: " + product.getSold());
-        holder.rltProduct.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DetailProductActivity.class);
-            intent.putExtra("img_cover", product.getImg_cover());
-//            intent.putExtra("video", product.getVideo());
-//            intent.putExtra("title", product.getTitle());
-            intent.putExtra("price", product.getPrice());
-            intent.putExtra("id", product.get_id());
-//            intent.putExtra("imgCover", product.getImg_cover());
-            intent.putExtra("quantity", product.getQuantity());
-//            intent.putExtra("option", product.getOption());
-//            intent.putExtra("product", product);
-            context.startActivity(intent);
-        });
-
-
     }
 
     @Override
@@ -79,11 +71,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvName, tvStatus, tvSold;
-        private TextView tvPrice;
-        private ImageView imgProduct;
-        private RelativeLayout rltProduct;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvName, tvStatus, tvSold;
+        private final TextView tvPrice;
+        private final ImageView imgProduct;
+        private final RelativeLayout rltProduct;
 
 
         public ViewHolder(@NonNull View itemView) {

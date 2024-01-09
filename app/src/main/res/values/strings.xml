@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ShopSale</string>
     //VIE Language
     <string name="home">Trang chủ</string>
@@ -179,5 +179,5 @@
     <string name="huy_don_hang">Hủy đơn hàng</string>
     <string name="danh_gia">Đánh giá</string>
     <string name="xem_them">--Xem thêm--</string>
-
+    <string name="mua_ngay">Mua ngay</string>
 </resources>

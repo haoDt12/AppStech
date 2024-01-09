@@ -3,6 +3,7 @@ package com.datn.shopsale.modelsv2;
 import java.io.Serializable;
 
 public class Product implements Serializable {
+    private String productCartId;
     private String _id;
     private String category_id;
     private String name;
@@ -17,6 +18,14 @@ public class Product implements Serializable {
     private String color_code;
     private String img_cover;
     private String price;
+
+    public String getProductCartId() {
+        return productCartId;
+    }
+
+    public void setProductCartId(String productCartId) {
+        this.productCartId = productCartId;
+    }
 
     public String getPrice() {
         return price;

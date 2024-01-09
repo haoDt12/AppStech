@@ -9,6 +9,7 @@ import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.AddressRequest;
+import com.datn.shopsale.request.CancelOrderRequest;
 import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
@@ -43,6 +44,7 @@ import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddAddressResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
+import com.datn.shopsale.responsev2.CancelOrderResponse;
 import com.datn.shopsale.responsev2.CreateOrderResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
@@ -408,7 +410,9 @@ public interface ApiService {
     Call<GetVoucherResponse> getVoucherByIdV2(@Header("Authorization") String token);
 
     @POST("/apiv2/createOrder")
-    Call<CreateOrderResponse> createOrder(@Header("Authorization") String token, @Body CreateOrderRequest request);
+    Call<CreateOrderResponse> createOrderV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
+    @POST("/apiv2/cancelOrder")
+    Call<CancelOrderResponse> cancelOrder(@Header("Authorization") String token, @Body CancelOrderRequest request);
 
     @POST("/apiv2/getOrderByStatus")
     Call<GetOrderResponseV2> getOrderByStatus(@Header("Authorization") String token, @Body GetOrderByStatusRequest request);

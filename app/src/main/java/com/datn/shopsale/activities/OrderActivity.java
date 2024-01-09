@@ -25,14 +25,18 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.OrderAdapter;
 import com.datn.shopsale.apizalopay.CreateOrder;
-import com.datn.shopsale.models.Address;
 import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.models.ListOder;
 import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.modelsv2.DataListOrder;
+import com.datn.shopsale.modelsv2.ListOrder;
+import com.datn.shopsale.modelsv2.MapVoucherCus;
+import com.datn.shopsale.modelsv2.Product;
+import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.OderRequest;
-import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.GetPriceZaloPayResponse;
-import com.datn.shopsale.response.ResponseAddress;
+import com.datn.shopsale.responsev2.CreateOrderResponse;
+import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -45,6 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,30 +67,25 @@ public class OrderActivity extends AppCompatActivity {
     private ListOder listOder;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
-    private Toolbar toolbarOder;
-    private TextView tvQuantity;
     private TextView tvTotal;
-    private TextView tvShipPrice;
     private TextView tvSumMoney;
     private TextView tvGiamGia;
     private Button btnOder;
-    private ArrayList<Address> dataList = new ArrayList<>();
-    private int sumMoney = 0,sumPriceProduct = 0;
+    private int sumMoney = 0;
     private String address;
     private Button btnMoney;
     private Button btnEBanking;
     private Button btnZaloPay;
     private static final int REQUEST_CODE = 111;
-    private LinearLayout lnlAddressOrder;
-    private LinearLayout lnlVoucher;
 
-    private RecyclerView recyclerView;
     private TextView tvName, tvPhone, tvCity, tvStreet;
     private static final int REQUEST_SELECT_ADDRESS = 1;
     private static final int REQUEST_SELECT_VOUCHER = 2;
     private TextView tvPriceVoucher;
     private TextView tvVoucher;
-    private GetListVoucher.ListVoucher voucher;
+    private MapVoucherCus voucher;
+    private List<Product> listOrderProduct;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,57 +98,49 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        toolbarOder = (Toolbar) findViewById(R.id.toolbar_oder);
-        lnlAddressOrder = (LinearLayout) findViewById(R.id.lnl_order_address);
-        recyclerView = findViewById(R.id.rcv_order);
-        tvName = (TextView) findViewById(R.id.tv_name);
-        tvGiamGia = (TextView) findViewById(R.id.tv_giam_gia);
-        tvPhone = (TextView) findViewById(R.id.tv_phone);
-        tvCity = (TextView) findViewById(R.id.tv_city);
-        tvStreet = (TextView) findViewById(R.id.tv_street);
-        tvQuantity = (TextView) findViewById(R.id.tv_quantity);
-        tvTotal = (TextView) findViewById(R.id.tv_total);
-        tvShipPrice = (TextView) findViewById(R.id.tv_ship_price);
-        tvSumMoney = (TextView) findViewById(R.id.tv_sum_money);
-        btnOder = (Button) findViewById(R.id.btn_oder);
-        btnMoney = (Button) findViewById(R.id.btn_money);
-        btnEBanking = (Button) findViewById(R.id.btn_e_banking);
-        btnZaloPay = (Button) findViewById(R.id.btn_zalo_pay);
-        lnlVoucher = (LinearLayout) findViewById(R.id.lnl_voucher);
-        tvPriceVoucher = (TextView) findViewById(R.id.tv_price_voucher);
-        tvVoucher = (TextView) findViewById(R.id.tv_voucher);
+        Toolbar toolbarOder = findViewById(R.id.toolbar_oder);
+        LinearLayout lnlAddressOrder = findViewById(R.id.lnl_order_address);
+        btnMoney = findViewById(R.id.btn_money);
+        btnEBanking = findViewById(R.id.btn_e_banking);
+        tvName = findViewById(R.id.tv_name);
+        tvGiamGia = findViewById(R.id.tv_giam_gia);
+        tvPhone = findViewById(R.id.tv_phone);
+        tvCity = findViewById(R.id.tv_city);
+        tvStreet = findViewById(R.id.tv_street);
+        TextView tvQuantity = findViewById(R.id.tv_quantity);
+        tvTotal = findViewById(R.id.tv_total);
+        TextView tvShipPrice = findViewById(R.id.tv_ship_price);
+        tvSumMoney = findViewById(R.id.tv_sum_money);
+        btnOder = findViewById(R.id.btn_oder);
+        btnZaloPay = findViewById(R.id.btn_zalo_pay);
+        LinearLayout lnlVoucher = findViewById(R.id.lnl_voucher);
+        tvPriceVoucher = findViewById(R.id.tv_price_voucher);
+        tvVoucher = findViewById(R.id.tv_voucher);
         tvGiamGia.setText(getString(R.string.b_n_c_mu_n_ch_n_voucher));
         RecyclerView recyclerView = findViewById(R.id.rcv_order);
         setSupportActionBar(toolbarOder);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarOder.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbarOder.setNavigationOnClickListener(v -> onBackPressed());
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
         Intent intent = getIntent();
-        if (intent.hasExtra("listOder")) {
-            listOder = (ListOder) intent.getSerializableExtra("listOder");
-        }
-        assert listOder != null;
-        tvQuantity.setText(String.valueOf(listOder.getList().size()));
+        Bundle bundle = intent.getExtras();
+        assert bundle != null;
+        DataListOrder dataListOrder = (DataListOrder) bundle.getSerializable("listOrder");
+        assert dataListOrder != null;
+        listOrderProduct = dataListOrder.getList();
+        tvQuantity.setText(String.valueOf(listOrderProduct.size()));
         tvShipPrice.setText(getResources().getText(R.string.vnd_0));
         tvVoucher.setText(getResources().getText(R.string.vnd_0));
-        for (Cart item : listOder.getList()) {
-            for (Cart.Option option: item.getOption()) {
-                if(option.getFeesArise() != null){
-                    sumPriceProduct += Integer.parseInt(option.getFeesArise());
-                }
-            }
-            sumMoney = sumMoney + (item.getPrice() + sumPriceProduct) * item.getQuantity();
-            sumPriceProduct = 0;
+        for (Product item : listOrderProduct) {
+            sumMoney = sumMoney + Integer.parseInt(item.getPrice()) * Integer.parseInt(item.getQuantity());
         }
         tvTotal.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
         tvSumMoney.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
-        OrderAdapter adapter = new OrderAdapter(listOder,this);
+        OrderAdapter adapter = new OrderAdapter(listOrderProduct, this);
         recyclerView.setAdapter(adapter);
         onSelectPayAction(btnMoney);
         onMoney();
@@ -168,32 +160,38 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void getDataAddress() {
-        String idUser = preferenceManager.getString("userId");
-
-        Call<ResponseAddress.Root> call = apiService.getAddress(preferenceManager.getString("token"), idUser);
-        call.enqueue(new Callback<ResponseAddress.Root>() {
+        LoadingDialog.showProgressDialog(OrderActivity.this, "Loading...");
+        Call<GetDeliveryAddressResponse> call = apiService.getDeliveryAddress(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetDeliveryAddressResponse>() {
             @Override
-            public void onResponse(@NonNull Call<ResponseAddress.Root> call, @NonNull Response<ResponseAddress.Root> response) {
-                assert response.body() != null;
-                if (response.body().getCode() == 1) {
-                    runOnUiThread(() -> {
-                        for (ResponseAddress.Address item : response.body().getUser().getAddress()) {
-                            dataList.add(new Address(item.get_id(), item.getUserId(), item.getName(), item.getCity(), item.getStreet(), item.getPhone_number()));
-                        }
-                    });
+            public void onResponse(@NonNull Call<GetDeliveryAddressResponse> call, @NonNull Response<GetDeliveryAddressResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(new TimerTask() {
+                            @Override
+                            public void run() {
+                                address = response.body().getAddress().get(0).get_id();
+                                tvName.setVisibility(View.VISIBLE);
+                                tvPhone.setVisibility(View.VISIBLE);
+                                tvCity.setVisibility(View.VISIBLE);
+                                tvStreet.setVisibility(View.VISIBLE);
 
-                } else {
-                    runOnUiThread(() -> {
+                                tvName.setText(response.body().getAddress().get(0).getName());
+                                tvPhone.setText(response.body().getAddress().get(0).getPhone());
+                                tvCity.setText(response.body().getAddress().get(0).getCity());
+                                tvStreet.setText(response.body().getAddress().get(0).getStreet());
+                            }
+                        });
+                    } else {
                         Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    }
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResponseAddress.Root> call, @NonNull Throwable t) {
-                runOnUiThread(() -> {
-                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+            public void onFailure(@NonNull Call<GetDeliveryAddressResponse> call, @NonNull Throwable t) {
+                Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -236,34 +234,29 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void oderMoney() {
-        List<OderRequest.Product> listProduct = new ArrayList<>();
-        for (Cart item : listOder.getList()) {
-            ArrayList<OderRequest.Option> optionList = new ArrayList<>();
-            for (Cart.Option option : item.getOption()) {
-                if(option.getFeesArise() != null){
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
-                }else {
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), "0"));
-                }
-            }
-            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
-        }
-        OderRequest.Root request = new OderRequest.Root();
-        request.setProduct(listProduct);
-        request.setUserId(preferenceManager.getString("userId"));
-        request.setAddress(address);
-        if(voucher != null){
-            request.setVoucherId(voucher.get_id());
-        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
-        Call<ResApi> call = apiService.createOrder(preferenceManager.getString("token"), request);
-        call.enqueue(new Callback<ResApi>() {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        List<ListOrder> listOrders = new ArrayList<>();
+        for (Product item : listOrderProduct){
+            ListOrder order = new ListOrder();
+            order.setQuantity(item.getQuantity());
+            order.setProduct_id(item.get_id());
+            order.setProductCartId(item.getProductCartId());
+            listOrders.add(order);
+        }
+        createOrderRequest.setList_order(listOrders);
+        if(voucher != null){
+            createOrderRequest.setMap_voucher_cus_id(voucher.get_id());
+        }
+        createOrderRequest.setDelivery_address_id(address);
+        Call<CreateOrderResponse> call = apiService.createOrderV2(preferenceManager.getString("token"), createOrderRequest);
+        call.enqueue(new Callback<CreateOrderResponse>() {
             @Override
-            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+            public void onResponse(@NonNull Call<CreateOrderResponse> call, @NonNull Response<CreateOrderResponse> response) {
                 assert response.body() != null;
-                if (response.body().code == 1) {
+                if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
                         setResult(Activity.RESULT_OK);
                         finish();
@@ -271,14 +264,14 @@ public class OrderActivity extends AppCompatActivity {
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
                     });
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<CreateOrderResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     LoadingDialog.dismissProgressDialog();
@@ -290,12 +283,10 @@ public class OrderActivity extends AppCompatActivity {
     private void orderEBanking() {
         if (address == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Noification");
+            builder.setTitle("Notification");
             builder.setMessage("Vui lòng chọn địa chỉ");
 
-            builder.setPositiveButton("OK", (dialog, which) -> {
-                dialog.dismiss();
-            });
+            builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         } else {
@@ -311,14 +302,14 @@ public class OrderActivity extends AppCompatActivity {
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
+                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
         OderRequest.Root request = new OderRequest.Root();
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
-        if(voucher != null){
+        if (voucher != null) {
             request.setVoucherId(voucher.get_id());
         }
         request.setAddress(address);
@@ -405,11 +396,10 @@ public class OrderActivity extends AppCompatActivity {
         if (requestCode == REQUEST_SELECT_VOUCHER) {
             if (resultCode == RESULT_OK) {
                 assert data != null;
-                voucher = (GetListVoucher.ListVoucher) data.getSerializableExtra("voucher");
-                String price = data.getStringExtra("price");
+                voucher = (MapVoucherCus) data.getSerializableExtra("voucher");
                 assert voucher != null;
-                tvGiamGia.setText(voucher.getContent());
-                tvPriceVoucher.setText(price);
+                tvGiamGia.setText(voucher.getVocher_id().getContent());
+                tvPriceVoucher.setText(voucher.getVocher_id().getPrice());
             }
         }
     }
@@ -429,10 +419,11 @@ public class OrderActivity extends AppCompatActivity {
                     public void onPaymentSucceeded(final String transactionId, final String transToken, final String appTransID) {
                         runOnUiThread(() -> {
                             LoadingDialog.dismissProgressDialog();
-                            callApiOrderZaloPay(transactionId,transToken);
+                            callApiOrderZaloPay();
                         });
 
                     }
+
                     @Override
                     public void onPaymentCanceled(String zpTransToken, String appTransID) {
                         runOnUiThread(() -> {
@@ -459,25 +450,26 @@ public class OrderActivity extends AppCompatActivity {
                         });
                     }
                 });
-            }else {
+            } else {
                 LoadingDialog.dismissProgressDialog();
                 Log.d("zzzz", "createOrderZaloPay:");
-                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
+                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             }
 
         } catch (Exception e) {
             LoadingDialog.dismissProgressDialog();
             Log.d("zzzz", "createOrderZaloPay: " + e);
-            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this,"Error Payment ZaloPay");
+            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             e.printStackTrace();
         }
     }
-    private void callApiOrderZaloPay(String transactionId, String transToken){
+
+    private void callApiOrderZaloPay() {
         List<OderRequest.Product> listProduct = new ArrayList<>();
         ArrayList<OderRequest.Option> optionList = new ArrayList<>();
         for (Cart item : listOder.getList()) {
             for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(),option.getQuantity(), option.getFeesArise()));
+                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
             }
             listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
         }
@@ -485,7 +477,7 @@ public class OrderActivity extends AppCompatActivity {
         request.setProduct(listProduct);
         request.setUserId(preferenceManager.getString("userId"));
         request.setAddress(address);
-        if(voucher != null){
+        if (voucher != null) {
             request.setVoucherId(voucher.get_id());
         }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
@@ -530,14 +522,15 @@ public class OrderActivity extends AppCompatActivity {
         super.onResume();
         sumMoney = 0;
 
-        for (Cart item : listOder.getList()) {
-            sumMoney = sumMoney + item.getPrice() * item.getQuantity();
+        for (Product item : listOrderProduct) {
+            sumMoney = sumMoney + Integer.parseInt(item.getPrice()) * Integer.parseInt(item.getQuantity());
         }
         String price = tvPriceVoucher.getText().toString();
         tvVoucher.setText(CurrencyUtils.formatCurrency(price));
         tvTotal.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney)));
         tvSumMoney.setText(CurrencyUtils.formatCurrency(String.valueOf(sumMoney - Integer.parseInt(price))));
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);

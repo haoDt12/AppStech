@@ -32,7 +32,7 @@ import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.ReviewAdapter;
 import com.datn.shopsale.models.Product;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.ResponeFeedBack;
+import com.datn.shopsale.modelsv2.DataListOrder;
 import com.datn.shopsale.modelsv2.FeedBack;
 import com.datn.shopsale.modelsv2.Img;
 import com.datn.shopsale.responsev2.BaseResponse;
@@ -49,6 +49,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,14 +57,8 @@ import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = DetailProductActivity.class.getSimpleName();
-    private static final int OPEN_ORDER = 1812;
-    private LinearLayout lnlAllFeedBack;
-    private Button btnAddToCart;
-    private ImageView imgProduct;
-    private Toolbar toolbarDetailPro;
     private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
-    private LinearLayout lnlSearch;
     private ContentAdapter contentAdapter;
 
     private ViewPager2 viewPager2;
@@ -79,7 +74,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private List<com.datn.shopsale.modelsv2.FeedBack> listFb;
     private TextView tvTBC;
     private TextView tvReview;
-    private ImageButton btnChat;
     private RatingBar ratingBar;
     private float TBC;
     private float rating;
@@ -88,7 +82,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private String img_cover;
     private String quantity;
     private String price;
-    int quantityselect = 1;
+    private int quantityselect = 1;
+    private com.datn.shopsale.modelsv2.Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,16 +106,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (FeedBack objFeedBack : response.body().getListFeedBack()) {
-//                        com.datn.shopsale.modelsv2.FeedBack feedBack = new FeedBack(
-//                                objFeedBack.getUserId(),
-//                                objFeedBack.getProductId(),
-//                                objFeedBack.getRating(),
-//                                objFeedBack.getComment(),
-//                                objFeedBack.getNameUser(),
-//                                objFeedBack.getAvtUser(),
-//                                objFeedBack.getDate()
-//
-//                        );
                         FeedBack feedBack = new FeedBack(
                                 objFeedBack.getCustomer_id(),
                                 objFeedBack.getProduct_id(), objFeedBack.getRating(),
@@ -142,7 +127,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         }
                         rating = tong / listFb.size();
                         String formattedText = String.format("%.1f", TBC);
-                        tvTBC.setText(formattedText+"/5");
+                        tvTBC.setText(String.format("%s/5", formattedText));
                         tvReview.setText(String.format("%d Review", listFb.size()));
                         ratingBar.setRating(rating);
                         adapterRV = new ReviewAdapter(listFb, getApplicationContext());
@@ -152,7 +137,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
                     });
                 } else {
-                    Toast.makeText(DetailProductActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailProductActivity.this, String.format("%s", response.body().getMessage()), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -195,7 +180,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         }
                         contentAdapter = new ContentAdapter(contentItems, DetailProductActivity.this);
                         runOnUiThread(() -> {
-                            com.datn.shopsale.modelsv2.Product product = response.body().getData().get(0).getProduct();
+                            product = response.body().getData().get(0).getProduct();
                             LoadingDialog.dismissProgressDialog();
                             viewPager2.setAdapter(contentAdapter);
                             tvNameProduct.setText(product.getName());
@@ -250,32 +235,28 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void init() {
-        tvTBC = (TextView) findViewById(R.id.tv_TBC);
+        tvTBC = findViewById(R.id.tv_TBC);
         layoutActionBuy = findViewById(R.id.lnl_action_buy);
         btnOutStock = findViewById(R.id.btn_out_stock);
-        tvReview = (TextView) findViewById(R.id.tv_review);
-        btnChat = findViewById(R.id.btn_chat);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        tvReview = findViewById(R.id.tv_review);
+        ratingBar = findViewById(R.id.ratingBar);
         recy_cmt = findViewById(R.id.recy_cmt);
-        lnlSearch = (LinearLayout) findViewById(R.id.lnl_search);
-        imgProduct = (ImageView) findViewById(R.id.img_product);
-        tvNameProduct = (TextView) findViewById(R.id.tv_nameProduct);
-        tvPriceProduct = (TextView) findViewById(R.id.tv_priceProduct);
-        toolbarDetailPro = (Toolbar) findViewById(R.id.toolbar_detail_pro);
-        lnlAllFeedBack = (LinearLayout) findViewById(R.id.lnl_all_feed_back);
-        btnAddToCart = (Button) findViewById(R.id.btn_add_to_cart);
+        LinearLayout lnlSearch = findViewById(R.id.lnl_search);
+        tvNameProduct = findViewById(R.id.tv_nameProduct);
+        tvPriceProduct = findViewById(R.id.tv_priceProduct);
+        Toolbar toolbarDetailPro = findViewById(R.id.toolbar_detail_pro);
+        LinearLayout lnlAllFeedBack = findViewById(R.id.lnl_all_feed_back);
+        Button btnAddToCart = findViewById(R.id.btn_add_to_cart);
         viewPager2 = findViewById(R.id.vpg_product);
-        tvColor = (TextView) findViewById(R.id.tv_color);
-        tvRam = (TextView) findViewById(R.id.tv_dungLuong);
-        tvRom = (TextView) findViewById(R.id.tv_rom);
-        btnBuyNow = (Button) findViewById(R.id.btn_buy_now);
+        tvColor = findViewById(R.id.tv_color);
+        tvRam = findViewById(R.id.tv_dungLuong);
+        tvRom = findViewById(R.id.tv_rom);
+        btnBuyNow = findViewById(R.id.btn_buy_now);
         setSupportActionBar(toolbarDetailPro);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarDetailPro.setNavigationOnClickListener(v -> onBackPressed());
-        lnlSearch.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-        });
+        lnlSearch.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SearchActivity.class)));
         LayerDrawable starsDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
         starsDrawable.getDrawable(2).setColorFilter(getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_ATOP);
         starsDrawable.getDrawable(0).setColorFilter(getResources().getColor(R.color.blur_gray), PorterDuff.Mode.SRC_ATOP);
@@ -285,12 +266,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         img_cover = getIntent().getStringExtra("img_cover");
         price = getIntent().getStringExtra("price");
         quantity = getIntent().getStringExtra("quantity");
-//        getDataProduct(token, id);
         displayProduct();
 
         lnlAllFeedBack.setOnClickListener(this);
         btnAddToCart.setOnClickListener(this);
-        btnChat.setOnClickListener(this);
     }
 
     private void doCreateConversation() {
@@ -348,9 +327,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 //        Toast.makeText(this, "on Destroy", Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("DefaultLocale")
     private void AddToCart() {
         quantityselect = 1;
-        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(view);
         bottomSheetDialog.show();
@@ -358,6 +338,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         ImageView imgProduct;
         TextView tvPrice;
         TextView tv_kho;
+        TextView tv_name;
         ImageButton imgDecrease;
         ImageButton imgIncrease;
         Button btnHuy;
@@ -367,34 +348,34 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         imgProduct = view.findViewById(R.id.img_product);
         tvPrice = view.findViewById(R.id.tv_price);
         tv_kho = view.findViewById(R.id.tv_kho);
+        tv_name = view.findViewById(R.id.tv_name);
         imgDecrease = view.findViewById(R.id.img_decrease);
         imgIncrease = view.findViewById(R.id.img_increase);
         btnHuy = view.findViewById(R.id.btn_huy);
         btnThem = view.findViewById(R.id.btn_them);
         Glide.with(this).load(img_cover).into(imgProduct);
-        tv_kho.setText("Kho: " + quantity);
+        tv_kho.setText(String.format("Kho: %s", quantity));
+        tv_name.setText(product.getName());
         tvPrice.setText(CurrencyUtils.formatCurrency(price));
 
-        ed_quantity.setText(quantityselect + "");
+        ed_quantity.setText(String.valueOf(quantityselect));
         if (quantityselect == 1) {
             imgDecrease.setEnabled(false);
         }
         if (quantityselect == Integer.parseInt(quantity)) {
             imgIncrease.setEnabled(false);
         }
-        btnHuy.setOnClickListener(view1 -> {
-            bottomSheetDialog.dismiss();
-        });
+        btnHuy.setOnClickListener(view1 -> bottomSheetDialog.dismiss());
         imgIncrease.setOnClickListener(view1 -> {
             quantityselect = quantityselect + 1;
-            ed_quantity.setText(quantityselect + "");
+            ed_quantity.setText(String.valueOf(quantityselect));
             if (quantityselect > 1) {
                 imgDecrease.setEnabled(true);
             }
         });
         imgDecrease.setOnClickListener(view1 -> {
             quantityselect = quantityselect - 1;
-            ed_quantity.setText(quantityselect + "");
+            ed_quantity.setText(String.valueOf(quantityselect));
             if (quantityselect == 1) {
                 imgDecrease.setEnabled(false);
             }
@@ -411,9 +392,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                     preferenceManager.getString("userId"), id, quantity);
             call.enqueue(new Callback<BaseResponse>() {
                 @Override
-                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                    assert response.body() != null;
                     if (response.body().getCode() == 1) {
-                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add cart");
+                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add to cart success");
 
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
@@ -421,7 +403,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 }
 
                 @Override
-                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
                     runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage()));
                 }
             });
@@ -433,19 +415,84 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     private void onclickByNow() {
         btnBuyNow.setOnClickListener(v -> {
-            AlertDialogUtil.showAlertDialogWithOk(this, "By now");
+            quantityselect = 1;
+            @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+            bottomSheetDialog.setContentView(view);
+            bottomSheetDialog.show();
+            bottomSheetDialog.setCancelable(false);
+            ImageView imgProduct;
+            TextView tvPrice;
+            TextView tv_kho;
+            TextView tv_name;
+            TextView title;
+            ImageButton imgDecrease;
+            ImageButton imgIncrease;
+            Button btnHuy;
+            Button btnThem;
+            EditText ed_quantity;
+            ed_quantity = view.findViewById(R.id.ed_quantity_cart);
+            imgProduct = view.findViewById(R.id.img_product);
+            tvPrice = view.findViewById(R.id.tv_price);
+            tv_kho = view.findViewById(R.id.tv_kho);
+            tv_name = view.findViewById(R.id.tv_name);
+            title = view.findViewById(R.id.title);
+            imgDecrease = view.findViewById(R.id.img_decrease);
+            imgIncrease = view.findViewById(R.id.img_increase);
+            btnHuy = view.findViewById(R.id.btn_huy);
+            btnThem = view.findViewById(R.id.btn_them);
+            Glide.with(this).load(img_cover).into(imgProduct);
+            title.setText(getResources().getText(R.string.mua_ngay));
+            tv_kho.setText(String.format("Kho: %s", quantity));
+            tvPrice.setText(String.format("Giá: %s", CurrencyUtils.formatCurrency(price)));
+            tv_name.setText(product.getName());
+            btnThem.setText(getResources().getText(R.string.mua_ngay));
+
+            ed_quantity.setText(String.valueOf(quantityselect));
+            if (quantityselect == 1) {
+                imgDecrease.setEnabled(false);
+            }
+            if (quantityselect == Integer.parseInt(quantity)) {
+                imgIncrease.setEnabled(false);
+            }
+            btnHuy.setOnClickListener(view1 -> bottomSheetDialog.dismiss());
+            imgIncrease.setOnClickListener(view1 -> {
+                quantityselect = quantityselect + 1;
+                ed_quantity.setText(String.valueOf(quantityselect));
+                if (quantityselect > 1) {
+                    imgDecrease.setEnabled(true);
+                }
+            });
+            imgDecrease.setOnClickListener(view1 -> {
+                quantityselect = quantityselect - 1;
+                ed_quantity.setText(String.valueOf(quantityselect));
+                if (quantityselect == 1) {
+                    imgDecrease.setEnabled(false);
+                }
+            });
+            btnThem.setOnClickListener(view1 -> {
+                bottomSheetDialog.dismiss();
+                Intent intent = new Intent(this,OrderActivity.class);
+                Bundle bundle = new Bundle();
+                List<com.datn.shopsale.modelsv2.Product> listOrders = new ArrayList<>();
+                product.setQuantity(String.valueOf(quantityselect));
+                listOrders.add(product);
+                DataListOrder dataListOrder = new DataListOrder();
+                dataListOrder.setList(listOrders);
+                bundle.putSerializable("listOrder",dataListOrder);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            });
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        Toast.makeText(this, "onActivityResult", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        Toast.makeText(this, "onResume", Toast.LENGTH_SHORT).show();
     }
 }

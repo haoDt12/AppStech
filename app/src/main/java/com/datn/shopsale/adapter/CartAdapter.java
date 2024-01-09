@@ -16,11 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Cart;
 import com.datn.shopsale.modelsv2.ProductCart;
-import com.datn.shopsale.ui.cart.CartFragment;
 import com.datn.shopsale.ui.cart.IChangeQuantity;
-import com.datn.shopsale.utils.Animation;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.GetImgIPAddress;
 
@@ -32,9 +29,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
     private static List<ProductCart> listItem;
     private static Context mContext;
-    private static CartFragment cartFragment;
     private static IChangeQuantity iChangeQuantity;
     private boolean isExpanded = false;
+    @SuppressLint("NotifyDataSetChanged")
+    public void setList (List<ProductCart> listItem){
+        CartAdapter.listItem = listItem;
+        notifyDataSetChanged();
+    }
 
     public CartAdapter(List<ProductCart> listItem, Context context, IChangeQuantity IChangeQuantity) {
         CartAdapter.listItem = listItem;
@@ -54,9 +55,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Animation animation = new Animation();
         ProductCart item = listItem.get(position);
-        int _index = position;
         int status = item.getStatus();
         holder.cbCheck.setChecked(status != 1);
         holder.tvName.setText(item.getProductCart().getName());
@@ -71,37 +70,34 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
                 isExpanded = true;
             }
         });
-//        for (Cart.Option option : item.getOption()) {
-//            if (option.getFeesArise() != null && option.getFeesArise().length() > 0) {
-//                feesArise += Integer.parseInt(option.getFeesArise());
-//            }
-//        }
-//        int totalPrice = quantity * (free + feesArise);
         int price = Integer.parseInt(item.getProductCart().getPrice()) * item.getQuantity();
         holder.tvPrice.setText(CurrencyUtils.formatCurrency(String.valueOf(price)));
-        holder.tvQuantity.setText(item.getQuantity() + "");
+        holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
         Glide.with(mContext).load(GetImgIPAddress.convertLocalhostToIpAddress(item.getProductCart().getImg_cover())).into(holder.img_product);
+        holder.cbCheck.setChecked(item.getStatus() == 2);
         holder.cbCheck.setOnClickListener(v -> {
             boolean isSelected = holder.cbCheck.isChecked();
+            boolean isCheckAll = true;
             if (isSelected) {
                 item.setStatus(2);
-                iChangeQuantity.IclickCheckBox(item, _index);
-//                cartFragment.updateStatusCart(2, position);
+                holder.cbCheck.setChecked(true);
+                for (ProductCart product: listItem) {
+                    if(product.getStatus() == 1){
+                        isCheckAll = false;
+                        break;
+                    }
+                }
+                iChangeQuantity.IclickCheckBox(item, position,isCheckAll);
             } else {
+                holder.cbCheck.setChecked(false);
                 item.setStatus(1);
-                iChangeQuantity.IclickCheckBox2(item, _index);
-//                cartFragment.updateStatusCart(1, position);
+                iChangeQuantity.IclickCheckBox2(item, position);
             }
         });
 
 
-        holder.imgIncrease.setOnClickListener(v -> {
-            iChangeQuantity.IclickIncrease(item, _index);
-
-        });
-        holder.imgDecrease.setOnClickListener(v -> {
-            iChangeQuantity.IclickReduce(item, _index);
-        });
+        holder.imgIncrease.setOnClickListener(v -> iChangeQuantity.IclickIncrease(item, position));
+        holder.imgDecrease.setOnClickListener(v -> iChangeQuantity.IclickReduce(item, position));
 
     }
 
@@ -133,74 +129,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             imgDecrease = itemView.findViewById(R.id.img_decrease);
             imgIncrease = itemView.findViewById(R.id.img_increase);
             img_product = itemView.findViewById(R.id.img_cart);
-
-
         }
     }
-
-//    public void deleteItem(int index, int pos) {
-//        listItem.remove(index);
-//        // update in server
-//        cartFragment.updateStatusCart(0, pos);
-//        notifyItemRemoved(index);
-//    }
-
-//    public void undoItem(Cart cart, int index, int pos) {
-//        listItem.add(index, cart);
-//        // update in server
-//        cartFragment.updateStatusCart(1, pos);
-//        notifyItemInserted(index);
-//    }
-
-//    public void updateList(List<Cart> newList) {
-//        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new OrderDiffCallback(newList, listItem));
-//        int oldSize = listItem.size();
-//        listItem.clear();
-//        listItem.addAll(newList);
-//        diffResult.dispatchUpdatesTo(this);
-//        int newSize = newList.size();
-//    }
-
-//    private static class OrderDiffCallback extends DiffUtil.Callback {
-//        private final List<Cart> oldCartList;
-//        private final List<Cart> newCartList;
-//
-//        public OrderDiffCallback(List<Cart> newOrderList, List<Cart> oldOrderList) {
-//            this.newCartList = newOrderList;
-//            this.oldCartList = oldOrderList;
-//        }
-//
-//        @Override
-//        public int getOldListSize() {
-//            return oldCartList.size();
-//        }
-//
-//        @Override
-//        public int getNewListSize() {
-//            return newCartList.size();
-//        }
-//
-//        @Override
-//        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-//            return Objects.equals(oldCartList.get(oldItemPosition).getId(), newCartList.get(newItemPosition).getId());
-//        }
-//
-//        @Override
-//        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-//            Cart oldOrder = oldCartList.get(oldItemPosition);
-//            Cart newOrder = newCartList.get(newItemPosition);
-//            return oldOrder.getTitle().equals(newOrder.getTitle())
-//                    && Objects.equals(oldOrder.getPrice(), newOrder.getPrice())
-//                    && Objects.equals(oldOrder.getQuantity(), newOrder.getQuantity())
-//                    && Objects.equals(oldOrder.getUserId(), newOrder.getUserId())
-//                    && Objects.equals(oldOrder.getDate(), newOrder.getDate())
-//                    && Objects.equals(oldOrder.getId(), newOrder.getId())
-////                    && Objects.equals(oldOrder.getIdMerchant(), newOrder.getIdMerchant())
-////                    && Objects.equals(oldOrder.getNotes(), newOrder.getNotes())
-////                    && Objects.equals(oldOrder.getPos(), newOrder.getPos())
-//                    && Objects.equals(oldOrder.getStatus(), newOrder.getStatus());
-//        }
-//    }
-
 
 }

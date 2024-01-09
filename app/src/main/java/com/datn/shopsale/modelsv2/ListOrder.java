@@ -1,8 +1,19 @@
 package com.datn.shopsale.modelsv2;
 
-public class ListOrder {
+import java.io.Serializable;
+
+public class ListOrder implements Serializable {
+    private String productCartId;
     private String product_id;
     private String quantity;
+
+    public String getProductCartId() {
+        return productCartId;
+    }
+
+    public void setProductCartId(String productCartId) {
+        this.productCartId = productCartId;
+    }
 
     public String getProduct_id() {
         return product_id;

@@ -50,8 +50,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         holder.tvDate.setText(String.format("Từ %s đến %s", voucher.getVocher_id().getFromDate(), voucher.getVocher_id().getToDate()));
         holder.btnUse.setOnClickListener(v -> {
             Intent intent = new Intent(context, OrderAdapter.class);
-            intent.putExtra("voucher", (Serializable) voucher.getVocher_id());
-            intent.putExtra("price", voucher.getVocher_id().getPrice());
+            intent.putExtra("voucher", (Serializable) voucher);
             ((Activity) context).setResult(Activity.RESULT_OK, intent);
             ((Activity) context).finish();
         });
@@ -62,11 +61,11 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.VoucherV
         return list == null ? 0 : list.size();
     }
 
-    public class VoucherViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTitle;
-        private TextView tvContent;
-        private TextView tvDate;
-        private Button btnUse;
+    public static class VoucherViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvTitle;
+        private final TextView tvContent;
+        private final TextView tvDate;
+        private final Button btnUse;
 
         public VoucherViewHolder(@NonNull View itemView) {
             super(itemView);

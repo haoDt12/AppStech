@@ -3,11 +3,11 @@ package com.datn.shopsale.modelsv2;
 import java.io.Serializable;
 
 public class MapVoucherCus implements Serializable {
-    public String _id;
-    public Voucher vocher_id;
-    public Customer customer_id;
-    public boolean is_used;
-    public int __v;
+    private String _id;
+    private Voucher vocher_id;
+    private Customer customer_id;
+    private boolean is_used;
+    private int __v;
 
     public String get_id() {
         return _id;

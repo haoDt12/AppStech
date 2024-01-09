@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +26,8 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.activities.OrderActivity;
 import com.datn.shopsale.adapter.CartAdapter;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.ListOder;
-import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.ResponseCart;
+import com.datn.shopsale.modelsv2.DataListOrder;
+import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.modelsv2.ProductCart;
 import com.datn.shopsale.responsev2.BaseResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
@@ -52,16 +49,14 @@ public class CartFragment extends Fragment {
     private CartAdapter cartAdapter;
     private RecyclerView rcvCart;
     private Button btnCheckout;
-    private RelativeLayout layoutCart;
     PreferenceManager preferenceManager;
     private ApiService apiService;
     private TextView Tvsum;
     private int tong = 0;
     private CheckBox chk_selectAll;
-    private List<Cart> listCartSelected;
-    private ListOder listOder;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-
+    private DataListOrder dataListOrder;
+    private List<Product> productList;
     public CartFragment() {
     }
 
@@ -86,7 +81,6 @@ public class CartFragment extends Fragment {
     public void onStart() {
         super.onStart();
         chk_selectAll.setChecked(false);
-        listCartSelected.clear();
     }
 
     @Override
@@ -95,71 +89,30 @@ public class CartFragment extends Fragment {
         apiService = RetrofitConnection.getApiService();
         initView(view);
         preferenceManager = new PreferenceManager(requireActivity());
-        listCartSelected = new ArrayList<>();
-        listOder = new ListOder();
         getDataCart();
         onFragmentResult();
         btnCheckout.setOnClickListener(v -> {
-            if (listCartSelected.size() != 0) {
+            if (dataListOrder != null) {
                 Intent intent = new Intent(getActivity(), OrderActivity.class);
-                intent.putExtra("listOder", listOder);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("listOrder",dataListOrder);
+                intent.putExtras(bundle);
                 activityResultLauncher.launch(intent);
             } else {
                 Toast.makeText(getActivity(), "Vui lòng chọn sản phẩm để thanh toán", Toast.LENGTH_SHORT).show();
             }
         });
-
-//        chk_selectAll.setOnCheckedChangeListener((compoundButton, b) -> {
-//            if(b){
-//               setSelectedItem();
-//               listCartSelected.clear();
-//               listCartSelected.addAll(cartList);
-//               listOder.setList(listCartSelected);
-//            }else {
-//                unSelectedItem();
-//                listCartSelected.clear();
-//            }
-//        });
     }
 
     private void initView(@NonNull View view) {
-        layoutCart = view.findViewById(R.id.layout_cart);
         rcvCart = view.findViewById(R.id.rcv_cart);
         btnCheckout = view.findViewById(R.id.btn_checkout);
         Tvsum = view.findViewById(R.id.sum);
         chk_selectAll = view.findViewById(R.id.chk_selectedAll);
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void setSelectedItem() {
-        if (cartList != null) {
-            for (int i = 0; i < cartList.size(); i++) {
-                if (listOder.getList() != null) {
-                    if (cartList.size() == listOder.getList().size()) {
-                        chk_selectAll.setChecked(true);
-                    }
-                }
-                if (cartList.get(i).getStatus() == 1) {
-                    cartList.get(i).setStatus(2);
-                    tong += (Integer.parseInt(cartList.get(i).getProductCart().getPrice()) * cartList.get(i).getQuantity());
-                }
-
-                Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-                cartAdapter.notifyDataSetChanged();
-
-            }
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void unSelectedItem() {
-        for (int i = 0; i < cartList.size(); i++) {
-
-            cartList.get(i).setStatus(1);
-            tong = 0;
-            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-            cartAdapter.notifyDataSetChanged();
-        }
+        productList = new ArrayList<>();
+        dataListOrder = new DataListOrder();
+        productList = new ArrayList<>();
+        checkAll();
     }
 
     private void getDataCart() {
@@ -169,17 +122,16 @@ public class CartFragment extends Fragment {
                 preferenceManager.getString("userId"));
         call.enqueue(new Callback<ProductCartResponse>() {
             @Override
-            public void onResponse(Call<ProductCartResponse> call, Response<ProductCartResponse> response) {
+            public void onResponse(@NonNull Call<ProductCartResponse> call, @NonNull Response<ProductCartResponse> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (ProductCart item : response.body().getProductCart()) {
                         ProductCart objCart = new ProductCart();
+                        objCart.set_id(item.get_id());
                         objCart.setProductCart(item.getProductCart());
                         objCart.setCustomer_id(item.getCustomer_id());
                         objCart.setCreate_time(item.getCreate_time());
-                        objCart.setStatus(1);
                         objCart.setQuantity(item.getQuantity());
-
                         cartList.add(objCart);
                     }
                     requireActivity().runOnUiThread(() -> {
@@ -196,15 +148,24 @@ public class CartFragment extends Fragment {
                             }
 
                             @Override
-                            public void IclickCheckBox(ProductCart objCart, int index) {
+                            public void IclickCheckBox(ProductCart objCart, int index, boolean checkAll) {
                                 tong += objCart.getQuantity() * Integer.parseInt(objCart.getProductCart().getPrice());
                                 Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
+                                chk_selectAll.setChecked(checkAll);
+                                Product product = objCart.getProductCart();
+                                product.setQuantity(String.valueOf(objCart.getQuantity()));
+                                product.setProductCartId(objCart.get_id());
+                                dataListOrder.getList().add(product);
                             }
 
                             @Override
                             public void IclickCheckBox2(ProductCart objCart, int index) {
                                 tong -= objCart.getQuantity() * Integer.parseInt(objCart.getProductCart().getPrice());
                                 Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
+                                if (chk_selectAll.isChecked()) {
+                                    chk_selectAll.setChecked(false);
+                                }
+                                dataListOrder.getList().remove(index);
                             }
                         });
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
@@ -221,8 +182,8 @@ public class CartFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ProductCartResponse> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<ProductCartResponse> call, @NonNull Throwable t) {
+                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -236,8 +197,10 @@ public class CartFragment extends Fragment {
         try {
             Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
             call.enqueue(new Callback<BaseResponse>() {
+                @SuppressLint("NotifyDataSetChanged")
                 @Override
-                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                    assert response.body() != null;
                     if (response.body().getCode() == 1) {
                         if (objCart.getStatus() == 2) {
                             tong = tong - Integer.parseInt(objCart.getProductCart().getPrice());
@@ -254,7 +217,7 @@ public class CartFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
                     Log.e("Error", "onFailure: " + t);
                     Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
                 }
@@ -273,8 +236,10 @@ public class CartFragment extends Fragment {
         try {
             Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
             call.enqueue(new Callback<BaseResponse>() {
+                @SuppressLint("NotifyDataSetChanged")
                 @Override
-                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                    assert response.body() != null;
                     if (response.body().getCode() == 1) {
                         if (objCart.getStatus() == 2) {
                             tong = tong + Integer.parseInt(objCart.getProductCart().getPrice());
@@ -288,84 +253,7 @@ public class CartFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<BaseResponse> call, Throwable t) {
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error", "onFailure: " + e);
-            Toast.makeText(getActivity(), "error: " + e, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    private void increaseQuantity(Cart objCart, int index) {
-        String token = preferenceManager.getString("token");
-        String productId = objCart.getProductId();
-        String caculation = Constants.btnIncrease;
-        String idUser = preferenceManager.getString("userId");
-        try {
-            Call<ResApi> call = apiService.editCart(token, idUser, productId, caculation);
-            call.enqueue(new Callback<ResApi>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
-                    assert response.body() != null;
-                    if (response.body().code == 1) {
-                        if (objCart.getStatus() == 2) {
-                            tong = tong + objCart.getPrice();
-                            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-                        }
-                        cartList.get(index).setQuantity(cartList.get(index).getQuantity() + 1);
-
-                        cartAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error", "onFailure: " + e);
-            Toast.makeText(getActivity(), "error: " + e, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void reduceQuantity(Cart objCart, int index) {
-        String token = preferenceManager.getString("token");
-        String productId = objCart.getProductId();
-        String caculation = Constants.btnReduce;
-        String idUser = preferenceManager.getString("userId");
-        try {
-            Call<ResApi> call = apiService.editCart(token, idUser, productId, caculation);
-            call.enqueue(new Callback<ResApi>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
-                    assert response.body() != null;
-                    if (response.body().code == 1) {
-                        if (objCart.getStatus() == 2) {
-                            tong = tong - objCart.getPrice();
-                            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-                        }
-                        cartList.get(index).setQuantity(cartList.get(index).getQuantity() - 1);
-                        if (cartList.get(index).getQuantity() == 0) {
-                            cartList.remove(index);
-                        }
-                        cartAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
                     Log.e("Error", "onFailure: " + t);
                     Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
                 }
@@ -379,8 +267,39 @@ public class CartFragment extends Fragment {
     private void onFragmentResult() {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
+                chk_selectAll.setChecked(false);
+                Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                 getDataCart();
             }
         });
+    }
+
+    private void checkAll() {
+        chk_selectAll.setOnClickListener(v -> {
+            productList.clear();
+            tong = 0;
+            boolean isCheck = chk_selectAll.isChecked();
+            if (isCheck) {
+                for (ProductCart item : cartList) {
+                    item.setStatus(2);
+                    tong += item.getQuantity() * Integer.parseInt(item.getProductCart().getPrice());
+                }
+                cartAdapter.setList(cartList);
+                for (ProductCart productCart : cartList) {
+                    Product product = productCart.getProductCart();
+                    product.setQuantity(String.valueOf(productCart.getQuantity()));
+                    product.setProductCartId(productCart.get_id());
+                    productList.add(product);
+                }
+            } else {
+                for (ProductCart item : cartList) {
+                    item.setStatus(1);
+                }
+                cartAdapter.setList(cartList);
+            }
+            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
+            dataListOrder.setList(productList);
+        });
+
     }
 }
