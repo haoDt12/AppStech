@@ -2,9 +2,20 @@ package com.datn.shopsale.modelsv2;
 
 public class Category {
     private String _id;
-    private String name;
-    private String img_cover;
-    private String create_time;
+    private String title;
+    private String date;
+    private String img;
+    private int __v;
+
+    public Category(String _id, String title, String date, String img) {
+        this._id = _id;
+        this.title = title;
+        this.date = date;
+        this.img = img;
+    }
+
+    public Category() {
+    }
 
     public String get_id() {
         return _id;
@@ -14,27 +25,35 @@ public class Category {
         this._id = _id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getImg_cover() {
-        return img_cover;
+    public String getDate() {
+        return date;
     }
 
-    public void setImg_cover(String img_cover) {
-        this.img_cover = img_cover;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getCreate_time() {
-        return create_time;
+    public String getImg() {
+        return img;
     }
 
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public int get__v() {
+        return __v;
+    }
+
+    public void set__v(int __v) {
+        this.__v = __v;
     }
 }

@@ -25,11 +25,11 @@ import com.datn.shopsale.adapter.CategoriesAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.SliderAdapter;
 import com.datn.shopsale.databinding.FragmentHomeBinding;
-import com.datn.shopsale.models.Category;
+import com.datn.shopsale.modelsv2.Category;
 import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.response.GetBannerResponse;
-import com.datn.shopsale.response.GetListCategoryResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
+import com.datn.shopsale.responsev2.GetCategoryResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivityFirebase;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -198,27 +198,23 @@ public class HomeFragment extends Fragment {
 
     private void displayCategory() {
         LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
-        ArrayList<Category> dataCategory = new ArrayList<>();
-        Call<GetListCategoryResponse.Root> call = apiService.getListCategory(preferenceManager.getString("token"));
-        call.enqueue(new Callback<GetListCategoryResponse.Root>() {
+        Call<GetCategoryResponse> call = apiService.getCategory(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetCategoryResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Response<GetListCategoryResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetCategoryResponse> call, @NonNull Response<GetCategoryResponse> response) {
                 Log.d("zzzz", "onResponse: " + response);
                 Log.d("check", "onResponse: 3");
                 assert response.body() != null;
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     if (response.body().getCode() == 1) {
-                        for (GetListCategoryResponse.Category item : response.body().getCategory()) {
-                            dataCategory.add(new Category(item.get_id(), item.getTitle(), item.getImg(), item.getDate()));
-                        }
+                        List<Category> dataCategory = response.body().getCategory();
 
                         if (dataCategory.size() > 12) {
                             if (!dataCategory.get(11).getTitle().equals("Xem thêm")) {
                                 String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
-                                Category viewMore = new Category("-1", "Xem thêm", temp, "---");
-                                Category viewLess = new Category("-1", "Ẩn bớt", temp, "---");
-                                Log.d("zzzz", "run: " + dataCategory);
+                                Category viewMore = new Category("-1", "Xem thêm", "---", temp);
+                                Category viewLess = new Category("-1", "Ẩn bớt", "---", temp);
                                 if (isDisableItem) {
                                     dataCategory.add(11, viewMore);
                                 } else {
@@ -228,12 +224,12 @@ public class HomeFragment extends Fragment {
                             }
                         }
                         categoriesAdapter = new CategoriesAdapter(getActivity(), dataCategory, category -> {
-                            if (category.getId().equals("-1")) {
+                            if (category.get_id().equals("-1")) {
                                 isDisableItem = !isDisableItem;
                                 displayCategory();
                             } else {
                                 Intent intent = new Intent(getActivity(), ListProductActivity.class);
-                                intent.putExtra("categoryId", category.getId());
+                                intent.putExtra("categoryId", category.get_id());
                                 startActivity(intent);
                             }
                         });
@@ -246,7 +242,7 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListCategoryResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetCategoryResponse> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());

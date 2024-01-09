@@ -25,18 +25,14 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.OrderAdapter;
 import com.datn.shopsale.apizalopay.CreateOrder;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.ListOder;
-import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.modelsv2.DataListOrder;
 import com.datn.shopsale.modelsv2.ListOrder;
 import com.datn.shopsale.modelsv2.MapVoucherCus;
 import com.datn.shopsale.modelsv2.Product;
 import com.datn.shopsale.request.CreateOrderRequest;
-import com.datn.shopsale.request.OderRequest;
-import com.datn.shopsale.response.GetPriceZaloPayResponse;
 import com.datn.shopsale.responsev2.CreateOrderResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
+import com.datn.shopsale.responsev2.GetPriceZaloPayResponseV2;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -64,7 +60,6 @@ public class OrderActivity extends AppCompatActivity {
     private final int E_BANKING = 1;
     private final int ZALO_PAY = 2;
     private int actionPAY = 0;
-    private ListOder listOder;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private TextView tvTotal;
@@ -237,7 +232,7 @@ public class OrderActivity extends AppCompatActivity {
         LoadingDialog.showProgressDialog(this, "Đang Tải");
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         List<ListOrder> listOrders = new ArrayList<>();
-        for (Product item : listOrderProduct){
+        for (Product item : listOrderProduct) {
             ListOrder order = new ListOrder();
             order.setQuantity(item.getQuantity());
             order.setProduct_id(item.get_id());
@@ -245,7 +240,7 @@ public class OrderActivity extends AppCompatActivity {
             listOrders.add(order);
         }
         createOrderRequest.setList_order(listOrders);
-        if(voucher != null){
+        if (voucher != null) {
             createOrderRequest.setMap_voucher_cus_id(voucher.get_id());
         }
         createOrderRequest.setDelivery_address_id(address);
@@ -291,40 +286,53 @@ public class OrderActivity extends AppCompatActivity {
             alertDialog.show();
         } else {
             Intent intent = new Intent(this, EBankingPayActivity.class);
-            intent.putExtra("listOder", listOder);
-            preferenceManager.putString("addressOrder", address);
+            CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+            List<ListOrder> listOrders = new ArrayList<>();
+            for (Product item : listOrderProduct) {
+                ListOrder order = new ListOrder();
+                order.setQuantity(item.getQuantity());
+                order.setProduct_id(item.get_id());
+                order.setProductCartId(item.getProductCartId());
+                listOrders.add(order);
+            }
+            createOrderRequest.setList_order(listOrders);
+            if (voucher != null) {
+                createOrderRequest.setMap_voucher_cus_id(voucher.get_id());
+            }
+            createOrderRequest.setDelivery_address_id(address);
+            createOrderRequest.setAmount("");
+            createOrderRequest.setBankCode("");
+            createOrderRequest.setLanguage("vn");
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("requestOrderVnPay", createOrderRequest);
+            intent.putExtras(bundle);
             startActivityForResult(intent, REQUEST_CODE);
         }
     }
 
     private void orderZaloPay() {
-        List<OderRequest.Product> listProduct = new ArrayList<>();
-        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
-        for (Cart item : listOder.getList()) {
-            for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
-            }
-            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
-        }
-        OderRequest.Root request = new OderRequest.Root();
-        request.setProduct(listProduct);
-        request.setUserId(preferenceManager.getString("userId"));
-        if (voucher != null) {
-            request.setVoucherId(voucher.get_id());
-        }
-        request.setAddress(address);
         LoadingDialog.showProgressDialog(this, "Đang Tải");
-        Call<GetPriceZaloPayResponse> call = apiService.getPriceOrderZaloPay(preferenceManager.getString("token"), request);
-        call.enqueue(new Callback<GetPriceZaloPayResponse>() {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        List<ListOrder> listOrders = new ArrayList<>();
+        for (Product item : listOrderProduct) {
+            ListOrder order = new ListOrder();
+            order.setQuantity(item.getQuantity());
+            order.setProduct_id(item.get_id());
+            order.setProductCartId(item.getProductCartId());
+            listOrders.add(order);
+        }
+        createOrderRequest.setList_order(listOrders);
+        if (voucher != null) {
+            createOrderRequest.setMap_voucher_cus_id(voucher.get_id());
+        }
+        createOrderRequest.setDelivery_address_id(address);
+        Call<GetPriceZaloPayResponseV2> call = apiService.getPriceOrderZaloPayV2(preferenceManager.getString("token"), createOrderRequest);
+        call.enqueue(new Callback<GetPriceZaloPayResponseV2>() {
             @Override
-            public void onResponse(@NonNull Call<GetPriceZaloPayResponse> call, @NonNull Response<GetPriceZaloPayResponse> response) {
+            public void onResponse(@NonNull Call<GetPriceZaloPayResponseV2> call, @NonNull Response<GetPriceZaloPayResponseV2> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
-                    runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        createOrderZaloPay(String.valueOf(response.body().getPrice()));
-
-                    });
+                    runOnUiThread(() -> createOrderZaloPay(response.body().getTotal_amount()));
                 } else {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
@@ -334,9 +342,9 @@ public class OrderActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetPriceZaloPayResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetPriceZaloPayResponseV2> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, t.getMessage());
+                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     LoadingDialog.dismissProgressDialog();
                 });
             }
@@ -465,30 +473,29 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     private void callApiOrderZaloPay() {
-        List<OderRequest.Product> listProduct = new ArrayList<>();
-        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
-        for (Cart item : listOder.getList()) {
-            for (Cart.Option option : item.getOption()) {
-                optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
-            }
-            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
-        }
-        OderRequest.Root request = new OderRequest.Root();
-        request.setProduct(listProduct);
-        request.setUserId(preferenceManager.getString("userId"));
-        request.setAddress(address);
-        if (voucher != null) {
-            request.setVoucherId(voucher.get_id());
-        }
         LoadingDialog.showProgressDialog(this, "Đang Tải");
-        Call<ResApi> call = apiService.createOrderZaloPay(preferenceManager.getString("token"), request);
-        call.enqueue(new Callback<ResApi>() {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        List<ListOrder> listOrders = new ArrayList<>();
+        for (Product item : listOrderProduct) {
+            ListOrder order = new ListOrder();
+            order.setQuantity(item.getQuantity());
+            order.setProduct_id(item.get_id());
+            order.setProductCartId(item.getProductCartId());
+            listOrders.add(order);
+        }
+        createOrderRequest.setList_order(listOrders);
+        if (voucher != null) {
+            createOrderRequest.setMap_voucher_cus_id(voucher.get_id());
+        }
+        createOrderRequest.setDelivery_address_id(address);
+        Call<CreateOrderResponse> call = apiService.createOrderZaloPay(preferenceManager.getString("token"), createOrderRequest);
+        call.enqueue(new Callback<CreateOrderResponse>() {
             @Override
-            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+            public void onResponse(@NonNull Call<CreateOrderResponse> call, @NonNull Response<CreateOrderResponse> response) {
                 assert response.body() != null;
-                if (response.body().code == 1) {
+                if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
                         new AlertDialog.Builder(OrderActivity.this)
                                 .setTitle("Payment Success")
@@ -501,14 +508,14 @@ public class OrderActivity extends AppCompatActivity {
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
                     });
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<CreateOrderResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                     LoadingDialog.dismissProgressDialog();

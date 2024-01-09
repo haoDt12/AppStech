@@ -3,11 +3,8 @@ package com.datn.shopsale.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -22,13 +19,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.modelsv2.Product;
+import com.datn.shopsale.request.GetProductByCateIdRequest;
+import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.TimerTask;
 
@@ -37,10 +37,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ListProductActivity extends AppCompatActivity {
-    private ImageView imgCart;
     private ImageView imgChangeLayout;
     private RecyclerView rcvProduct;
-    private RelativeLayout lnlSearch;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
     private ProductAdapter productAdapter;
@@ -48,7 +46,7 @@ public class ListProductActivity extends AppCompatActivity {
     private boolean isGirdView = true;
     private int layoutItemProduct = R.layout.item_product;
 
-    private ArrayList<GetListProductResponse.Product> dataList;
+    private List<Product> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,20 +57,15 @@ public class ListProductActivity extends AppCompatActivity {
     }
 
     private void init() {
-        Toolbar toolbarListPro = (Toolbar) findViewById(R.id.toolbar_list_pro);
-        lnlSearch = (RelativeLayout) findViewById(R.id.lnl_search);
-        imgCart = (ImageView) findViewById(R.id.img_cart);
+        Toolbar toolbarListPro = findViewById(R.id.toolbar_list_pro);
+        RelativeLayout lnlSearch = findViewById(R.id.lnl_search);
         imgChangeLayout = findViewById(R.id.img_change_layout);
         rcvProduct = findViewById(R.id.rcv_list_product);
         setSupportActionBar(toolbarListPro);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarListPro.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
-        lnlSearch.setOnClickListener(v -> {
-            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
-        });
+        toolbarListPro.setNavigationOnClickListener(v -> onBackPressed());
+        lnlSearch.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), SearchActivity.class)));
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
 
@@ -86,8 +79,6 @@ public class ListProductActivity extends AppCompatActivity {
     }
 
     private void setEventClick() {
-//        imgCart.setOnClickListener(v -> {
-//        });
         imgChangeLayout.setOnClickListener(v -> {
             isGirdView = !isGirdView;
             if (isGirdView) {
@@ -106,20 +97,12 @@ public class ListProductActivity extends AppCompatActivity {
         });
     }
 
-    private Animation loadAnimation() {
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setDuration(10000);
-        rotateAnimation.setRepeatCount(Animation.INFINITE);
-        return rotateAnimation;
-    }
-
     private void setAnimationRecyclerview(int animResource) {
         LayoutAnimationController animationController = AnimationUtils.loadLayoutAnimation(this, animResource);
         rcvProduct.setLayoutAnimation(animationController);
     }
 
-    private void displayProduct(ArrayList<GetListProductResponse.Product> dataList) {
+    private void displayProduct(List<Product> dataList) {
         if (isLoadProduct) {
             LoadingDialog.dismissProgressDialog();
         }
@@ -129,12 +112,12 @@ public class ListProductActivity extends AppCompatActivity {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(ListProductActivity.this, 2);
             gridLayoutManager.setSmoothScrollbarEnabled(true);
             rcvProduct.setLayoutManager(gridLayoutManager);
-//            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
+            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
         } else if (layoutItemProduct == R.layout.item_product_vertical) {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ListProductActivity.this, LinearLayoutManager.VERTICAL, false);
             linearLayoutManager.setSmoothScrollbarEnabled(true);
             rcvProduct.setLayoutManager(linearLayoutManager);
-//            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
+            productAdapter = new ProductAdapter(dataList, ListProductActivity.this, layoutItemProduct);
         }
 
         rcvProduct.setAdapter(productAdapter);
@@ -143,10 +126,12 @@ public class ListProductActivity extends AppCompatActivity {
 
     private void getListProductByIdCate(String categoryId) {
         dataList = new ArrayList<>();
-        Call<GetListProductResponse.Root> call = apiService.getListProductByIdCate(preferenceManager.getString("token"), categoryId);
-        call.enqueue(new Callback<GetListProductResponse.Root>() {
+        GetProductByCateIdRequest request = new GetProductByCateIdRequest();
+        request.setCategoryId(categoryId);
+        Call<GetAllProductResponse> call = apiService.getProductByCategoryId(preferenceManager.getString("token"), request);
+        call.enqueue(new Callback<GetAllProductResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
                         dataList = response.body().getProduct();
@@ -176,7 +161,7 @@ public class ListProductActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetAllProductResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     showToast(t.getMessage());
                     if (isLoadProduct) {

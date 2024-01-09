@@ -1,5 +1,6 @@
 package com.datn.shopsale.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,16 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.ListOder;
-import com.datn.shopsale.request.OderRequest;
-import com.datn.shopsale.request.OrderVnPayRequest;
+import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.PreferenceManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,27 +29,24 @@ import retrofit2.Response;
 public class EBankingPayActivity extends AppCompatActivity {
     private WebView webViewPay;
     private PreferenceManager preferenceManager;
-    private ListOder listOder;
+    private CreateOrderRequest request;
     private String address;
     private ApiService apiService;
     private String voucherId;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ebanking_pay);
-        listOder = new ListOder();
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
-        webViewPay = (WebView) findViewById(R.id.web_view_pay);
+        webViewPay = findViewById(R.id.web_view_pay);
         address = preferenceManager.getString("addressOrder");
         Intent intent = getIntent();
-        if (intent.hasExtra("listOder")) {
-            listOder = (ListOder) intent.getSerializableExtra("listOder");
-        }
-        if (intent.hasExtra("voucherId")) {
-            voucherId = intent.getStringExtra("voucherId");
-        }
+        Bundle bundle = intent.getExtras();
+        assert bundle != null;
+        request = (CreateOrderRequest) bundle.getSerializable("requestOrderVnPay");
         WebSettings webSettings = webViewPay.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setSupportZoom(true);
@@ -62,29 +54,7 @@ public class EBankingPayActivity extends AppCompatActivity {
     }
 
     private void onCallApiPay() {
-        List<OderRequest.Product> listProduct = new ArrayList<>();
-        ArrayList<OderRequest.Option> optionList = new ArrayList<>();
-        for (Cart item : listOder.getList()) {
-            for (Cart.Option option : item.getOption()) {
-                if (option.getFeesArise() != null) {
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), option.getFeesArise()));
-                } else {
-                    optionList.add(new OderRequest.Option(option.getType(), option.getTitle(), option.getContent(), option.getQuantity(), "0"));
-                }
-            }
-            listProduct.add(new OderRequest.Product(item.getProductId(), optionList, item.getQuantity()));
-        }
-        OrderVnPayRequest.Root request = new OrderVnPayRequest.Root();
-        request.setProduct(listProduct);
-        request.setUserId(preferenceManager.getString("userId"));
-        request.setAddress(address);
-        request.setAmount("");
-        request.setBankCode("");
-        request.setLanguage("vn");
-        if (voucherId != null) {
-            request.setVoucherId(voucherId);
-        }
-        Call<VnPayResponse> call = apiService.createOrderVnPay(preferenceManager.getString("token"), request);
+        Call<VnPayResponse> call = apiService.createOrderVnPayV2(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<VnPayResponse>() {
             @Override
             public void onResponse(@NonNull Call<VnPayResponse> call, @NonNull Response<VnPayResponse> response) {
@@ -112,9 +82,7 @@ public class EBankingPayActivity extends AppCompatActivity {
                         webViewPay.loadUrl(response.body().getUrl());
                     });
                 } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(EBankingPayActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    runOnUiThread(() -> Toast.makeText(EBankingPayActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show());
                 }
             }
 

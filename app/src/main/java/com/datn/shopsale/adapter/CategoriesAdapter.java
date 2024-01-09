@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.IActionCate;
 import com.datn.shopsale.R;
-import com.datn.shopsale.models.Category;
+import com.datn.shopsale.modelsv2.Category;
 import com.datn.shopsale.ui.home.HomeFragment;
 import com.datn.shopsale.utils.GetImgIPAddress;
 
@@ -46,7 +46,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ca
         Category category = listCate.get(position);
         holder.tvTitle.setText(category.getTitle());
         Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(category.getImg())).into(holder.img);
-        if (category.getId().equals("-1")) {
+        if (category.get_id().equals("-1")) {
             int paddingImage = 40;
             holder.img.setPadding(paddingImage, paddingImage, paddingImage, paddingImage);
         }

@@ -1,14 +1,8 @@
 package com.datn.shopsale.Interface;
 
-import com.datn.shopsale.models.Address;
-import com.datn.shopsale.models.Cart;
-import com.datn.shopsale.models.FeedBack;
 import com.datn.shopsale.models.ResApi;
-import com.datn.shopsale.models.ResponeFeedBack;
-import com.datn.shopsale.models.ResponseCart;
 import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
-import com.datn.shopsale.request.AddressRequest;
 import com.datn.shopsale.request.CancelOrderRequest;
 import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.CusLoginRequest;
@@ -18,28 +12,20 @@ import com.datn.shopsale.request.EditAddressRequest;
 import com.datn.shopsale.request.EditCusRequest;
 import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.GetOrderByStatusRequest;
+import com.datn.shopsale.request.GetProductByCateIdRequest;
 import com.datn.shopsale.request.OderRequest;
 import com.datn.shopsale.request.OrderVnPayRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
-import com.datn.shopsale.response.BaseResponse;
 import com.datn.shopsale.response.EditPasswordResponse;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetConversationResponse;
-import com.datn.shopsale.response.GetListCategoryResponse;
-import com.datn.shopsale.response.GetListOrderResponse;
 import com.datn.shopsale.response.GetListProductResponse;
-import com.datn.shopsale.response.GetListVoucher;
 import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.response.GetNotificationResponse;
-import com.datn.shopsale.response.GetOrderResponse;
 import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.response.GetPriceZaloPayResponse;
-import com.datn.shopsale.response.GetProductByIDResponse;
-import com.datn.shopsale.response.GetProductResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
-import com.datn.shopsale.response.ResponseAddress;
-import com.datn.shopsale.response.UserVerifyLoginResponse;
 import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddAddressResponse;
@@ -53,10 +39,12 @@ import com.datn.shopsale.responsev2.EditAddressResponse;
 import com.datn.shopsale.responsev2.EditCusResponse;
 import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
+import com.datn.shopsale.responsev2.GetCategoryResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.responsev2.GetOrderResponseV2;
+import com.datn.shopsale.responsev2.GetPriceZaloPayResponseV2;
 import com.datn.shopsale.responsev2.GetVoucherResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.responsev2.RegisterCustomerResponse;
@@ -82,27 +70,11 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-    // Register
-    @Multipart
-    @POST("/api/registerUser")
-    Call<ResApi> register(@Part("email") RequestBody email,
-                          @Part("full_name") RequestBody fullName,
-                          @Part("password") RequestBody password,
-                          @Part("phone_number") RequestBody phoneNumber
-    );
-
     // Verify OTP SignUp
     @FormUrlEncoded
     @POST("/api/verifyOtpRegister")
     Call<ResApi> verifyOTPRegister(@Field("userTempId") String idUserTemp,
                                    @Field("otp") String otp
-    );
-
-    // SignIn
-    @FormUrlEncoded
-    @POST("/api/loginUser")
-    Call<ResApi> signin(@Field("username") String username,
-                        @Field("password") String passwd
     );
 
     @FormUrlEncoded
@@ -114,123 +86,8 @@ public interface ApiService {
                                                      @Field("photoUrl") String photoUrl
     );
 
-    @FormUrlEncoded
-    @POST("/api/verifyOtpLogin")
-    Call<UserVerifyLoginResponse.Root> verifyOTPSignIn(@Field("userId") String idUserTemp,
-                                                       @Field("otp") String otp
-    );
-
-    @POST("/api/getListCategory")
-    Call<GetListCategoryResponse.Root> getListCategory(@Header("Authorization") String token);
-
     @POST("/api/getListProduct")
     Call<GetListProductResponse.Root> getListProduct(@Header("Authorization") String token);
-
-    @FormUrlEncoded
-    @POST("/api/getProductByIdCate")
-    Call<GetListProductResponse.Root> getListProductByIdCate(@Header("Authorization") String token,
-                                                             @Field("categoryId") String categoryId);
-
-    @POST("/api/addCart")
-    Call<ResApi> addToCart(@Header("Authorization") String token,
-                           @Body Cart objCart
-    );
-
-    @FormUrlEncoded
-    @POST("/api/getCartByCartIdUser")
-    Call<ResponseCart> getDataCart(@Header("Authorization") String token,
-                                   @Field("id") String id
-    );
-
-    @FormUrlEncoded
-    @POST("/api/editCart")
-    Call<ResApi> editCart(@Header("Authorization") String token,
-                          @Field("userId") String id,
-                          @Field("productId") String productId,
-                          @Field("caculation") String caculation
-    );
-
-    @POST("/api/addAddress")
-    Call<ResApi> addAddress(@Header("Authorization") String token,
-                            @Body Address objAddress
-    );
-
-    @POST("/api/editAddress")
-    Call<ResApi> editAddress(@Header("Authorization") String token,
-                             @Body AddressRequest objAddress
-    );
-
-    @FormUrlEncoded
-    @POST("/api/deleteAddress")
-    Call<ResApi> deleteAddress(@Header("Authorization") String token,
-                               @Field("userId") String id,
-                               @Field("addressId") String addressId
-
-    );
-
-    @FormUrlEncoded
-    @POST("/api/getUserById")
-    Call<ResponseAddress.Root> getAddress(@Header("Authorization") String token,
-                                          @Field("userId") String id
-    );
-
-    @POST("/api/createOrder")
-    Call<ResApi> createOrder(@Header("Authorization") String token, @Body OderRequest.Root request);
-
-    @FormUrlEncoded
-    @POST("/api/getOrderByUserId")
-    Call<GetListOrderResponse.Root> getOrderByUserId(@Header("Authorization") String token,
-                                                     @Field("userId") String userId);
-
-    @FormUrlEncoded
-    @POST("/api/getOrderByOrderId")
-    Call<GetOrderResponse.Root> getOrderByOrderId(@Header("Authorization") String token,
-                                                  @Field("orderId") String orderId);
-
-    @FormUrlEncoded
-    @POST("/api/editOrder")
-    Call<GetOrderResponse.Root> editOrderStatus(@Header("Authorization") String token,
-                                                @Field("orderId") String orderId,
-                                                @Field("userId") String userId,
-                                                @Field("addressId") String addressId,
-                                                @Field("status") String status);
-
-    @FormUrlEncoded
-    @POST("/api/getProductById")
-    Call<GetProductResponse.Root> getProductById(@Header("Authorization") String token,
-                                                 @Field("productId") String productId);
-
-    @FormUrlEncoded
-    @POST("/api/getProductById")
-    Call<GetProductByIDResponse.Root> getProductByIdV2(@Header("Authorization") String token,
-                                                       @Field("productId") String productId);
-
-    @FormUrlEncoded
-    @POST("/api/getUserById")
-    Call<GetUserByIdResponse.Root> getUserById(@Header("Authorization") String token,
-                                               @Field("userId") String id
-    );
-
-    @Multipart
-    @POST("/api/editUser")
-    Call<ResApi> editUserImg(
-            @Header("Authorization") String token,
-            @Part("email") RequestBody email,
-            @Part("full_name") RequestBody fullName,
-            @Part("phone_number") RequestBody phoneNumber,
-            @Part MultipartBody.Part file,
-            @Part("userId") RequestBody userId
-    );
-
-    @Multipart
-    @POST("/api/editUser")
-    Call<ResApi> editUser(
-            @Header("Authorization") String token,
-            @Part("email") RequestBody email,
-            @Part("full_name") RequestBody fullName,
-            @Part("phone_number") RequestBody phoneNumber,
-            @Part("userId") RequestBody userId
-    );
 
     @POST("/api/getListBanner")
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
@@ -264,17 +121,6 @@ public interface ApiService {
     @POST("/api/createPaymentUrl")
     Call<VnPayResponse> createOrderVnPay(@Header("Authorization") String token, @Body OrderVnPayRequest.Root request);
 
-    @POST("/api/addFeedBack")
-    Call<ResApi> addCmt(@Header("Authorization") String token, @Body FeedBack objFeedBack);
-
-    @FormUrlEncoded
-    @POST("/api/getFeedBackByProductId")
-    Call<ResponeFeedBack> getFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
-
-    @FormUrlEncoded
-    @POST("/api/getAllFeedBackByProductId")
-    Call<ResponeFeedBack> getAllFeedBackByProductId(@Header("Authorization") String token, @Field("productId") String productId);
-
     @POST("/api/editPassword")
     Call<EditPasswordResponse> editPassword(@Header("Authorization") String token, @Body EditPassRequest request);
 
@@ -285,19 +131,11 @@ public interface ApiService {
     @POST("/api/getPassWord")
     Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
 
-    @FormUrlEncoded
-    @POST("/api/getVoucherByUserId")
-    Call<GetListVoucher.Root> getListVoucher(@Header("Authorization") String token, @Field("userId") String userId);
-
     @POST("/api/getPriceZaloPay")
     Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
 
     @POST("/api/creatOrderZaloPay")
     Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
-
-    @POST("/api/checkToken")
-    Call<BaseResponse> checkToken(@Header("Authorization") String token);
-
 
     @FormUrlEncoded
     @POST("/api/createConversation")
@@ -305,7 +143,6 @@ public interface ApiService {
                                     @Field("name") String name,
                                     @Field("idUserLoged") String idUserLoged,
                                     @Field("idUserSelected[]") ArrayList<String> idUserSelected);
-
 
     @FormUrlEncoded
     @POST("/api/getConversationByIDUser")
@@ -411,6 +248,7 @@ public interface ApiService {
 
     @POST("/apiv2/createOrder")
     Call<CreateOrderResponse> createOrderV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
     @POST("/apiv2/cancelOrder")
     Call<CancelOrderResponse> cancelOrder(@Header("Authorization") String token, @Body CancelOrderRequest request);
 
@@ -430,9 +268,23 @@ public interface ApiService {
     Call<FeedBackResponse> getFeedBack(@Header("Authorization") String token,
                                        @Field("product_id") String product_id
     );
+
     @FormUrlEncoded
     @POST("/apiv2/getAllFeedBackByProductId")
     Call<FeedBackResponse> getAllFeedBack(@Header("Authorization") String token,
-                                       @Field("product_id") String product_id
+                                          @Field("product_id") String product_id
     );
+
+    @POST("/apiv2/getCategory")
+    Call<GetCategoryResponse> getCategory(@Header("Authorization") String token);
+
+    @POST("/apiv2/getProductByCategoryId")
+    Call<GetAllProductResponse> getProductByCategoryId(@Header("Authorization") String token, @Body GetProductByCateIdRequest request);
+    @POST("/apiv2/getPriceOrderZaloPay")
+    Call<GetPriceZaloPayResponseV2> getPriceOrderZaloPayV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
+    @POST("/apiv2/createOrderZaloPay")
+    Call<CreateOrderResponse> createOrderZaloPay(@Header("Authorization") String token, @Body CreateOrderRequest request);
+    @POST("/api/createPaymentUrl")
+    Call<VnPayResponse> createOrderVnPayV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
 }

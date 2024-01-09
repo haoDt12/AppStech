@@ -267,6 +267,8 @@ public class CartFragment extends Fragment {
     private void onFragmentResult() {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
+                productList.clear();
+                tong = 0;
                 chk_selectAll.setChecked(false);
                 Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                 getDataCart();
