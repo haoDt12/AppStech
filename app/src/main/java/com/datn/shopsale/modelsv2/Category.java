@@ -2,14 +2,14 @@ package com.datn.shopsale.modelsv2;
 
 public class Category {
     private String _id;
-    private String title;
+    private String name;
     private String date;
     private String img;
     private int __v;
 
-    public Category(String _id, String title, String date, String img) {
+    public Category(String _id, String name, String date, String img) {
         this._id = _id;
-        this.title = title;
+        this.name = name;
         this.date = date;
         this.img = img;
     }
@@ -25,12 +25,12 @@ public class Category {
         this._id = _id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDate() {

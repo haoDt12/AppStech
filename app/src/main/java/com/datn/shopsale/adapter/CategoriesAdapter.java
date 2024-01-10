@@ -44,7 +44,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ca
     @Override
     public void onBindViewHolder(@NonNull categoriesViewHolder holder, int position) {
         Category category = listCate.get(position);
-        holder.tvTitle.setText(category.getTitle());
+        holder.tvName.setText(category.getName());
         Glide.with(context).load(GetImgIPAddress.convertLocalhostToIpAddress(category.getImg())).into(holder.img);
         if (category.get_id().equals("-1")) {
             int paddingImage = 40;
@@ -67,13 +67,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ca
     }
 
     public static class categoriesViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle;
+        TextView tvName;
         ImageView img;
 
         public categoriesViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.img_cate);
-            tvTitle = itemView.findViewById(R.id.tv_title);
+            tvName = itemView.findViewById(R.id.tv_title);
 
             itemView.setOnClickListener(v -> iActionCate.onClick(listCate.get(getAdapterPosition())));
 

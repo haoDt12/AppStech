@@ -211,7 +211,7 @@ public class HomeFragment extends Fragment {
                         List<Category> dataCategory = response.body().getCategory();
 
                         if (dataCategory.size() > 12) {
-                            if (!dataCategory.get(11).getTitle().equals("Xem thêm")) {
+                            if (!dataCategory.get(11).getName().equals("Xem thêm")) {
                                 String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
                                 Category viewMore = new Category("-1", "Xem thêm", "---", temp);
                                 Category viewLess = new Category("-1", "Ẩn bớt", "---", temp);
