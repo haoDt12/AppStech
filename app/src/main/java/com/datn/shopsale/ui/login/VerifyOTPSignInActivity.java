@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +21,8 @@ import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -39,10 +40,8 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
     private ProgressBar idProgress;
     private Button btnVerify;
     private String idUser;
-    private String OTP;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
-    private EditText[] inputs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
         btnVerify.setVisibility(View.INVISIBLE);
         idProgress.setVisibility(View.VISIBLE);
         try {
-            OTP = edNumber1.getText().toString().trim()
+            String OTP = edNumber1.getText().toString().trim()
                     + edNumber2.getText().toString().trim()
                     + edNumber3.getText().toString().trim()
                     + edNumber4.getText().toString().trim()
@@ -96,7 +95,11 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 idProgress.setVisibility(View.INVISIBLE);
                                 btnVerify.setVisibility(View.VISIBLE);
-                                Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(VerifyOTPSignInActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(VerifyOTPSignInActivity.this, response.body().getMessage());
+                                }
                             });
                         }
                     }
@@ -107,16 +110,14 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         idProgress.setVisibility(View.INVISIBLE);
                         btnVerify.setVisibility(View.VISIBLE);
-                        Log.e("Error", "onFailure: " + t);
-                        Toast.makeText(VerifyOTPSignInActivity.this, "error: " + t, Toast.LENGTH_SHORT).show();
+                        AlertDialogUtil.showAlertDialogWithOk(VerifyOTPSignInActivity.this, t.getMessage());
                     });
                 }
             });
         } catch (Exception e) {
             idProgress.setVisibility(View.INVISIBLE);
             btnVerify.setVisibility(View.VISIBLE);
-            Log.e("Exception", "onFailure: " + e);
-            Toast.makeText(VerifyOTPSignInActivity.this, "Exception: " + e, Toast.LENGTH_SHORT).show();
+            AlertDialogUtil.showAlertDialogWithOk(this, e.getMessage());
         }
 
 
@@ -129,7 +130,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                 edNumber4.getText().toString().trim().isEmpty() ||
                 edNumber5.getText().toString().trim().isEmpty() ||
                 edNumber6.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, "Mã OTP không hợp lệ vui lòng thử lại", Toast.LENGTH_SHORT).show();
+            AlertDialogUtil.showAlertDialogWithOk(this, getResources().getString(R.string.ma_otp_khong_hop_le));
             return false;
         }
         return true;
@@ -220,14 +221,14 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        edNumber1 = (EditText) findViewById(R.id.ed_number1);
-        edNumber2 = (EditText) findViewById(R.id.ed_number2);
-        edNumber3 = (EditText) findViewById(R.id.ed_number3);
-        edNumber4 = (EditText) findViewById(R.id.ed_number4);
-        edNumber5 = (EditText) findViewById(R.id.ed_number5);
-        edNumber6 = (EditText) findViewById(R.id.ed_number6);
-        idProgress = (ProgressBar) findViewById(R.id.id_progress);
-        btnVerify = (Button) findViewById(R.id.btn_verify);
+        edNumber1 = findViewById(R.id.ed_number1);
+        edNumber2 = findViewById(R.id.ed_number2);
+        edNumber3 = findViewById(R.id.ed_number3);
+        edNumber4 = findViewById(R.id.ed_number4);
+        edNumber5 = findViewById(R.id.ed_number5);
+        edNumber6 = findViewById(R.id.ed_number6);
+        idProgress = findViewById(R.id.id_progress);
+        btnVerify = findViewById(R.id.btn_verify);
 
     }
 
@@ -250,7 +251,11 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             idProgress.setVisibility(View.INVISIBLE);
                             btnVerify.setVisibility(View.VISIBLE);
-                            Toast.makeText(VerifyOTPSignInActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(VerifyOTPSignInActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(VerifyOTPSignInActivity.this, response.body().getMessage());
+                            }
                         });
                     }
                 }
@@ -261,7 +266,7 @@ public class VerifyOTPSignInActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     idProgress.setVisibility(View.INVISIBLE);
                     btnVerify.setVisibility(View.VISIBLE);
-                    Log.d("zzzzz", "onFailure: " + t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(VerifyOTPSignInActivity.this, t.getMessage());
                 });
             }
         });

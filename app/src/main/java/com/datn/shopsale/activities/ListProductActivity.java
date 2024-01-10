@@ -24,6 +24,8 @@ import com.datn.shopsale.request.GetProductByCateIdRequest;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.login.LoginActivity;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -143,9 +145,13 @@ public class ListProductActivity extends AppCompatActivity {
                         });
                     } else {
                         runOnUiThread(() -> {
-                            showToast(response.body().getMessage());
                             if (isLoadProduct) {
                                 LoadingDialog.dismissProgressDialog();
+                            }
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(ListProductActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(ListProductActivity.this, response.body().getMessage());
                             }
                         });
                     }
@@ -163,7 +169,7 @@ public class ListProductActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<GetAllProductResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    showToast(t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(ListProductActivity.this, t.getMessage());
                     if (isLoadProduct) {
                         LoadingDialog.dismissProgressDialog();
                     }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +39,7 @@ import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -56,7 +55,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = DetailProductActivity.class.getSimpleName();
     private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
     private ContentAdapter contentAdapter;
@@ -67,7 +65,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private PreferenceManager preferenceManager;
     private ApiService apiService;
     private String id;
-    private RecyclerView recy_cmt;
+    private RecyclerView rcv_cmt;
     private RelativeLayout layoutActionBuy;
     private Button btnOutStock;
 
@@ -82,7 +80,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private String img_cover;
     private String quantity;
     private String price;
-    private int quantityselect = 1;
+    private int quantitySelect = 1;
     private com.datn.shopsale.modelsv2.Product product;
 
     @Override
@@ -97,12 +95,14 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void getCmt() {
+        LoadingDialog.showProgressDialog(this,"Loading....");
         listFb = new ArrayList<>();
         Call<FeedBackResponse> call = apiService.getFeedBack(preferenceManager.getString("token"), id);
         call.enqueue(new Callback<FeedBackResponse>() {
             @SuppressLint("DefaultLocale")
             @Override
             public void onResponse(@NonNull Call<FeedBackResponse> call, @NonNull Response<FeedBackResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     for (FeedBack objFeedBack : response.body().getListFeedBack()) {
@@ -132,17 +132,27 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         ratingBar.setRating(rating);
                         adapterRV = new ReviewAdapter(listFb, getApplicationContext());
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-                        recy_cmt.setLayoutManager(linearLayoutManager);
-                        recy_cmt.setAdapter(adapterRV);
+                        rcv_cmt.setLayoutManager(linearLayoutManager);
+                        rcv_cmt.setAdapter(adapterRV);
 
                     });
                 } else {
-                    Toast.makeText(DetailProductActivity.this, String.format("%s", response.body().getMessage()), Toast.LENGTH_SHORT).show();
+                    runOnUiThread(() -> {
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                        }
+                    });
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<FeedBackResponse> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
+                });
             }
         });
 
@@ -163,13 +173,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                         String video = response.body().getData().get(0).getVideo().get(0).getVideo();
                         ArrayList<Product> contentItems = new ArrayList<>();
 
-                        // Thêm video vào danh sách
                         Product videoContent = new Product();
                         videoContent.setVideo(video);
                         contentItems.add(videoContent);
 
                         if (!listImg.isEmpty()) {
-                            // Thêm hình ảnh vào danh sách
                             for (String imageUrl : listImg) {
                                 Product imageContent = new Product();
                                 ArrayList<String> imageUrls = new ArrayList<>();
@@ -193,7 +201,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                                 btnOutStock.setVisibility(View.GONE);
                             }
 
-                            String formattedNumber = CurrencyUtils.formatCurrency(product.getPrice()); // Format the integer directly
+                            String formattedNumber = CurrencyUtils.formatCurrency(product.getPrice());
                             tvPriceProduct.setText(formattedNumber);
                             if (product.getColor() != null) {
                                 tvColor.setText(String.format("Màu: %s", product.getColor()));
@@ -218,7 +226,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                     } else {
                         runOnUiThread(() -> {
                             LoadingDialog.dismissProgressDialog();
-                            AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                            }
                         });
                     }
                 }
@@ -240,7 +252,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         btnOutStock = findViewById(R.id.btn_out_stock);
         tvReview = findViewById(R.id.tv_review);
         ratingBar = findViewById(R.id.ratingBar);
-        recy_cmt = findViewById(R.id.recy_cmt);
+        rcv_cmt = findViewById(R.id.recy_cmt);
         LinearLayout lnlSearch = findViewById(R.id.lnl_search);
         tvNameProduct = findViewById(R.id.tv_nameProduct);
         tvPriceProduct = findViewById(R.id.tv_priceProduct);
@@ -273,6 +285,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void doCreateConversation() {
+        LoadingDialog.showProgressDialog(this, "Loading...");
         ArrayList<String> listUserInConversation = new ArrayList<>();
         listUserInConversation.add(Constants.idUserAdmin);
         String idUser = preferenceManager.getString("userId");
@@ -281,6 +294,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         call.enqueue(new Callback<ResApi>() {
             @Override
             public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
                     if (response.body().code == 1) {
                         runOnUiThread(() -> {
@@ -290,7 +305,13 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                             startActivity(i);
                         });
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().message);
+                        runOnUiThread(() -> {
+                            if (response.body().message.equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().message);
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().message);
+                            }
+                        });
                     }
                 }
             }
@@ -299,7 +320,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
                     AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
                 });
             }
@@ -324,12 +344,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     protected void onDestroy() {
         super.onDestroy();
         contentAdapter.releasePlayer();
-//        Toast.makeText(this, "on Destroy", Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("DefaultLocale")
     private void AddToCart() {
-        quantityselect = 1;
+        quantitySelect = 1;
         @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(view);
@@ -358,64 +377,71 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tv_name.setText(product.getName());
         tvPrice.setText(CurrencyUtils.formatCurrency(price));
 
-        ed_quantity.setText(String.valueOf(quantityselect));
-        if (quantityselect == 1) {
+        ed_quantity.setText(String.valueOf(quantitySelect));
+        if (quantitySelect == 1) {
             imgDecrease.setEnabled(false);
         }
-        if (quantityselect == Integer.parseInt(quantity)) {
+        if (quantitySelect == Integer.parseInt(quantity)) {
             imgIncrease.setEnabled(false);
         }
         btnHuy.setOnClickListener(view1 -> bottomSheetDialog.dismiss());
         imgIncrease.setOnClickListener(view1 -> {
-            quantityselect = quantityselect + 1;
-            ed_quantity.setText(String.valueOf(quantityselect));
-            if (quantityselect > 1) {
+            quantitySelect = quantitySelect + 1;
+            ed_quantity.setText(String.valueOf(quantitySelect));
+            if (quantitySelect > 1) {
                 imgDecrease.setEnabled(true);
             }
         });
         imgDecrease.setOnClickListener(view1 -> {
-            quantityselect = quantityselect - 1;
-            ed_quantity.setText(String.valueOf(quantityselect));
-            if (quantityselect == 1) {
+            quantitySelect = quantitySelect - 1;
+            ed_quantity.setText(String.valueOf(quantitySelect));
+            if (quantitySelect == 1) {
                 imgDecrease.setEnabled(false);
             }
         });
         btnThem.setOnClickListener(view1 -> {
             bottomSheetDialog.dismiss();
-            addtoCart(ed_quantity.getText().toString());
+            addToCart(ed_quantity.getText().toString());
         });
     }
 
-    private void addtoCart(String quantity) {
-        try {
-            Call<BaseResponse> call = apiService.addProductCart(preferenceManager.getString("token"),
-                    preferenceManager.getString("userId"), id, quantity);
-            call.enqueue(new Callback<BaseResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
-                    assert response.body() != null;
-                    if (response.body().getCode() == 1) {
-                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add to cart success");
+    private void addToCart(String quantity) {
+        LoadingDialog.showProgressDialog(this, "Loading...");
+        Call<BaseResponse> call = apiService.addProductCart(preferenceManager.getString("token"),
+                preferenceManager.getString("userId"), id, quantity);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
+                assert response.body() != null;
+                if (response.body().getCode() == 1) {
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, "Add to cart success");
 
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
-                    }
+                } else {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
-                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage()));
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error", "onFailure: " + e);
-            Toast.makeText(DetailProductActivity.this, "error: " + e, Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
+                });
+            }
+        });
     }
 
     private void onclickByNow() {
         btnBuyNow.setOnClickListener(v -> {
-            quantityselect = 1;
+            quantitySelect = 1;
             @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_to_cart, null);
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
             bottomSheetDialog.setContentView(view);
@@ -448,38 +474,38 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             tv_name.setText(product.getName());
             btnThem.setText(getResources().getText(R.string.mua_ngay));
 
-            ed_quantity.setText(String.valueOf(quantityselect));
-            if (quantityselect == 1) {
+            ed_quantity.setText(String.valueOf(quantitySelect));
+            if (quantitySelect == 1) {
                 imgDecrease.setEnabled(false);
             }
-            if (quantityselect == Integer.parseInt(quantity)) {
+            if (quantitySelect == Integer.parseInt(quantity)) {
                 imgIncrease.setEnabled(false);
             }
             btnHuy.setOnClickListener(view1 -> bottomSheetDialog.dismiss());
             imgIncrease.setOnClickListener(view1 -> {
-                quantityselect = quantityselect + 1;
-                ed_quantity.setText(String.valueOf(quantityselect));
-                if (quantityselect > 1) {
+                quantitySelect = quantitySelect + 1;
+                ed_quantity.setText(String.valueOf(quantitySelect));
+                if (quantitySelect > 1) {
                     imgDecrease.setEnabled(true);
                 }
             });
             imgDecrease.setOnClickListener(view1 -> {
-                quantityselect = quantityselect - 1;
-                ed_quantity.setText(String.valueOf(quantityselect));
-                if (quantityselect == 1) {
+                quantitySelect = quantitySelect - 1;
+                ed_quantity.setText(String.valueOf(quantitySelect));
+                if (quantitySelect == 1) {
                     imgDecrease.setEnabled(false);
                 }
             });
             btnThem.setOnClickListener(view1 -> {
                 bottomSheetDialog.dismiss();
-                Intent intent = new Intent(this,OrderActivity.class);
+                Intent intent = new Intent(this, OrderActivity.class);
                 Bundle bundle = new Bundle();
                 List<com.datn.shopsale.modelsv2.Product> listOrders = new ArrayList<>();
-                product.setQuantity(String.valueOf(quantityselect));
+                product.setQuantity(String.valueOf(quantitySelect));
                 listOrders.add(product);
                 DataListOrder dataListOrder = new DataListOrder();
                 dataListOrder.setList(listOrders);
-                bundle.putSerializable("listOrder",dataListOrder);
+                bundle.putSerializable("listOrder", dataListOrder);
                 intent.putExtras(bundle);
                 startActivity(intent);
             });

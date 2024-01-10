@@ -1,16 +1,12 @@
 package com.datn.shopsale;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -21,6 +17,8 @@ import com.datn.shopsale.databinding.ActivityMainBinding;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.notifications.NotificationCount;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -31,8 +29,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,13 +37,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_home, R.id.navigation_cart, R.id.navigation_notifications, R.id.navigation_dashboard).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
-        // custom bottom nav
         @SuppressLint("RestrictedApi") BottomNavigationMenuView mBottomNavigationMenuView =
                 (BottomNavigationMenuView) navView.getChildAt(0);
         View view = mBottomNavigationMenuView.getChildAt(2);
@@ -76,15 +69,18 @@ public class MainActivity extends AppCompatActivity {
                             }
                             cartBadgeTextView.setText(String.valueOf(NotificationCount.count));
                         } else {
-                            Log.d(TAG, "onResponse: " + response.body().message);
+                            if (response.body().message.equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(MainActivity.this, response.body().message);
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(MainActivity.this, response.body().message);
+                            }
                         }
                     }
-                    Log.d(TAG, "onResponse: error get notification");
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
-                    Log.d(TAG, "onFailure: " + t.getMessage());
+                    AlertDialogUtil.showAlertDialogWithOk(MainActivity.this, t.getMessage());
                 }
             });
 

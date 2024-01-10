@@ -41,6 +41,7 @@ import com.datn.shopsale.ui.dashboard.setting.SettingActivity;
 import com.datn.shopsale.ui.dashboard.store.StoreActivity;
 import com.datn.shopsale.ui.login.LoginActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.facebook.AccessToken;
@@ -270,7 +271,11 @@ public class DashboardFragment extends Fragment {
                 } else {
                     requireActivity().runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
                     });
                 }
             }

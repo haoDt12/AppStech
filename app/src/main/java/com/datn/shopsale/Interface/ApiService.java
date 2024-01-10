@@ -4,33 +4,29 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.CancelOrderRequest;
+import com.datn.shopsale.request.ChangPassRequest;
 import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.request.DeleteAddressRequest;
 import com.datn.shopsale.request.EditAddressRequest;
 import com.datn.shopsale.request.EditCusRequest;
-import com.datn.shopsale.request.EditPassRequest;
 import com.datn.shopsale.request.GetOrderByStatusRequest;
 import com.datn.shopsale.request.GetProductByCateIdRequest;
-import com.datn.shopsale.request.OderRequest;
-import com.datn.shopsale.request.OrderVnPayRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
-import com.datn.shopsale.response.EditPasswordResponse;
+import com.datn.shopsale.request.SearchProductByNameRequest;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetConversationResponse;
-import com.datn.shopsale.response.GetListProductResponse;
 import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetPassResponse;
-import com.datn.shopsale.response.GetPriceZaloPayResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
-import com.datn.shopsale.response.VerifyOtpEditPassResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddAddressResponse;
 import com.datn.shopsale.responsev2.AddFcmResponse;
 import com.datn.shopsale.responsev2.CancelOrderResponse;
+import com.datn.shopsale.responsev2.ChangePassResponse;
 import com.datn.shopsale.responsev2.CreateOrderResponse;
 import com.datn.shopsale.responsev2.CusLoginResponse;
 import com.datn.shopsale.responsev2.CusVerifyLoginResponse;
@@ -70,7 +66,6 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
-    // Verify OTP SignUp
     @FormUrlEncoded
     @POST("/api/verifyOtpRegister")
     Call<ResApi> verifyOTPRegister(@Field("userTempId") String idUserTemp,
@@ -85,9 +80,6 @@ public interface ApiService {
                                                      @Field("expirationTime") String expirationTime,
                                                      @Field("photoUrl") String photoUrl
     );
-
-    @POST("/api/getListProduct")
-    Call<GetListProductResponse.Root> getListProduct(@Header("Authorization") String token);
 
     @POST("/api/getListBanner")
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
@@ -113,29 +105,8 @@ public interface ApiService {
     Call<WardsRespone> getWard(@Path("code") int code, @Query("depth") int depth);
 
     @FormUrlEncoded
-    @POST("/api/addFCM")
-    Call<ResApi> addFCM(@Header("Authorization") String token,
-                        @Field("userId") String id,
-                        @Field("fcm") String fcm);
-
-    @POST("/api/createPaymentUrl")
-    Call<VnPayResponse> createOrderVnPay(@Header("Authorization") String token, @Body OrderVnPayRequest.Root request);
-
-    @POST("/api/editPassword")
-    Call<EditPasswordResponse> editPassword(@Header("Authorization") String token, @Body EditPassRequest request);
-
-    @POST("/api/verifyOtpEditPass")
-    Call<VerifyOtpEditPassResponse> sendOtpPassword(@Header("Authorization") String token, @Body EditPassRequest request);
-
-    @FormUrlEncoded
-    @POST("/api/getPassWord")
+    @POST("/apiv2/getPassWord")
     Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
-
-    @POST("/api/getPriceZaloPay")
-    Call<GetPriceZaloPayResponse> getPriceOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
-
-    @POST("/api/creatOrderZaloPay")
-    Call<ResApi> createOrderZaloPay(@Header("Authorization") String token, @Body OderRequest.Root request);
 
     @FormUrlEncoded
     @POST("/api/createConversation")
@@ -175,11 +146,6 @@ public interface ApiService {
     @POST("/api/getMessageByIDConversation")
     Call<GetMessageResponse.Root> getMessageByIDConversation(@Header("Authorization") String token,
                                                              @Field("conversationID") String conversationID);
-
-    @FormUrlEncoded
-    @POST("/api/searchProduct")
-    Call<GetListProductResponse.Root> searchProduct(@Header("Authorization") String token,
-                                                    @Field("txtSearch") String txtSearch);
 
     @POST("/apiv2/loginCustomer")
     Call<CusLoginResponse> loginCus(@Body CusLoginRequest request);
@@ -280,11 +246,22 @@ public interface ApiService {
 
     @POST("/apiv2/getProductByCategoryId")
     Call<GetAllProductResponse> getProductByCategoryId(@Header("Authorization") String token, @Body GetProductByCateIdRequest request);
+
     @POST("/apiv2/getPriceOrderZaloPay")
     Call<GetPriceZaloPayResponseV2> getPriceOrderZaloPayV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
 
     @POST("/apiv2/createOrderZaloPay")
     Call<CreateOrderResponse> createOrderZaloPay(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
     @POST("/api/createPaymentUrl")
     Call<VnPayResponse> createOrderVnPayV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
+
+    @POST("/apiv2/sendOtpEditPass")
+    Call<ChangePassResponse> sendOtpEditPass(@Header("Authorization") String token, @Body ChangPassRequest request);
+
+    @POST("/apiv2/editPass")
+    Call<ChangePassResponse> editPass(@Header("Authorization") String token, @Body ChangPassRequest request);
+
+    @POST("/apiv2/searchProductByName")
+    Call<GetAllProductResponse> searchProductByName(@Header("Authorization") String token, @Body SearchProductByNameRequest request);
 }

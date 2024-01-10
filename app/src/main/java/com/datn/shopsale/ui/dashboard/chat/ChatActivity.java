@@ -12,8 +12,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -38,6 +36,7 @@ import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -64,7 +63,6 @@ import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
     private static final String TAG = ChatActivity.class.getSimpleName();
-    private static final int REQUEST_IMAGE_PICKER = 100;
     private Toolbar toolbar;
     private ImageView imgAvatar;
     private TextView tvName;
@@ -76,17 +74,15 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView recyclerViewChat;
 
 
-    private static final int REQUEST_LOGIN = 0;
     private static final int TYPING_TIMER_LENGTH = 600;
     private EditText inputMessage;
-    private ImageButton btnOption;
     private boolean isTyping = false;
 
     private final Handler mTypingHandler = new Handler();
     private String mUsername;
     private String avatarUser;
     private String conversationID;
-    private String idUserLoged;
+    private String idUserLog;
     private String idUserSelected;
     private Uri imageUri;
 
@@ -115,8 +111,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
-//        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
-//        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.on("on-chat", onNewMessage);
         mSocket.on("user-chat", onUserChat);
         mSocket.on("user joined", onUserJoined);
@@ -127,12 +121,12 @@ public class ChatActivity extends AppCompatActivity {
 
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
-        idUserLoged = preferenceManager.getString("userId");
+        idUserLog = preferenceManager.getString("userId");
         conversationID = getIntent().getStringExtra("idConversation");
         idUserSelected = getIntent().getStringExtra("idUser");
         getDataUserSelected(idUserSelected);
 
-        btnOption = (ImageButton) findViewById(R.id.img_option);
+        ImageButton btnOption = findViewById(R.id.img_option);
 
         btnOption.setOnClickListener(view1 -> {
             Dialog dialog = new Dialog(view1.getContext());
@@ -157,30 +151,22 @@ public class ChatActivity extends AppCompatActivity {
                         .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
             });
-            btnCancel.setOnClickListener(view2 -> {
-                dialog.cancel();
-            });
+            btnCancel.setOnClickListener(view2 -> dialog.cancel());
             dialog.show();
         });
 
-        inputMessage.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    scrollToBottom();
-                }
+        inputMessage.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                scrollToBottom();
             }
         });
 
-        inputMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == R.id.send || actionId == EditorInfo.IME_NULL) {
-                    attemptSend();
-                    return true;
-                }
-                return false;
+        inputMessage.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == R.id.send || actionId == EditorInfo.IME_NULL) {
+                attemptSend();
+                return true;
             }
+            return false;
         });
 
         inputMessage.addTextChangedListener(new TextWatcher() {
@@ -191,7 +177,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (null == idUserLoged) return;
+                if (null == idUserLog) return;
                 if (!mSocket.connected()) return;
 
                 if (!isTyping) {
@@ -209,12 +195,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         ImageButton sendButton = findViewById(R.id.img_send);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptSend();
-            }
-        });
+        sendButton.setOnClickListener(v -> attemptSend());
 
     }
 
@@ -232,13 +213,6 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void addLog(String message) {
-//        mMessages.add(new Message.Builder(Message.TYPE_LOG)
-//                .message(message).build());
-//        mAdapter.notifyItemInserted(mMessages.size() - 1);
-//        scrollToBottom();
-    }
-
     private void addParticipantsLog(int numUsers) {
         Log.d(TAG, "addParticipantsLog: " + numUsers);
 //        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
@@ -250,14 +224,12 @@ public class ChatActivity extends AppCompatActivity {
 
         String token = preferenceManager.getString("token");
         RequestBody requestBodyConversation = RequestBody.create(MediaType.parse("text/plain"), conversationID);
-        RequestBody requestBodySenderId = RequestBody.create(MediaType.parse("text/plain"), idUserLoged);
+        RequestBody requestBodySenderId = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
         RequestBody requestBodyReceiverId = RequestBody.create(MediaType.parse("text/plain"), idUserSelected);
         RequestBody requestBodyMessage = RequestBody.create(MediaType.parse("text/plain"), message);
         Log.d(TAG, "addMessage: message " + requestBodyMessage);
         Log.d(TAG, "addMessage: senderID " + requestBodySenderId);
-//        LoadingDialog.showProgressDialog(this, "Loading...");
         if (imageUri != null) {
-//            Toast.makeText(this, requestBodyMessage.toString(), Toast.LENGTH_SHORT).show();
             File file = new File(Objects.requireNonNull(imageUri.getPath()));
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), imageRequestBody);
@@ -286,7 +258,6 @@ public class ChatActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-
                                 JSONObject jsonMessage = new JSONObject();
                                 try {
                                     jsonMessage.put("message", messageAdded);
@@ -295,13 +266,16 @@ public class ChatActivity extends AppCompatActivity {
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-
-//                                mAdapter.notifyItemInserted(mMessages.size() - 1);
                                 scrollToBottom();
-
                             });
                         } else {
-                            AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                            runOnUiThread(() -> {
+                                if(response.body().getMessage().equals("wrong token")){
+                                    CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
+                                }else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                                }
+                            });
                         }
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data message");
@@ -330,7 +304,6 @@ public class ChatActivity extends AppCompatActivity {
                         if (response.body().getCode() == 1) {
                             runOnUiThread(() -> {
                                 mMessages = response.body().getDataMessage();
-//                                mAdapter.notifyItemInserted(mMessages.size() - 1);
                                 JSONObject messageAdded = new JSONObject();
                                 try {
                                     messageAdded.put("conversation", mMessages.getConversation());
@@ -360,7 +333,13 @@ public class ChatActivity extends AppCompatActivity {
 
                             });
                         } else {
-                            AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                            runOnUiThread(() -> {
+                                if(response.body().getMessage().equals("wrong token")){
+                                    CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
+                                }else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                                }
+                            });
                         }
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data conversation");
@@ -378,24 +357,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
         }
-//        scrollToBottom();
     }
-
-//    private void addTyping(GetMessageResponse.MessageAdded message) {
-//        mMessages.add(message);
-//        mAdapter.notifyItemInserted(mMessages.size() - 1);
-//        scrollToBottom();
-//    }
-
-//    private void removeTyping(String username) {
-//        for (int i = mMessages.size() - 1; i >= 0; i--) {
-//            GetMessageResponse.MessageAdded message = mMessages.get(i);
-//            if (message.getType() == Message.TYPE_ACTION && message.getUsername().equals(username)) {
-//                mMessages.remove(i);
-//                mAdapter.notifyItemRemoved(i);
-//            }
-//        }
-//    }
 
     private void attemptSend() {
         if (!mSocket.connected()) return;
@@ -425,62 +387,13 @@ public class ChatActivity extends AppCompatActivity {
     private final Emitter.Listener onUserChat = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-//                    GetMessageResponse.Message message = new GetMessageResponse.Message();
-//                    try {
-//                        GetMessageResponse.Conversation conversation = new GetMessageResponse.Conversation();
-//                        conversation.set_id(data.getString("conversation"));
-//                        message.set_id(data.getString("_id"));
-//                        message.setConversation(conversation);
-//                        message.setSenderID(data.getString("senderId"));
-//                        message.setReceiverId(data.getString("receiverId"));
-//                        message.setMessage(data.getString("message"));
-//                        JSONArray filess = data.getJSONArray("filess");
-//                        ArrayList<String> listFiless = new ArrayList<String>();
-//                        JSONArray jArray = (JSONArray) data.getJSONArray("filess");
-//                        for (int i = 0; i < jArray.length(); i++) {
-//                            listFiless.add(jArray.getString(i));
-//                        }
-//                        message.setFiless(listFiless);
-//                        ArrayList<String> listImages = new ArrayList<String>();
-//                        JSONArray jArrayImages = (JSONArray) data.getJSONArray("images");
-//                        for (int i = 0; i < jArray.length(); i++) {
-//                            listImages.add(jArray.getString(i));
-//                        }
-//                        message.setImages(listImages);
-//                        message.setVideo(data.getString("video"));
-//                        message.setStatus(data.getString("status"));
-//                        message.setTimestamp(data.getString("timestamp"));
-//                        message.setDeleted(data.getBoolean("deleted"));
-//
-////                        mAdapter.addMessage(message);
-//                    } catch (JSONException e) {
-//                        throw new RuntimeException(e);
-//                    }
-
-//                    mAdapter.notifyItemInserted(mMessages.size() - 1);
-                    String demoData = "{\"conversation\":\"657ada688499cb405d63c9c4\"," +
-                            "\"senderId\":\"65355a1058bae97dfefa0cc3\"," +
-                            "\"receiverId\":\"65378419a95ea66b3ffda00d\"," +
-                            "\"message\":\"pp\"," +
-                            "\"filess\":[]," +
-                            "\"images\":[\"http:\\/\\/localhost:3000\\/images\\/messages\\/657ada688499cb405d63c9c4\\/images\\/657be86352bf1506995c4917\\/6f4715d5-7bf4-497c-8dd5-bbc2b5014e1b.jpg\"]," +
-                            "\"video\":\"\"," +
-                            "\"status\":\"unseen\"," +
-                            "\"deleted\":false," +
-                            "\"timestamp\":\"2023-12-15-12:47:15\"," +
-                            "\"_id\":\"657be86352bf1506995c4917\"," +
-                            "\"__v\":0}";
-                    try {
-//                        Toast.makeText(ChatActivity.this, "" + data.getString("message"), Toast.LENGTH_SHORT).show();
-                        String idConversation = data.getString("conversation");
-                        getDataDataMessage(idConversation, avatarUser, false);
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
+            runOnUiThread(() -> {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String idConversation = data.getString("conversation");
+                    getDataDataMessage(idConversation, avatarUser, false);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
                 }
             });
         }
@@ -489,162 +402,79 @@ public class ChatActivity extends AppCompatActivity {
     private final Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isConnected) {
-                        if (null != mUsername)
-                            mSocket.emit("add user", mUsername);
-                        Toast.makeText(getApplicationContext(),
-                                R.string.connect, Toast.LENGTH_LONG).show();
-                        isConnected = true;
-                    }
-                }
-            });
-        }
-    };
-
-    private final Emitter.Listener onDisconnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.i(TAG, "disconnected");
-                    isConnected = false;
+            runOnUiThread(() -> {
+                if (!isConnected) {
+                    if (null != mUsername)
+                        mSocket.emit("add user", mUsername);
                     Toast.makeText(getApplicationContext(),
-                            R.string.disconnect, Toast.LENGTH_LONG).show();
+                            R.string.connect, Toast.LENGTH_LONG).show();
+                    isConnected = true;
                 }
             });
         }
     };
-
-    private final Emitter.Listener onConnectError = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "Error connecting");
-                    Toast.makeText(getApplicationContext(),
-                            R.string.error_connect, Toast.LENGTH_LONG).show();
-                }
-            });
+    private final Emitter.Listener onNewMessage = args -> runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        Log.d(TAG, "run on new message: " + data);
+        Toast.makeText(ChatActivity.this, "onNewMessage: ", Toast.LENGTH_SHORT).show();
+        String username;
+        String message;
+        try {
+            username = data.getString("username");
+            message = data.getString("message");
+        } catch (JSONException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
-    };
+    });
 
-    private final Emitter.Listener onNewMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    Log.d(TAG, "run on new message: " + data);
-                    Toast.makeText(ChatActivity.this, "onNewMessage: ", Toast.LENGTH_SHORT).show();
-                    String username;
-                    String message;
-                    try {
-                        username = data.getString("username");
-                        message = data.getString("message");
-                    } catch (JSONException e) {
-                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                        return;
-                    }
-//                    removeTyping(username);
-//                    addMessage(message);
-                }
-            });
+    private final Emitter.Listener onUserJoined = args -> runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        String username;
+        int numUsers;
+        try {
+            username = data.getString("username");
+            numUsers = data.getInt("numUsers");
+        } catch (JSONException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            return;
         }
-    };
+        addParticipantsLog(numUsers);
+    });
 
-    private final Emitter.Listener onUserJoined = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    int numUsers;
-                    try {
-                        username = data.getString("username");
-                        numUsers = data.getInt("numUsers");
-                    } catch (JSONException e) {
-                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                        return;
-                    }
-                    addLog(getResources().getString(R.string.message_user_joined, username));
-                    addParticipantsLog(numUsers);
-                }
-            });
+    private final Emitter.Listener onUserLeft = args -> runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        String username;
+        int numUsers;
+        try {
+            username = data.getString("username");
+            numUsers = data.getInt("numUsers");
+        } catch (JSONException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
+            return;
         }
-    };
+        addParticipantsLog(numUsers);
+    });
 
-    private final Emitter.Listener onUserLeft = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    int numUsers;
-                    try {
-                        username = data.getString("username");
-                        numUsers = data.getInt("numUsers");
-                    } catch (JSONException e) {
-                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                        return;
-                    }
-                    addLog(getResources().getString(R.string.message_user_left, username));
-                    addParticipantsLog(numUsers);
-//                    removeTyping(username);
-                }
-            });
+    private final Emitter.Listener onTyping = args -> runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        String username;
+        try {
+            username = data.getString("username");
+        } catch (JSONException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
-    };
+    });
 
-    private final Emitter.Listener onTyping = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    try {
-                        username = data.getString("username");
-                    } catch (JSONException e) {
-                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                        return;
-                    }
-//                    addTyping(username);
-                }
-            });
+
+    private final Emitter.Listener onStopTyping = args -> runOnUiThread(() -> {
+        JSONObject data = (JSONObject) args[0];
+        String username;
+        try {
+            username = data.getString("username");
+        } catch (JSONException e) {
+            Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
-    };
-
-
-    private final Emitter.Listener onStopTyping = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    try {
-                        username = data.getString("username");
-                    } catch (JSONException e) {
-                        Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-                        return;
-                    }
-//                    removeTyping(username);
-                }
-            });
-        }
-    };
+    });
 
     private final Runnable onTypingTimeout = new Runnable() {
         @Override
@@ -665,7 +495,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void displayMessage(ArrayList<GetMessageResponse.Message> dataMessage, String avatar) {
         avatarUser = avatar;
-        mAdapter = new MessageAdapter(ChatActivity.this, dataMessage, idUserLoged, avatar);
+        mAdapter = new MessageAdapter(ChatActivity.this, dataMessage, idUserLog, avatar);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewChat.setLayoutManager(linearLayoutManager);
         recyclerViewChat.setAdapter(mAdapter);
@@ -685,11 +515,16 @@ public class ChatActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
                         runOnUiThread(() -> {
-//                            Log.d(TAG, "onResponse: " + response.body().getDataMessage().get(0).getTimestamp());
                             displayMessage(response.body().getDataMessage(), avatar);
                         });
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                        runOnUiThread(() -> {
+                            if(response.body().getMessage().equals("wrong token")){
+                                CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
+                            }else {
+                                AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 } else {
                     AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data conversation");
@@ -717,15 +552,18 @@ public class ChatActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Response<GetUserByIdResponse.Root> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        runOnUiThread(() -> {
-//                            Log.d(TAG, "onResponse: " + response.body().getUser().getFull_name());
-                            displayUserSelected(response.body().getUser());
-                        });
+                        runOnUiThread(() -> displayUserSelected(response.body().getUser()));
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
                     }
                 } else {
-                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data conversation");
+                    runOnUiThread(() -> {
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                        }
+                    });
                 }
                 LoadingDialog.dismissProgressDialog();
             }
@@ -741,21 +579,12 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-//    private void openCamera() {
-//        imgCamera.setOnClickListener(view -> {
-//            ImagePicker.Companion.with(this)
-//                    .cropSquare() // Cắt hình ảnh thành hình vuông
-//                    .start(REQUEST_IMAGE_PICKER);
-//        });
-//    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 imageUri = data.getData();
-//            Log.d(TAG, "onActivityResult: " + imageUri);
                 addMessage("");
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
@@ -770,8 +599,6 @@ public class ChatActivity extends AppCompatActivity {
 
         mSocket.off("user-chat", onUserChat);
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
-//        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
-//        mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off("on-chat", onNewMessage);
         mSocket.off("user joined", onUserJoined);
         mSocket.off("user left", onUserLeft);

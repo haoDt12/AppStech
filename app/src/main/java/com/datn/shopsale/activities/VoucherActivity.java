@@ -16,6 +16,7 @@ import com.datn.shopsale.modelsv2.MapVoucherCus;
 import com.datn.shopsale.responsev2.GetVoucherResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -68,7 +69,11 @@ public class VoucherActivity extends AppCompatActivity {
                         rcvMyVoucher.setAdapter(voucherAdapter);
                         rcvMyVoucher.setLayoutManager(new LinearLayoutManager(VoucherActivity.this));
                     }else {
-                        AlertDialogUtil.showAlertDialogWithOk(VoucherActivity.this,response.body().getMessage());
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(VoucherActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(VoucherActivity.this, response.body().getMessage());
+                        }
                     }
                 });
             }

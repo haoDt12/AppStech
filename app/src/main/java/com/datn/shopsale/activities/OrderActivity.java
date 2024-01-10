@@ -36,6 +36,7 @@ import com.datn.shopsale.responsev2.GetPriceZaloPayResponseV2;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.address.AddressActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -179,14 +180,23 @@ public class OrderActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(OrderActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GetDeliveryAddressResponse> call, @NonNull Throwable t) {
-                Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, t.getMessage());
+                });
             }
         });
     }
@@ -259,8 +269,11 @@ public class OrderActivity extends AppCompatActivity {
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(OrderActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                        }
                     });
                 }
             }
@@ -335,8 +348,11 @@ public class OrderActivity extends AppCompatActivity {
                     runOnUiThread(() -> createOrderZaloPay(response.body().getTotal_amount()));
                 } else {
                     runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(OrderActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                        }
                     });
                 }
             }
@@ -344,7 +360,7 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<GetPriceZaloPayResponseV2> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, t.getMessage());
                     LoadingDialog.dismissProgressDialog();
                 });
             }
@@ -492,6 +508,7 @@ public class OrderActivity extends AppCompatActivity {
         call.enqueue(new Callback<CreateOrderResponse>() {
             @Override
             public void onResponse(@NonNull Call<CreateOrderResponse> call, @NonNull Response<CreateOrderResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
@@ -508,8 +525,15 @@ public class OrderActivity extends AppCompatActivity {
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(OrderActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(OrderActivity.this, response.body().getMessage());
+                        } else {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(OrderActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, response.body().getMessage());
+                            }
+                        }
                     });
                 }
             }
@@ -517,7 +541,7 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<CreateOrderResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    Toast.makeText(OrderActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, t.getMessage());
                     LoadingDialog.dismissProgressDialog();
                 });
             }

@@ -1,5 +1,6 @@
 package com.datn.shopsale.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,12 +18,13 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.HistoryInfoAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
-import com.datn.shopsale.adapter.SearchAdapter;
 import com.datn.shopsale.databinding.ActivitySearchBinding;
-import com.datn.shopsale.models.Product;
-import com.datn.shopsale.response.GetListProductResponse;
+import com.datn.shopsale.modelsv2.Product;
+import com.datn.shopsale.request.SearchProductByNameRequest;
+import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -39,22 +40,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
-    private static final String TAG = SearchActivity.class.getSimpleName();
 
     private HistoryInfoAdapter adapter;
     private ActivitySearchBinding binding;
-    private ArrayList<GetListProductResponse.Product> productList = new ArrayList<>();
-    private ArrayList<Product> newList = new ArrayList<>();
-    ProductAdapter productAdapter;
-    SearchAdapter searchAdapter;
-    private RecyclerView rcvFoyyou;
-    private RecyclerView rcvResult;
+    private ProductAdapter productAdapter;
     private LinearLayout lnlResult;
     private EditText idSearch;
-    private TextView tvSearch, tvResult;
+    private TextView tvResult;
     private ApiService apiService;
     private PreferenceManager preferenceManager;
-    private ArrayList<GetListProductResponse.Product> dataList;
+    private List<Product> dataList;
 
 
     @Override
@@ -62,49 +57,39 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        rcvFoyyou = (RecyclerView) findViewById(R.id.rcv_foyyou);
+        RecyclerView rcvForYou = findViewById(R.id.rcv_foyyou);
         idSearch = findViewById(R.id.id_search);
-        tvSearch = findViewById(R.id.tv_search);
-        rcvResult = findViewById(R.id.rcv_result_search);
+        TextView tvSearch = findViewById(R.id.tv_search);
         tvResult = findViewById(R.id.tv_result_search);
         lnlResult = findViewById(R.id.lnl_result_search);
-
         setSupportActionBar(binding.toolbarSearch);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        binding.toolbarSearch.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        binding.toolbarSearch.setNavigationOnClickListener(v -> onBackPressed());
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
-
         List<String> list = new ArrayList<>();
-        list.add("lót chuột cỡ lớn");
-        list.add("cam wifi");
-        list.add("Chuột logitech");
-        list.add("laptop gaming");
-        list.add("bàn phím cơ");
-        list.add("lót chuột cỡ lớn");
-
-        adapter = new HistoryInfoAdapter(list, idSearch);
+        adapter = new HistoryInfoAdapter(list, txt -> {
+            idSearch.setText(txt);
+            doSearch(txt);
+            showSearchHistory();
+        });
         binding.rcvHistory.setAdapter(adapter);
         binding.rcvHistory.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
-        rcvFoyyou.setAdapter(productAdapter);
+        rcvForYou.setAdapter(productAdapter);
         displayProduct();
-//        search();
         showSearchHistory();
-
-
         tvSearch.setOnClickListener(v -> {
             String queryText = idSearch.getText().toString().trim();
             if (queryText.length() == 0) return;
             doSearch(queryText);
             saveSearchHistory(queryText);
+            showSearchHistory();
         });
 
     }
 
-    private void displayDataSearch(ArrayList<GetListProductResponse.Product> dataList) {
+    private void displayDataSearch(List<Product> dataList) {
         if (dataList.size() == 0) {
             lnlResult.setVisibility(View.GONE);
             tvResult.setVisibility(View.VISIBLE);
@@ -112,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             lnlResult.setVisibility(View.VISIBLE);
             tvResult.setVisibility(View.GONE);
-//            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
+            productAdapter = new ProductAdapter(dataList, this, R.layout.item_product);
             binding.rcvResultSearch.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
             binding.rcvResultSearch.setAdapter(productAdapter);
         }
@@ -121,10 +106,13 @@ public class SearchActivity extends AppCompatActivity {
     private void doSearch(String query) {
         LoadingDialog.showProgressDialog(this, "Loading...");
         String token = preferenceManager.getString("token");
-        Call<GetListProductResponse.Root> call = apiService.searchProduct(token, query);
-        call.enqueue(new Callback<GetListProductResponse.Root>() {
+        SearchProductByNameRequest request = new SearchProductByNameRequest();
+        request.setTxtSearch(query);
+        Call<GetAllProductResponse> call = apiService.searchProductByName(token, request);
+        call.enqueue(new Callback<GetAllProductResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetListProductResponse.Root> call, @NonNull Response<GetListProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
                         runOnUiThread(() -> {
@@ -132,35 +120,40 @@ public class SearchActivity extends AppCompatActivity {
                             displayDataSearch(dataList);
                         });
                     } else {
-                        AlertDialogUtil.showSimpleAlertDialog(SearchActivity.this, response.body().getMessage());
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(SearchActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(SearchActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 }
                 LoadingDialog.dismissProgressDialog();
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetListProductResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetAllProductResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     AlertDialogUtil.showSimpleAlertDialog(SearchActivity.this, t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
                 });
-                LoadingDialog.dismissProgressDialog();
             }
         });
 
     }
 
     private void displayProduct() {
-        productList.clear();
-        Call<GetListProductResponse.Root> call = apiService.getListProduct(preferenceManager.getString("token"));
-        call.enqueue(new Callback<GetListProductResponse.Root>() {
+        Call<GetAllProductResponse> call = apiService.getAllProduct(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetAllProductResponse>() {
             @Override
-            public void onResponse(Call<GetListProductResponse.Root> call, Response<GetListProductResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
+                assert response.body() != null;
                 if (response.body().getCode() == 1) {
-                    productList = response.body().getProduct();
                     runOnUiThread(new TimerTask() {
                         @Override
                         public void run() {
-//                            productAdapter = new ProductAdapter(productList, SearchActivity.this, R.layout.item_product);
+                            productAdapter = new ProductAdapter(response.body().getProduct(), SearchActivity.this, R.layout.item_product);
                             binding.rcvFoyyou.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
                             binding.rcvFoyyou.setAdapter(productAdapter);
                             LoadingDialog.dismissProgressDialog();
@@ -168,19 +161,24 @@ public class SearchActivity extends AppCompatActivity {
                     });
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(SearchActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(SearchActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(SearchActivity.this, response.body().getMessage());
+                        }
                     });
                 }
             }
 
             @Override
-            public void onFailure(Call<GetListProductResponse.Root> call, Throwable t) {
-                Toast.makeText(new SearchActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<GetAllProductResponse> call, @NonNull Throwable t) {
+                AlertDialogUtil.showAlertDialogWithOk(SearchActivity.this, t.getMessage());
             }
         });
     }
 
+    @SuppressLint("MutatingSharedPrefs")
     private void saveSearchHistory(String query) {
         SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);
         Set<String> searchSet = sharedPreferences.getStringSet("history", new HashSet<>());
@@ -188,24 +186,12 @@ public class SearchActivity extends AppCompatActivity {
         sharedPreferences.edit().putStringSet("history", searchSet).apply();
     }
 
-    // Hiển thị lịch sử tìm kiếm từ SharedPreferences
+    @SuppressLint("NotifyDataSetChanged")
     private void showSearchHistory() {
         SharedPreferences sharedPreferences = getSharedPreferences("search_history", Context.MODE_PRIVATE);
         Set<String> searchSet = sharedPreferences.getStringSet("history", new HashSet<>());
-        // Hiển thị danh sách lịch sử tìm kiếm trong giao diện người dùng
-        // Ví dụ: Hiển thị danh sách lịch sử tìm kiếm trong một RecyclerView hoặc ListView
         adapter.setData(new ArrayList<>(searchSet));
         adapter.notifyDataSetChanged();
     }
 
 }
-
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().
-//        return true;
-//    }
-//    private void Search(){
-//
-//    }

@@ -1,15 +1,13 @@
 package com.datn.shopsale.ui.login;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,14 +19,12 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,12 +34,8 @@ import retrofit2.Response;
 
 public class ForgotPassActivity extends AppCompatActivity {
     private TextInputEditText edEmail;
-    private Button btnSend;
-    private Toolbar toolbarForgotPass;
-    private ProgressBar progressBar;
     private PreferenceManager preferenceManager;
     private ApiService apiService;
-    private static final int PROGRESS_DELAY = 5000; // Thời gian đặt trước 5 giây
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,47 +44,14 @@ public class ForgotPassActivity extends AppCompatActivity {
         init();
     }
 
-    public void resetUserPassword(String email) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        progressBar.setVisibility(View.VISIBLE); // Hiển thị ProgressBar khi bắt đầu
-
-        mAuth.sendPasswordResetEmail(email)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // Sử dụng Handler để đặt trễ 5 giây trước khi ẩn ProgressBar
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setVisibility(View.GONE); // Ẩn ProgressBar khi hoàn thành
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Đã gửi xác nhận đến Email",
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Email không tồn tại", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }, PROGRESS_DELAY);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressBar.setVisibility(View.GONE); // Ẩn ProgressBar nếu xảy ra lỗi
-                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void init() {
-        toolbarForgotPass = (Toolbar) findViewById(R.id.toolbar_forgot_pass);
-        edEmail = (TextInputEditText) findViewById(R.id.ed_email);
-        btnSend = (Button) findViewById(R.id.btn_send);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        Toolbar toolbarForgotPass = findViewById(R.id.toolbar_forgot_pass);
+        edEmail = findViewById(R.id.ed_email);
+        Button btnSend = findViewById(R.id.btn_send);
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
         btnSend.setOnClickListener(v -> {
-            String email = edEmail.getText().toString().trim();
+            String email = Objects.requireNonNull(edEmail.getText()).toString().trim();
             if (email.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập email", Toast.LENGTH_SHORT).show();
                 return;
@@ -108,11 +67,9 @@ public class ForgotPassActivity extends AppCompatActivity {
             onResetPass(email);
         });
         setSupportActionBar(toolbarForgotPass);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarForgotPass.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbarForgotPass.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     public static boolean isNumeric(String strNum) {
@@ -145,14 +102,17 @@ public class ForgotPassActivity extends AppCompatActivity {
         LoadingDialog.showProgressDialog(ForgotPassActivity.this, "Loading...");
         Call<GetPassResponse> call = apiService.getPassWord(preferenceManager.getString("token"), username);
         call.enqueue(new Callback<GetPassResponse>() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onResponse(@NonNull Call<GetPassResponse> call, @NonNull Response<GetPassResponse> response) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
+                    assert response.body() != null;
                     if (response.body().getCode() == 1) {
                         Dialog dialog = new Dialog(ForgotPassActivity.this);
                         dialog.setContentView(R.layout.dialog_check_email);
                         Window window = dialog.getWindow();
+                        assert window != null;
                         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
                         window.setBackgroundDrawable(ForgotPassActivity.this.getDrawable(R.drawable.dialog_bg));
                         window.getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -161,16 +121,18 @@ public class ForgotPassActivity extends AppCompatActivity {
                         windowAttributes.gravity = Gravity.BOTTOM;
                         Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
                         ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
-                        btnCancel.setOnClickListener(view -> {
-                            dialog.dismiss();
-                        });
+                        btnCancel.setOnClickListener(view -> dialog.dismiss());
                         btnConfirm.setOnClickListener(view -> {
                             dialog.dismiss();
+                            finish();
                         });
                         dialog.show();
                     } else {
-                        LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(ForgotPassActivity.this, response.body().getMessage());
+                        if(response.body().getMessage().equals("wrong token")){
+                            CheckLoginUtil.gotoLogin(ForgotPassActivity.this,response.body().getMessage());
+                        }else {
+                            AlertDialogUtil.showAlertDialogWithOk(ForgotPassActivity.this, response.body().getMessage());
+                        }
                     }
                 });
             }

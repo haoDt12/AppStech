@@ -33,16 +33,14 @@ import com.datn.shopsale.responsev2.EditCusResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
@@ -53,8 +51,6 @@ import retrofit2.Response;
 
 public class InformationUserActivity extends AppCompatActivity {
     private static final String TAG = "UploadImageActivity";
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase mDatabase;
     private FirebaseStorage mStorage;
     private static final int REQUEST_IMAGE_PICKER = 100;
     private Uri imageUri;
@@ -77,15 +73,11 @@ public class InformationUserActivity extends AppCompatActivity {
     private String newName = null;
     private String newNumberPhone = null;
     private String newEmail = null;
-    private String newAvt = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_user);
         preferenceManager = new PreferenceManager(getApplicationContext());
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance();
         mStorage = FirebaseStorage.getInstance();
         apiService = RetrofitConnection.getApiService();
         FindViewById();
@@ -141,7 +133,11 @@ public class InformationUserActivity extends AppCompatActivity {
                     } else {
                         runOnUiThread(() -> {
                             LoadingDialog.dismissProgressDialog();
-                            Toast.makeText(InformationUserActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(InformationUserActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                            }
                         });
                     }
                 }
@@ -150,7 +146,7 @@ public class InformationUserActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<GetCusInfoResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
-                    Toast.makeText(InformationUserActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, t.getMessage());
                     LoadingDialog.dismissProgressDialog();
                 });
             }
@@ -210,8 +206,8 @@ public class InformationUserActivity extends AppCompatActivity {
                                 ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
                                 btnCancel.setOnClickListener(view -> dialog.dismiss());
                                 btnSendOtp.setOnClickListener(view -> {
-                                    if (TextUtils.isEmpty(edOtp.getText().toString().trim())) {
-                                        Toast.makeText(InformationUserActivity.this, "otp không được để trống", Toast.LENGTH_SHORT).show();
+                                    if (TextUtils.isEmpty(Objects.requireNonNull(edOtp.getText()).toString().trim())) {
+                                        Toast.makeText(InformationUserActivity.this, getResources().getString(R.string.ma_otp_khong_hop_le), Toast.LENGTH_SHORT).show();
                                     }
                                     request.setOtp(edOtp.getText().toString().trim());
                                     Call<EditCusResponse> call1 = apiService.editCus(preferenceManager.getString("token"), request);
@@ -229,14 +225,23 @@ public class InformationUserActivity extends AppCompatActivity {
                                                         AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
                                                     });
                                                 } else {
-                                                    runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage()));
+                                                    runOnUiThread(() -> {
+                                                        if (response.body().getMessage().equals("wrong token")) {
+                                                            CheckLoginUtil.gotoLogin(InformationUserActivity.this, response.body().getMessage());
+                                                        } else {
+                                                            AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                                                        }
+                                                    });
                                                 }
                                             }
                                         }
 
                                         @Override
                                         public void onFailure(@NonNull Call<EditCusResponse> call, @NonNull Throwable t) {
-                                            runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, t.getMessage()));
+                                            runOnUiThread(() -> {
+                                                AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, t.getMessage());
+                                                LoadingDialog.dismissProgressDialog();
+                                            });
                                         }
                                     });
                                 });
@@ -245,7 +250,11 @@ public class InformationUserActivity extends AppCompatActivity {
                         } else {
                             runOnUiThread(() -> {
                                 LoadingDialog.dismissProgressDialog();
-                                AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(InformationUserActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(InformationUserActivity.this, response.body().getMessage());
+                                }
                             });
                         }
                     }
@@ -264,7 +273,7 @@ public class InformationUserActivity extends AppCompatActivity {
 
     private void openCamera() {
         imgCamera.setOnClickListener(view -> ImagePicker.Companion.with(this)
-                .cropSquare() // Cắt hình ảnh thành hình vuông
+                .cropSquare()
                 .start(REQUEST_IMAGE_PICKER));
     }
 
