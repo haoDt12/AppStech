@@ -20,6 +20,8 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
@@ -30,10 +32,7 @@ public class EBankingPayActivity extends AppCompatActivity {
     private WebView webViewPay;
     private PreferenceManager preferenceManager;
     private CreateOrderRequest request;
-    private String address;
     private ApiService apiService;
-    private String voucherId;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,6 @@ public class EBankingPayActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
         webViewPay = findViewById(R.id.web_view_pay);
-        address = preferenceManager.getString("addressOrder");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         assert bundle != null;
@@ -82,22 +80,24 @@ public class EBankingPayActivity extends AppCompatActivity {
                         webViewPay.loadUrl(response.body().getUrl());
                     });
                 } else {
-                    runOnUiThread(() -> Toast.makeText(EBankingPayActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show());
+                    if (response.body().getMessage().equals("wrong token")) {
+                        CheckLoginUtil.gotoLogin(EBankingPayActivity.this, response.body().getMessage());
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(EBankingPayActivity.this, response.body().getMessage());
+                    }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<VnPayResponse> call, @NonNull Throwable t) {
-                runOnUiThread(() -> {
-                    Toast.makeText(EBankingPayActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(EBankingPayActivity.this, t.getMessage()));
             }
         });
     }
 
     private void showAlertDialog(String mess, String action) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Noification");
+        builder.setTitle("Notification");
         builder.setMessage(mess);
 
         builder.setPositiveButton("OK", (dialog, which) -> {

@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +30,8 @@ import com.datn.shopsale.responsev2.DeleteAddressResponse;
 import com.datn.shopsale.responsev2.EditAddressResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -43,23 +44,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddressActivity extends AppCompatActivity implements View.OnClickListener {
-    private Toolbar toolbarAddress;
     private static final int REQUEST_CODE_EDIT_CITY = 1;
-    private static final int REQUEST_SELECT_ADDRESS = 2;
-    private LinearLayout lnlAddAddress;
     private RecyclerView rcvAddress;
-    private ArrayList<Address> dataList = new ArrayList<>();
+    private final ArrayList<Address> dataList = new ArrayList<>();
     private static final int REQUEST_ADD_ADDRESS = 123;
     private AddressAdapter addressAdapter;
     PreferenceManager preferenceManager;
     private ApiService apiService;
-    private String selectedCity;
-    private String selectedDistrict;
-    private String selectedWard;
     private TextView edCity;
     String addressText;
-
-    private boolean isCurrentLocationSelected = false;
 
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
@@ -74,17 +67,15 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void init() {
-        toolbarAddress = (Toolbar) findViewById(R.id.toolbar_address);
-        rcvAddress = (RecyclerView) findViewById(R.id.rcv_address);
-        lnlAddAddress = findViewById(R.id.lnl_add_address);
+        Toolbar toolbarAddress = findViewById(R.id.toolbar_address);
+        rcvAddress = findViewById(R.id.rcv_address);
+        LinearLayout lnlAddAddress = findViewById(R.id.lnl_add_address);
         lnlAddAddress.setOnClickListener(this);
         setSupportActionBar(toolbarAddress);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
 
-        toolbarAddress.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbarAddress.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -127,12 +118,12 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
 
                                         final AlertDialog dialog = builder.create();
                                         dialog.show();
-                                        Toolbar toolbarCreAddress = (Toolbar) dialog.findViewById(R.id.toolbar_cre_address);
-                                        EditText edName = (EditText) dialog.findViewById(R.id.ed_name);
-                                        EditText edPhoneNumber = (EditText) dialog.findViewById(R.id.ed_phone_number);
-                                        edCity = (TextView) dialog.findViewById(R.id.ed_city);
-                                        EditText edStreet = (EditText) dialog.findViewById(R.id.ed_street);
-                                        Button btnSave = (Button) dialog.findViewById(R.id.btn_save);
+                                        Toolbar toolbarCreAddress = dialog.findViewById(R.id.toolbar_cre_address);
+                                        EditText edName = dialog.findViewById(R.id.ed_name);
+                                        EditText edPhoneNumber = dialog.findViewById(R.id.ed_phone_number);
+                                        edCity = dialog.findViewById(R.id.ed_city);
+                                        EditText edStreet = dialog.findViewById(R.id.ed_street);
+                                        Button btnSave = dialog.findViewById(R.id.btn_save);
                                         setSupportActionBar(toolbarCreAddress);
                                         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
                                         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
@@ -143,34 +134,28 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                                         edCity.setText(address.getCity());
                                         edStreet.setText(address.getStreet());
 
-                                        edCity.setOnClickListener(v -> {
-                                            startActivityForResult(new Intent(AddressActivity.this, CityActivity.class), REQUEST_CODE_EDIT_CITY);
-                                        });
+                                        edCity.setOnClickListener(v -> startActivityForResult(new Intent(AddressActivity.this, CityActivity.class), REQUEST_CODE_EDIT_CITY));
                                         btnSave.setOnClickListener(v -> {
                                             String name = edName.getText().toString().trim();
                                             String phone = edPhoneNumber.getText().toString().trim();
                                             String street = edStreet.getText().toString().trim();
                                             if (name.isEmpty() || phone.isEmpty() || street.isEmpty()) {
-                                                Toast.makeText(AddressActivity.this, "Không được để trống", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(AddressActivity.this, getResources().getString(R.string.khong_duoc_de_trong), Toast.LENGTH_SHORT).show();
                                             } else {
                                                 updateObj(address.get_id(), name, addressText, street, phone);
                                                 dialog.dismiss();
                                             }
                                         });
 
-                                        toolbarCreAddress.setNavigationOnClickListener(v -> {
-                                            dialog.dismiss();
-                                        });
+                                        toolbarCreAddress.setNavigationOnClickListener(v -> dialog.dismiss());
                                     }
 
                                     @Override
                                     public void deleteAddress(Address address) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(AddressActivity.this);
                                         builder.setTitle("Xóa địa chỉ");
-                                        builder.setMessage("Bạn có chắc chắn muốn xóa địa chỉ này?");
-                                        builder.setPositiveButton("Xóa", (dialog, which) -> {
-                                            delete(address.get_id());
-                                        });
+                                        builder.setMessage(getResources().getString(R.string.ban_co_muon_xoa_dia_chi));
+                                        builder.setPositiveButton("Xóa", (dialog, which) -> delete(address.get_id()));
                                         builder.setNegativeButton("Hủy", null);
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
@@ -181,23 +166,28 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                                 rcvAddress.setLayoutManager(linearLayoutManager);
                                 Intent resultIntent = getIntent();
                                 String value = resultIntent.getStringExtra("select");
-                                if (value != null && value.equals("oke")) {
-                                    addressAdapter.setIsAddress(true);
-                                } else {
-                                    addressAdapter.setIsAddress(false);
-                                }
+                                addressAdapter.setIsAddress(value != null && value.equals("oke"));
                                 rcvAddress.setAdapter(addressAdapter);
                             }
                         });
                     } else {
-                        Toast.makeText(AddressActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(AddressActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<GetDeliveryAddressResponse> call, @NonNull Throwable t) {
-                Toast.makeText(AddressActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, t.getMessage());
+                });
             }
         });
     }
@@ -218,17 +208,26 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                 runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        Toast.makeText(AddressActivity.this, "Sửa thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddressActivity.this,getResources().getString(R.string.sua_thanh_cong), Toast.LENGTH_SHORT).show();
                         getDataAddress();
                     } else {
-                        Toast.makeText(AddressActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(AddressActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<EditAddressResponse> call, @NonNull Throwable t) {
-                Log.d("MAIN", "Respone Fail" + t.getMessage());
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, t.getMessage());
+                });
             }
         });
     }
@@ -243,17 +242,26 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
             public void onResponse(@NonNull Call<DeleteAddressResponse> call, @NonNull Response<DeleteAddressResponse> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        Toast.makeText(AddressActivity.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddressActivity.this, getResources().getString(R.string.xoa_thanh_cong), Toast.LENGTH_SHORT).show();
                         getDataAddress();
                     } else {
-                        Toast.makeText(AddressActivity.this, " " + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(AddressActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, response.body().getMessage());
+                            }
+                        });
                     }
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<DeleteAddressResponse> call, @NonNull Throwable t) {
-                Toast.makeText(AddressActivity.this, " " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(AddressActivity.this, t.getMessage());
+                });
             }
         });
     }
@@ -262,20 +270,16 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ADD_ADDRESS && resultCode == Activity.RESULT_OK) {
-            // Refresh address list
             getDataAddress();
         } else if (requestCode == REQUEST_CODE_EDIT_CITY && resultCode == Activity.RESULT_OK) {
-            // Nhận dữ liệu từ CityActivity
-            isCurrentLocationSelected = data.getBooleanExtra("isCurrentLocationSelected", false);
+            boolean isCurrentLocationSelected = data.getBooleanExtra("isCurrentLocationSelected", false);
             if (isCurrentLocationSelected) {
-                // Nếu đã chọn vị trí hiện tại
                 addressText = data.getStringExtra("currentLocation");
                 edCity.setText(addressText);
             } else {
-                selectedCity = data.getStringExtra("selectedCity");
-                selectedDistrict = data.getStringExtra("selectedDistrict");
-                selectedWard = data.getStringExtra("selectedWard");
-                // Hiển thị dữ liệu trong EditText (edCity)
+                String selectedCity = data.getStringExtra("selectedCity");
+                String selectedDistrict = data.getStringExtra("selectedDistrict");
+                String selectedWard = data.getStringExtra("selectedWard");
                 if (selectedCity != null && selectedDistrict != null && selectedWard != null) {
                     addressText = selectedCity + ", " + selectedDistrict + ", " + selectedWard;
                     edCity.setText(addressText);

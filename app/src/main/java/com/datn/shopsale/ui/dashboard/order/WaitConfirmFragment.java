@@ -18,6 +18,7 @@ import com.datn.shopsale.request.GetOrderByStatusRequest;
 import com.datn.shopsale.responsev2.GetOrderResponseV2;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -74,7 +75,11 @@ public class WaitConfirmFragment extends Fragment {
                         adapter = new ListOrderAdapter(listOrder, requireActivity());
                         binding.rcvWaitConfirm.setAdapter(adapter);
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
                     }
                 });
             }

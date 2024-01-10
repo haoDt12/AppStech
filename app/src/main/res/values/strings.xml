@@ -180,4 +180,16 @@
     <string name="danh_gia">Đánh giá</string>
     <string name="xem_them">--Xem thêm--</string>
     <string name="mua_ngay">Mua ngay</string>
+    <string name="ma_otp_khong_hop_le">Mã OTP không hợp lệ vui lòng thử lại</string>
+    <string name="chua_co_cuoc_hoi_thoai">Chưa có cuộc hội thoại nào</string>
+    <string name="them_dia_chi_thanh_cong">Thêm địa chỉ thành công</string>
+    <string name="cui_long_nhap_ten">Vui lòng nhập tên</string>
+    <string name="vui_long_nhap_huye_tinh_xa">Vui lòng nhập tỉnh,huyện,xã</string>
+    <string name="vui_long_nhap_duong_so_nha">Vui lòng nhập số đường/nhà</string>
+    <string name="khong_duoc_de_trong">Không được để trống</string>
+    <string name="ban_co_muon_xoa_dia_chi">Bạn có chắc chắn muốn xóa địa chỉ này?</string>
+    <string name="sua_thanh_cong">Sửa thành công</string>
+    <string name="xoa_thanh_cong">Xóa thành công</string>
+    <string name="xem_them_1">Xem thêm</string>
+    <string name="an_bot">Ẩn bớt</string>
 </resources>

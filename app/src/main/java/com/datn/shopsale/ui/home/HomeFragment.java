@@ -33,6 +33,7 @@ import com.datn.shopsale.responsev2.GetCategoryResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivityFirebase;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -83,16 +84,12 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<GetBannerResponse.Root>() {
             @Override
             public void onResponse(@NonNull Call<GetBannerResponse.Root> call, @NonNull Response<GetBannerResponse.Root> response) {
-                Log.d("TAG", "onResponse: " + response.code() + "zzzzzzzzzzz" + response);
-                Log.d("TAG", "onResponse: " + response.body());
-                Log.d("check", "onResponse: 1");
                 assert response.body() != null;
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     if (response.body().code == 1) {
                         for (GetBannerResponse.Banner item : response.body().banner) {
                             listImg.add(new GetBannerResponse.Banner(item._id, item.img));
-                            Log.d("TAG", "run: " + listImg.get(0).getImg());
                         }
                         for (int i = 0; i < listImg.size(); i++) {
                             list.add(listImg.get(i).getImg());
@@ -152,13 +149,9 @@ public class HomeFragment extends Fragment {
                     });
                 }
             }, 2000, 2000);
-        } else {
-            Log.d("zzzzz", "onViewCreated: null binding" );
         }
         displayCategory();
         displayProduct();
-        Log.d("zzzzzz", "onCreateView: " + preferenceManager.getString("token"));
-        Log.d("fcm", "onViewCreated: " + preferenceManager.getString("fcm"));
     }
 
     private void displayProduct() {
@@ -181,7 +174,11 @@ public class HomeFragment extends Fragment {
                         binding.rcvListItemPro.setAdapter(productAdapter);
 
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
                     }
                 });
             }
@@ -202,8 +199,6 @@ public class HomeFragment extends Fragment {
         call.enqueue(new Callback<GetCategoryResponse>() {
             @Override
             public void onResponse(@NonNull Call<GetCategoryResponse> call, @NonNull Response<GetCategoryResponse> response) {
-                Log.d("zzzz", "onResponse: " + response);
-                Log.d("check", "onResponse: 3");
                 assert response.body() != null;
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
@@ -211,10 +206,10 @@ public class HomeFragment extends Fragment {
                         List<Category> dataCategory = response.body().getCategory();
 
                         if (dataCategory.size() > 12) {
-                            if (!dataCategory.get(11).getName().equals("Xem thêm")) {
+                            if (!dataCategory.get(11).getName().equals(getResources().getString(R.string.xem_them_1))) {
                                 String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
-                                Category viewMore = new Category("-1", "Xem thêm", "---", temp);
-                                Category viewLess = new Category("-1", "Ẩn bớt", "---", temp);
+                                Category viewMore = new Category("-1", getResources().getString(R.string.xem_them_1), "---", temp);
+                                Category viewLess = new Category("-1", getResources().getString(R.string.an_bot), "---", temp);
                                 if (isDisableItem) {
                                     dataCategory.add(11, viewMore);
                                 } else {

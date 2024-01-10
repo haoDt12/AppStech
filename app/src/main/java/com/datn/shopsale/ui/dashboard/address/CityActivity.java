@@ -1,10 +1,5 @@
 package com.datn.shopsale.ui.dashboard.address;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
@@ -38,10 +38,8 @@ public class CityActivity extends AppCompatActivity {
     private ListView districtListView;
     private ListView wardListView;
     private ApiService apiService;
-    private LinearLayout lnlLocation ;
     private FusedLocationProviderClient fusedLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    private boolean isCurrentLocationSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,30 +49,21 @@ public class CityActivity extends AppCompatActivity {
         cityListView = findViewById(R.id.lv_city);
         districtListView = findViewById(R.id.lv_district);
         wardListView = findViewById(R.id.lv_ward);
-        lnlLocation = findViewById(R.id.lnl_location_current);
-
-        // Initialize Retrofit
+        LinearLayout lnlLocation = findViewById(R.id.lnl_location_current);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://provinces.open-api.vn")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         apiService = retrofit.create(ApiService.class);
-
-        // Get and display cities
         getCities();
-
-        // Khởi tạo FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         lnlLocation.setOnClickListener(v -> {
-            // Kiểm tra quyền truy cập vị trí
             if (ContextCompat.checkSelfPermission(
                     CityActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
-                // Nếu đã có quyền, lấy vị trí hiện tại
                 getCurrentLocation();
             } else {
-                // Nếu chưa có quyền, yêu cầu người dùng cấp quyền
                 ActivityCompat.requestPermissions(
                         CityActivity.this,
                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -87,18 +76,15 @@ public class CityActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void getCurrentLocation() {
-        // Lấy vị trí hiện tại
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
-                        // Lấy địa chỉ từ vị trí
                         String addressText = LocationUtils.getAddressFromLocation(CityActivity.this, location.getLatitude(), location.getLongitude());
                         Log.d("TAG", "getCurrentLocation: " + addressText);
                         Log.d("TAG", "getCurrentLocation1: " + location.getLatitude());
                         Log.d("TAG", "getCurrentLocation2: " + location.getLongitude());
 
                         if (addressText != null) {
-                            // Gửi dữ liệu vị trí hiện tại về AddAddressActivity
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("isCurrentLocationSelected", true);
                             resultIntent.putExtra("currentLocation", addressText);
@@ -121,7 +107,7 @@ public class CityActivity extends AppCompatActivity {
         Call<List<AddressCDW.City>> call = apiService.getCities();
         call.enqueue(new Callback<List<AddressCDW.City>>() {
             @Override
-            public void onResponse(Call<List<AddressCDW.City>> call, Response<List<AddressCDW.City>> response) {
+            public void onResponse(@NonNull Call<List<AddressCDW.City>> call, @NonNull Response<List<AddressCDW.City>> response) {
                 if (response.isSuccessful()) {
                     List<AddressCDW.City> cities = response.body();
                     displayCities(cities);
@@ -131,7 +117,7 @@ public class CityActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<AddressCDW.City>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<AddressCDW.City>> call, @NonNull Throwable t) {
                 Toast.makeText(CityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -140,29 +126,23 @@ public class CityActivity extends AppCompatActivity {
     private void displayCities(List<AddressCDW.City> cities) {
         ArrayAdapter<AddressCDW.City> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, cities);
         cityListView.setAdapter(adapter);
-
-        // Set click listener for cityListView
         cityListView.setOnItemClickListener((parent, view, position, id) -> {
-            // Hide the cityListView
             cityListView.setVisibility(View.GONE);
-
-            // Display the districtListView
             districtListView.setVisibility(View.VISIBLE);
-
             AddressCDW.City selectedCity = (AddressCDW.City) parent.getItemAtPosition(position);
-            getDistricts(selectedCity.getCode(),selectedCity);
+            getDistricts(selectedCity.getCode(), selectedCity);
         });
     }
 
-    private void getDistricts(int cityCode,AddressCDW.City selectedCity) {
+    private void getDistricts(int cityCode, AddressCDW.City selectedCity) {
         Call<DistrictRespone> call = apiService.getDistrict(cityCode, 2);
         call.enqueue(new Callback<DistrictRespone>() {
             @Override
-            public void onResponse(Call<DistrictRespone> call, Response<DistrictRespone> response) {
+            public void onResponse(@NonNull Call<DistrictRespone> call, @NonNull Response<DistrictRespone> response) {
                 if (response.isSuccessful()) {
                     DistrictRespone districtResponse = response.body();
                     if (districtResponse != null && districtResponse.getDistricts() != null) {
-                        displayDistricts(districtResponse.getDistricts(),selectedCity);
+                        displayDistricts(districtResponse.getDistricts(), selectedCity);
                     } else {
                         Toast.makeText(CityActivity.this, "No districts found", Toast.LENGTH_SHORT).show();
                     }
@@ -172,18 +152,18 @@ public class CityActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<DistrictRespone> call, Throwable t) {
+            public void onFailure(@NonNull Call<DistrictRespone> call, @NonNull Throwable t) {
                 Toast.makeText(CityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "err: " + t.getMessage());
             }
         });
     }
 
-    private void getWards(int districtCode, AddressCDW.City selectedCity,AddressCDW.District selectedDistrict) {
+    private void getWards(int districtCode, AddressCDW.City selectedCity, AddressCDW.District selectedDistrict) {
         Call<WardsRespone> call = apiService.getWard(districtCode, 2);
         call.enqueue(new Callback<WardsRespone>() {
             @Override
-            public void onResponse(Call<WardsRespone> call, Response<WardsRespone> response) {
+            public void onResponse(@NonNull Call<WardsRespone> call, @NonNull Response<WardsRespone> response) {
                 if (response.isSuccessful()) {
                     WardsRespone wardsResponse = response.body();
                     if (wardsResponse != null && wardsResponse.getWards() != null) {
@@ -197,7 +177,7 @@ public class CityActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<WardsRespone> call, Throwable t) {
+            public void onFailure(@NonNull Call<WardsRespone> call, @NonNull Throwable t) {
                 Toast.makeText(CityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "err: " + t.getMessage());
             }
@@ -213,25 +193,19 @@ public class CityActivity extends AppCompatActivity {
             wardListView.setVisibility(View.VISIBLE);
 
             AddressCDW.District selectedDistrict = (AddressCDW.District) parent.getItemAtPosition(position);
-            getWards(selectedDistrict.getCode(), selectedCity,selectedDistrict);
+            getWards(selectedDistrict.getCode(), selectedCity, selectedDistrict);
         });
     }
 
     private void displayWards(List<AddressCDW.Ward> wards, AddressCDW.City selectedCity, AddressCDW.District selectedDistrict) {
         ArrayAdapter<AddressCDW.Ward> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, wards);
         wardListView.setAdapter(adapter);
-
         wardListView.setOnItemClickListener((parent, view, position, id) -> {
             AddressCDW.Ward selectedWard = (AddressCDW.Ward) parent.getItemAtPosition(position);
-
-            // Gửi dữ liệu về AddAddressActivity
             Intent resultIntent = new Intent();
             resultIntent.putExtra("selectedCity", selectedCity.getName());
             resultIntent.putExtra("selectedDistrict", selectedDistrict.getName());
             resultIntent.putExtra("selectedWard", selectedWard.getName());
-//            Log.d("TAG", "displaycity: " + selectedCity.getName());
-//            Log.d("TAG", "displaydis: " + selectedDistrict.getName());
-//            Log.d("TAG", "displayward: " + selectedWard.getName());
             setResult(Activity.RESULT_OK, resultIntent);
             finish();
         });
@@ -242,10 +216,8 @@ public class CityActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Quyền được cấp, lấy vị trí hiện tại
                 getCurrentLocation();
             } else {
-                // Người dùng từ chối cấp quyền
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
             }
         }

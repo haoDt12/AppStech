@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +19,9 @@ import com.datn.shopsale.databinding.FragmentNotificationsBinding;
 import com.datn.shopsale.models.Notification;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import java.util.ArrayList;
@@ -31,8 +33,7 @@ import retrofit2.Response;
 
 public class NotificationsFragment extends Fragment {
     private NotificationAdapter notificationAdapter;
-    //private NotifiAdapter adapter;
-    private List<Notification> notificationList = new ArrayList<>();
+    private final List<Notification> notificationList = new ArrayList<>();
 
     private FragmentNotificationsBinding binding;
     private PreferenceManager preferenceManager;
@@ -41,15 +42,14 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        return root;
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         binding.rcvNotification.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         customAppbar();
-        preferenceManager = new PreferenceManager(getActivity());
+        preferenceManager = new PreferenceManager(requireActivity());
         apiService = RetrofitConnection.getApiService();
         GetNotification();
     }
@@ -61,12 +61,12 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void customAppbar() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(false); // Hiển thị nút Back
-            actionBar.setDisplayShowTitleEnabled(false); // Ẩn tiêu đề mặc định
-            actionBar.setDisplayShowCustomEnabled(true); // Cho phép hiển thị AppBar tùy chỉnh
-            actionBar.setCustomView(R.layout.custom_appbar_notification); // Thiết lập AppBar tùy chỉnh
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setCustomView(R.layout.custom_appbar_notification);
             actionBar.getCustomView().findViewById(R.id.img_delete_notification).setOnClickListener(view -> {
                 notificationList.clear();
                 notificationAdapter.setListNotification(notificationList);
@@ -77,15 +77,17 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void GetNotification() {
+        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
         notificationList.clear();
         String idUser = preferenceManager.getString("userId");
         Call<GetNotificationResponse.Root> call = apiService.getNotification(preferenceManager.getString("token"));
         call.enqueue(new Callback<GetNotificationResponse.Root>() {
             @Override
-            public void onResponse(Call<GetNotificationResponse.Root> call, Response<GetNotificationResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Response<GetNotificationResponse.Root> response) {
+                requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
+                assert response.body() != null;
                 if (response.body().code == 1) {
                     NotificationCount.count = response.body().notification.size();
-//                    Toast.makeText(getActivity(), "" + NotificationCount.count , Toast.LENGTH_SHORT).show();
                     for (GetNotificationResponse.Notification item : response.body().notification) {
                         Notification notification = new Notification();
                         notification.set_id(item.get_id());
@@ -97,49 +99,54 @@ public class NotificationsFragment extends Fragment {
                     }
                     updateAdapter();
                 } else {
-                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                    if (response.body().message.equals("wrong token")) {
+                        CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                    }
                 }
 
             }
 
             @Override
-            public void onFailure(Call<GetNotificationResponse.Root> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
+                AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
             }
         });
-
-        //private
+        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
         Call<GetNotificationResponse.Root> callPrivate = apiService.getNotificationPrivate(preferenceManager.getString("token"), idUser);
         callPrivate.enqueue(new Callback<GetNotificationResponse.Root>() {
             @Override
-            public void onResponse(Call<GetNotificationResponse.Root> call, Response<GetNotificationResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Response<GetNotificationResponse.Root> response) {
+                requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
+                assert response.body() != null;
                 if (response.body().code == 1) {
                     for (GetNotificationResponse.Notification item : response.body().notification) {
                         notificationList.add(new Notification(item.get_id(), item.getTitle(), item.getDate(), item.getContent(), item.getImg(), item.getUserId(), "Private"));
                     }
                     updateAdapter();
                 } else {
-                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                    if (response.body().message.equals("wrong token")) {
+                        CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<GetNotificationResponse.Root> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
+                AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
             }
-
         });
     }
 
     private void updateAdapter() {
         NotificationCount.count = notificationList.size();
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                binding.rcvNotification.setLayoutManager(new LinearLayoutManager(getActivity()));
-                notificationAdapter = new NotificationAdapter(notificationList, getActivity());
-                binding.rcvNotification.setAdapter(notificationAdapter);
-            }
+        requireActivity().runOnUiThread(() -> {
+            binding.rcvNotification.setLayoutManager(new LinearLayoutManager(getActivity()));
+            notificationAdapter = new NotificationAdapter(notificationList, getActivity());
+            binding.rcvNotification.setAdapter(notificationAdapter);
         });
     }
 

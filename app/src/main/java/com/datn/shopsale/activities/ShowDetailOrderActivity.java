@@ -2,7 +2,6 @@ package com.datn.shopsale.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +19,7 @@ import com.datn.shopsale.request.CancelOrderRequest;
 import com.datn.shopsale.responsev2.CancelOrderResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.PreferenceManager;
 
@@ -81,8 +81,12 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
                             });
                         } else {
                             runOnUiThread(() -> {
-                                AlertDialogUtil.showAlertDialogWithOk(ShowDetailOrderActivity.this,response.body().getMessage());
                                 dialogInterface.cancel();
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(ShowDetailOrderActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ShowDetailOrderActivity.this, response.body().getMessage());
+                                }
                             });
                         }
                     }
@@ -90,8 +94,10 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<CancelOrderResponse> call, @NonNull Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                    dialogInterface.cancel();
+                    runOnUiThread(() -> {
+                        dialogInterface.cancel();
+                        AlertDialogUtil.showAlertDialogWithOk(ShowDetailOrderActivity.this,t.getMessage());
+                    });;
                 }
             });
         });

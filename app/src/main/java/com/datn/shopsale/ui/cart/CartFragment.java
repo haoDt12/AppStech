@@ -5,7 +5,6 @@ import static android.app.Activity.RESULT_OK;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,8 @@ import com.datn.shopsale.modelsv2.ProductCart;
 import com.datn.shopsale.responsev2.BaseResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
+import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.CurrencyUtils;
 import com.datn.shopsale.utils.LoadingDialog;
@@ -57,6 +58,7 @@ public class CartFragment extends Fragment {
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private DataListOrder dataListOrder;
     private List<Product> productList;
+
     public CartFragment() {
     }
 
@@ -95,7 +97,7 @@ public class CartFragment extends Fragment {
             if (dataListOrder != null) {
                 Intent intent = new Intent(getActivity(), OrderActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("listOrder",dataListOrder);
+                bundle.putSerializable("listOrder", dataListOrder);
                 intent.putExtras(bundle);
                 activityResultLauncher.launch(intent);
             } else {
@@ -175,57 +177,70 @@ public class CartFragment extends Fragment {
                     });
                 } else {
                     requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
                     });
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ProductCartResponse> call, @NonNull Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+                });
             }
         });
 
     }
 
     private void ReduceQuantity(ProductCart objCart, int index) {
+        LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         String token = preferenceManager.getString("token");
         String caculation = Constants.btnReduce;
         String productId = objCart.getProductCart().get_id();
         String idUser = preferenceManager.getString("userId");
-        try {
-            Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
-            call.enqueue(new Callback<BaseResponse>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
-                    assert response.body() != null;
-                    if (response.body().getCode() == 1) {
-                        if (objCart.getStatus() == 2) {
-                            tong = tong - Integer.parseInt(objCart.getProductCart().getPrice());
-                            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-                        }
-                        cartList.get(index).setQuantity(cartList.get(index).getQuantity() - 1);
-                        if (cartList.get(index).getQuantity() == 0) {
-                            cartList.remove(index);
-                        }
-                        cartAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+        Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
+        call.enqueue(new Callback<BaseResponse>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
+                assert response.body() != null;
+                if (response.body().getCode() == 1) {
+                    if (objCart.getStatus() == 2) {
+                        tong = tong - Integer.parseInt(objCart.getProductCart().getPrice());
+                        Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                     }
+                    cartList.get(index).setQuantity(cartList.get(index).getQuantity() - 1);
+                    if (cartList.get(index).getQuantity() == 0) {
+                        cartList.remove(index);
+                    }
+                    cartAdapter.notifyDataSetChanged();
+                } else {
+                    requireActivity().runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error", "onFailure: " + e);
-            Toast.makeText(getActivity(), "error: " + e, Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+                });
+            }
+        });
     }
 
     private void IncreaseQuantity(ProductCart objCart, int index) {
@@ -233,35 +248,39 @@ public class CartFragment extends Fragment {
         String caculation = Constants.btnIncrease;
         String productId = objCart.getProductCart().get_id();
         String idUser = preferenceManager.getString("userId");
-        try {
-            Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
-            call.enqueue(new Callback<BaseResponse>() {
-                @SuppressLint("NotifyDataSetChanged")
-                @Override
-                public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
-                    assert response.body() != null;
-                    if (response.body().getCode() == 1) {
-                        if (objCart.getStatus() == 2) {
-                            tong = tong + Integer.parseInt(objCart.getProductCart().getPrice());
-                            Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
-                        }
-                        cartList.get(index).setQuantity(cartList.get(index).getQuantity() + 1);
-                        cartAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+        Call<BaseResponse> call = apiService.updateCart(token, idUser, productId, caculation);
+        call.enqueue(new Callback<BaseResponse>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                assert response.body() != null;
+                if (response.body().getCode() == 1) {
+                    if (objCart.getStatus() == 2) {
+                        tong = tong + Integer.parseInt(objCart.getProductCart().getPrice());
+                        Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
                     }
+                    cartList.get(index).setQuantity(cartList.get(index).getQuantity() + 1);
+                    cartAdapter.notifyDataSetChanged();
+                } else {
+                    requireActivity().runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
-                    Log.e("Error", "onFailure: " + t);
-                    Toast.makeText(getActivity(), "error: " + t, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (Exception e) {
-            Log.e("Error", "onFailure: " + e);
-            Toast.makeText(getActivity(), "error: " + e, Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
+                requireActivity().runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+                });
+            }
+        });
     }
 
     private void onFragmentResult() {

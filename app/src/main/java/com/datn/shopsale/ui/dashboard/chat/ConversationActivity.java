@@ -17,6 +17,7 @@ import com.datn.shopsale.response.GetConversationResponse;
 import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
+import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
@@ -75,9 +76,7 @@ public class ConversationActivity extends AppCompatActivity {
         setSupportActionBar(toolbarConversation);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
-        toolbarConversation.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbarConversation.setNavigationOnClickListener(v -> onBackPressed());
 
         getDataConversation(true);
 
@@ -85,18 +84,14 @@ public class ConversationActivity extends AppCompatActivity {
 
     void initView() {
         toolbarConversation = findViewById(R.id.toolbar_conversation);
-        rcvConversation = (RecyclerView) findViewById(R.id.rcv_conversation);
+        rcvConversation = findViewById(R.id.rcv_conversation);
         preferenceManager = new PreferenceManager(ConversationActivity.this);
     }
 
-    private final Emitter.Listener onConnect = args -> runOnUiThread(() -> {
-//        Toast.makeText(getApplicationContext(), R.string.connect, Toast.LENGTH_LONG).show();
-        Log.d(TAG, "run: " + R.string.connect);
-    });
+    private final Emitter.Listener onConnect = args -> runOnUiThread(() -> Log.d(TAG, "run: " + R.string.connect));
 
     private final Emitter.Listener onNewMessage = args -> runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
-        Log.d(TAG, "run on new message: " + data);
         Toast.makeText(ConversationActivity.this, "onNewMessage: ", Toast.LENGTH_SHORT).show();
         String message;
         try {
@@ -122,16 +117,11 @@ public class ConversationActivity extends AppCompatActivity {
         for (GetConversationResponse.Conversation conversation : dataConversation) {
             listIdConversation.add(conversation.get_id());
         }
-        getDataLatestMessage(listIdConversation, isLoad, new LatestMessageCallback() {
-            @Override
-            public void onLatestMessageLoaded(ArrayList<GetMessageResponse.Message> dataMessage) {
-//                Log.d(TAG, "onLatestMessageLoaded: " + dataConversation.toString());
-//                Log.d(TAG, "onLatestMessageLoaded: " + dataMessage.toString());
-                conversationAdapter = new ConversationAdapter(ConversationActivity.this, dataConversation, dataMessage);
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
-                rcvConversation.setLayoutManager(linearLayoutManager);
-                rcvConversation.setAdapter(conversationAdapter);
-            }
+        getDataLatestMessage(listIdConversation, isLoad, dataMessage -> {
+            conversationAdapter = new ConversationAdapter(ConversationActivity.this, dataConversation, dataMessage);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
+            rcvConversation.setLayoutManager(linearLayoutManager);
+            rcvConversation.setAdapter(conversationAdapter);
         });
 
     }
@@ -163,7 +153,13 @@ public class ConversationActivity extends AppCompatActivity {
 
                             });
                         } else {
-                            AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
+                            runOnUiThread(() -> {
+                                if(response.body().getMessage().equals("wrong token")){
+                                    CheckLoginUtil.gotoLogin(ConversationActivity.this,response.body().getMessage());
+                                }else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
+                                }
+                            });
                         }
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "error get data conversation");
@@ -175,7 +171,6 @@ public class ConversationActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<GetMessageResponse.Root> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure: " + t.getMessage());
                         AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, t.getMessage());
                     });
                 }
@@ -202,14 +197,20 @@ public class ConversationActivity extends AppCompatActivity {
                             runOnUiThread(() -> {
                                 dataConversation = response.body().getConversation();
                                 if (dataConversation.size() == 0) {
-                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "Chưa có cuộc hội thoại nào");
+                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, getResources().getString(R.string.chua_co_cuoc_hoi_thoai));
                                 } else {
                                     displayConversation(dataConversation, isLoad);
                                 }
 
                             });
                         } else {
-                            AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
+                            runOnUiThread(() -> {
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(ConversationActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
+                                }
+                            });
                         }
                     } else {
                         AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "error get data conversation");
@@ -221,7 +222,6 @@ public class ConversationActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<GetConversationResponse.Root> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure: " + t.getMessage());
                         AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, t.getMessage());
                     });
 

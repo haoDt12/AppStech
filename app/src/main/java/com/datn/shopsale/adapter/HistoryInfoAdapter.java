@@ -1,15 +1,15 @@
 package com.datn.shopsale.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.datn.shopsale.Interface.IClickHis;
 import com.datn.shopsale.R;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class HistoryInfoAdapter extends RecyclerView.Adapter<HistoryInfoAdapter.HistoryViewHolder>{
     private List<String> list;
-    private EditText searchView;
-
-    public HistoryInfoAdapter(List<String> list, EditText searchView) {
+    private IClickHis iClickHis;
+    @SuppressLint("NotifyDataSetChanged")
+    public HistoryInfoAdapter(List<String> list, IClickHis iClickHis) {
         this.list = list;
-        this.searchView = searchView;
+        this.iClickHis  = iClickHis;
         notifyDataSetChanged();
     }
 
@@ -40,9 +40,7 @@ public class HistoryInfoAdapter extends RecyclerView.Adapter<HistoryInfoAdapter.
         }
 
         holder.tvInfoHistory.setText(item);
-        holder.tvInfoHistory.setOnClickListener(v->{
-//            searchView.setQuery(item, false);
-        });
+        holder.tvInfoHistory.setOnClickListener(v-> iClickHis.onclick(item));
     }
 
     @Override
@@ -50,16 +48,17 @@ public class HistoryInfoAdapter extends RecyclerView.Adapter<HistoryInfoAdapter.
         return list == null?0:list.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(ArrayList<String> strings) {
         this.list = strings;
         notifyDataSetChanged();
     }
 
-    public class HistoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvInfoHistory;
+    public static class HistoryViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvInfoHistory;
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvInfoHistory = (TextView) itemView.findViewById(R.id.tv_infoHistory);
+            tvInfoHistory = itemView.findViewById(R.id.tv_infoHistory);
         }
     }
 }
