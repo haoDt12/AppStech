@@ -98,13 +98,10 @@ public class HomeFragment extends Fragment {
                         binding.vpgSlideImage.setAdapter(sliderAdapter);
                         binding.circleIndicator.setViewPager(binding.vpgSlideImage);
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
+                        Log.d("item", "onResponse: " + list.size());
 
                     } else {
-                        if (response.body().message.equals("wrong token")) {
-                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
-                        } else {
-                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
-                        }
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
                     }
                 });
             }
@@ -114,6 +111,7 @@ public class HomeFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+
                 });
             }
 
@@ -167,6 +165,7 @@ public class HomeFragment extends Fragment {
                 Log.d("check", "onResponse: 2");
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
+
                     if (response.body().getCode() == 1) {
                         dataList = response.body().getProduct();
 
@@ -207,7 +206,7 @@ public class HomeFragment extends Fragment {
                         List<Category> dataCategory = response.body().getCategory();
 
                         if (dataCategory.size() > 12) {
-                            if (!dataCategory.get(11).getTitle().equals(getResources().getString(R.string.xem_them_1))) {
+                            if (!dataCategory.get(11).getName().equals(getResources().getString(R.string.xem_them_1))) {
                                 String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
                                 Category viewMore = new Category("-1", getResources().getString(R.string.xem_them_1), "---", temp);
                                 Category viewLess = new Category("-1", getResources().getString(R.string.an_bot), "---", temp);
@@ -232,11 +231,7 @@ public class HomeFragment extends Fragment {
                         binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                         binding.rcvListCategories.setAdapter(categoriesAdapter);
                     } else {
-                        if (response.body().getMessage().equals("wrong token")) {
-                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
-                        } else {
-                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
-                        }
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     }
                 });
             }

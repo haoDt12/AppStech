@@ -31,24 +31,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.datn.shopsale.Interface.ApiService;
+import com.datn.shopsale.Interface.IActionMessage;
 import com.datn.shopsale.R;
-import com.datn.shopsale.response.GetMessageResponse;
-import com.datn.shopsale.response.GetUserByIdResponse;
+import com.datn.shopsale.modelsv2.Conversation;
+import com.datn.shopsale.modelsv2.Message;
+import com.datn.shopsale.modelsv2.User;
+import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.MessageResponse;
+import com.datn.shopsale.responsev2.GetListMessageResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CheckLoginUtil;
 import com.datn.shopsale.utils.Constants;
-import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
+import org.checkerframework.checker.units.qual.C;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.socket.client.IO;
@@ -61,7 +67,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements IActionMessage {
     private static final String TAG = ChatActivity.class.getSimpleName();
     private Toolbar toolbar;
     private ImageView imgAvatar;
@@ -69,18 +75,20 @@ public class ChatActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
 
     private ApiService apiService;
-    private GetMessageResponse.MessageAdded mMessages;
+    private Message mMessages;
     private MessageAdapter mAdapter;
     private RecyclerView recyclerViewChat;
 
 
     private static final int TYPING_TIMER_LENGTH = 600;
+    private static final String MESSAGE_TYPE_TEXT = "text";
+    private static final String MESSAGE_TYPE_IMAGE = "image";
     private EditText inputMessage;
     private boolean isTyping = false;
 
     private final Handler mTypingHandler = new Handler();
     private String mUsername;
-    private String avatarUser;
+    private User mUserSelected;
     private String conversationID;
     private String idUserLog;
     private String idUserSelected;
@@ -122,9 +130,18 @@ public class ChatActivity extends AppCompatActivity {
         apiService = RetrofitConnection.getApiService();
         preferenceManager = new PreferenceManager(this);
         idUserLog = preferenceManager.getString("userId");
+
         conversationID = getIntent().getStringExtra("idConversation");
-        idUserSelected = getIntent().getStringExtra("idUser");
-        getDataUserSelected(idUserSelected);
+        String idMsg = getIntent().getStringExtra("idMsg");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            User user = (User) getIntent().getSerializableExtra("dataUser");
+            if (user != null) {
+                displayUserSelected(user);
+                getDataMessage(conversationID, user);
+            }
+        }
 
         ImageButton btnOption = findViewById(R.id.img_option);
 
@@ -221,39 +238,39 @@ public class ChatActivity extends AppCompatActivity {
 
     private void addMessage(String message) {
         Log.d(TAG, "addMessage: " + message);
-
         String token = preferenceManager.getString("token");
-        RequestBody requestBodyConversation = RequestBody.create(MediaType.parse("text/plain"), conversationID);
-        RequestBody requestBodySenderId = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
-        RequestBody requestBodyReceiverId = RequestBody.create(MediaType.parse("text/plain"), idUserSelected);
-        RequestBody requestBodyMessage = RequestBody.create(MediaType.parse("text/plain"), message);
-        Log.d(TAG, "addMessage: message " + requestBodyMessage);
-        Log.d(TAG, "addMessage: senderID " + requestBodySenderId);
+        RequestBody rbConversationID = RequestBody.create(MediaType.parse("text/plain"), conversationID);
+        RequestBody rbSenderID = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
+        RequestBody rbMessageType = RequestBody.create(MediaType.parse("text/plain"), MESSAGE_TYPE_TEXT);
+        RequestBody rbMessage = RequestBody.create(MediaType.parse("text/plain"), message);
+        Log.d(TAG, "addMessage: message " + rbMessage);
+        Log.d(TAG, "addMessage: senderID " + rbSenderID);
+
+        // Send Image
         if (imageUri != null) {
             File file = new File(Objects.requireNonNull(imageUri.getPath()));
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), imageRequestBody);
-            Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(token, requestBodyConversation, requestBodySenderId, requestBodyReceiverId, requestBodyMessage, imagePart, null);
-            call.enqueue(new Callback<GetMessageResponse.ResponseMessage>() {
+
+        }
+        // Send text
+        else {
+            Call<MessageResponse> call = apiService.addMessage(token, rbConversationID, rbSenderID, rbMessageType, rbMessage, null, null);
+            call.enqueue(new Callback<MessageResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Response<GetMessageResponse.ResponseMessage> response) {
+                public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
                     if (response.body() != null) {
                         if (response.body().getCode() == 1) {
                             runOnUiThread(() -> {
-                                Log.d(TAG, "onResponse: " + response.body().getDataMessage());
-                                mMessages = response.body().getDataMessage();
+                                mMessages = response.body().getMessages();
                                 JSONObject messageAdded = new JSONObject();
                                 try {
-                                    messageAdded.put("conversation", mMessages.getConversation());
-                                    messageAdded.put("senderId", mMessages.getSenderId());
-                                    messageAdded.put("receiverId", mMessages.getReceiverId());
+                                    messageAdded.put("conversation_id", mMessages.getConversation_id());
+                                    messageAdded.put("sender_id", mMessages.getSender_id());
+                                    messageAdded.put("message_type", mMessages.getMessage_type());
                                     messageAdded.put("message", mMessages.getMessage());
-                                    messageAdded.put("filess", mMessages.getFiless());
-                                    messageAdded.put("images", mMessages.getImages());
-                                    messageAdded.put("video", mMessages.getVideo());
                                     messageAdded.put("status", mMessages.getStatus());
-                                    messageAdded.put("deleted", mMessages.isDeleted());
-                                    messageAdded.put("timestamp", mMessages.getTimestamp());
+                                    messageAdded.put("created_at", mMessages.getCreated_at());
                                     messageAdded.put("_id", mMessages.get_id());
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -270,9 +287,9 @@ public class ChatActivity extends AppCompatActivity {
                             });
                         } else {
                             runOnUiThread(() -> {
-                                if(response.body().getMessage().equals("wrong token")){
-                                    CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
-                                }else {
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
+                                } else {
                                     AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
                                 }
                             });
@@ -284,71 +301,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Throwable t) {
-                    runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure: " + t.getMessage());
-                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
-                    });
-                }
-            });
-        } else {
-            Call<GetMessageResponse.ResponseMessage> call = apiService.addMessage(
-                    token, requestBodyConversation, requestBodySenderId,
-                    requestBodyReceiverId, requestBodyMessage, null, null
-            );
-            call.enqueue(new Callback<GetMessageResponse.ResponseMessage>() {
-                @Override
-                public void onResponse(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Response<GetMessageResponse.ResponseMessage> response) {
-                    if (response.body() != null) {
-                        if (response.body().getCode() == 1) {
-                            runOnUiThread(() -> {
-                                mMessages = response.body().getDataMessage();
-                                JSONObject messageAdded = new JSONObject();
-                                try {
-                                    messageAdded.put("conversation", mMessages.getConversation());
-                                    messageAdded.put("senderId", mMessages.getSenderId());
-                                    messageAdded.put("receiverId", mMessages.getReceiverId());
-                                    messageAdded.put("message", mMessages.getMessage());
-                                    messageAdded.put("filess", mMessages.getFiless());
-                                    messageAdded.put("images", mMessages.getImages());
-                                    messageAdded.put("video", mMessages.getVideo());
-                                    messageAdded.put("status", mMessages.getStatus());
-                                    messageAdded.put("deleted", mMessages.isDeleted());
-                                    messageAdded.put("timestamp", mMessages.getTimestamp());
-                                    messageAdded.put("_id", mMessages.get_id());
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                                JSONObject jsonMessage = new JSONObject();
-                                try {
-                                    jsonMessage.put("message", messageAdded);
-                                    mSocket.emit("on-chat", jsonMessage);
-                                    mSocket.emit("user-chat", mMessages.getMessage());
-                                    scrollToBottom();
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-
-                            });
-                        } else {
-                            runOnUiThread(() -> {
-                                if(response.body().getMessage().equals("wrong token")){
-                                    CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
-                                }else {
-                                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
-                                }
-                            });
-                        }
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data conversation");
-                    }
-                    LoadingDialog.dismissProgressDialog();
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
                         Log.d(TAG, "onFailure add message: " + t.getMessage());
@@ -367,10 +320,8 @@ public class ChatActivity extends AppCompatActivity {
             inputMessage.requestFocus();
             return;
         }
-
         inputMessage.setText("");
         addMessage(message);
-
     }
 
 
@@ -390,8 +341,8 @@ public class ChatActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    String idConversation = data.getString("conversation");
-                    getDataDataMessage(idConversation, avatarUser, false);
+                    String idConversation = data.getString("conversation_id");
+                    getDataMessage(idConversation, mUserSelected);
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -485,43 +436,39 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
-    private void displayUserSelected(@NonNull GetUserByIdResponse.User dataUser) {
-        getDataDataMessage(conversationID, dataUser.getAvatar(), true);
+    private void displayUserSelected(User dataUser) {
         tvName.setText(dataUser.getFull_name());
         Glide.with(this)
-                .load(GetImgIPAddress.convertLocalhostToIpAddress(dataUser.getAvatar()))
+                .load(dataUser.getAvatar())
                 .into(imgAvatar);
     }
 
-    private void displayMessage(ArrayList<GetMessageResponse.Message> dataMessage, String avatar) {
-        avatarUser = avatar;
-        mAdapter = new MessageAdapter(ChatActivity.this, dataMessage, idUserLog, avatar);
+    private void displayMessage(List<Message> dataMessage, User userSelected) {
+        mUserSelected = userSelected;
+        mAdapter = new MessageAdapter(ChatActivity.this, dataMessage, userSelected, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewChat.setLayoutManager(linearLayoutManager);
         recyclerViewChat.setAdapter(mAdapter);
         scrollToBottom();
-
     }
 
-    private void getDataDataMessage(String conversationID, String avatar, boolean isLoad) {
-        if (isLoad) {
-            LoadingDialog.showProgressDialog(ChatActivity.this, "Loading...");
-        }
+    private void getDataMessage(String conversationID, User dataUserSelected) {
+        LoadingDialog.showProgressDialog(ChatActivity.this, "Loading...");
         String token = preferenceManager.getString("token");
-        Call<GetMessageResponse.Root> call = apiService.getMessageByIDConversation(token, conversationID);
-        call.enqueue(new Callback<GetMessageResponse.Root>() {
+        Call<GetListMessageResponse> call = apiService.getMessageByIDConversation(token, conversationID);
+        call.enqueue(new Callback<GetListMessageResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetMessageResponse.Root> call, @NonNull Response<GetMessageResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetListMessageResponse> call, @NonNull Response<GetListMessageResponse> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
                         runOnUiThread(() -> {
-                            displayMessage(response.body().getDataMessage(), avatar);
+                            displayMessage(response.body().getMessages(), dataUserSelected);
                         });
                     } else {
                         runOnUiThread(() -> {
-                            if(response.body().getMessage().equals("wrong token")){
-                                CheckLoginUtil.gotoLogin(ChatActivity.this,response.body().getMessage());
-                            }else {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
+                            } else {
                                 AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
                             }
                         });
@@ -533,43 +480,7 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetMessageResponse.Root> call, @NonNull Throwable t) {
-                runOnUiThread(() -> {
-                    LoadingDialog.dismissProgressDialog();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
-                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
-                });
-            }
-        });
-    }
-
-    private void getDataUserSelected(String idUser) {
-        LoadingDialog.showProgressDialog(ChatActivity.this, "Loading...");
-        String token = preferenceManager.getString("token");
-        Call<GetUserByIdResponse.Root> call = apiService.getAnyUserById(token, idUser);
-        call.enqueue(new Callback<GetUserByIdResponse.Root>() {
-            @Override
-            public void onResponse(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Response<GetUserByIdResponse.Root> response) {
-                if (response.body() != null) {
-                    if (response.body().getCode() == 1) {
-                        runOnUiThread(() -> displayUserSelected(response.body().getUser()));
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
-                    }
-                } else {
-                    runOnUiThread(() -> {
-                        if (response.body().getMessage().equals("wrong token")) {
-                            CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
-                        } else {
-                            AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
-                        }
-                    });
-                }
-                LoadingDialog.dismissProgressDialog();
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetListMessageResponse> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     Log.d(TAG, "onFailure: " + t.getMessage());
@@ -604,5 +515,52 @@ public class ChatActivity extends AppCompatActivity {
         mSocket.off("user left", onUserLeft);
         mSocket.off("typing", onTyping);
         mSocket.off("stop typing", onStopTyping);
+    }
+
+    private void deleteMessage(String msgID) {
+        LoadingDialog.showProgressDialog(ChatActivity.this, "Loading...");
+        String token = preferenceManager.getString("token");
+        String idUser = preferenceManager.getString("userId");
+        Call<BaseResponse> call = apiService.deleteMessage(token, idUser, msgID);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseResponse> call, @NonNull Response<BaseResponse> response) {
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        runOnUiThread(() -> {
+                            // re-render message deleted
+                            mAdapter.updateMessage(response.body().getMessage());
+                            getDataMessage(conversationID, mUserSelected);
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                            }
+                        });
+                    }
+                } else {
+                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data conversation");
+                }
+                LoadingDialog.dismissProgressDialog();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseResponse> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
+                });
+            }
+        });
+    }
+
+    @Override
+    public void doAction(String typeAction, String msgID, String status, Conversation conversation) {
+        if (typeAction.equals("DELETE")) {
+            deleteMessage(msgID);
+        }
     }
 }

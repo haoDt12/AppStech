@@ -11,11 +11,16 @@
         android:id="@+id/toolbar_conversation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:title="@string/tinnhan" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/mauve" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv_conversation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp" />
+        android:layout_height="match_parent" />
 </LinearLayout>

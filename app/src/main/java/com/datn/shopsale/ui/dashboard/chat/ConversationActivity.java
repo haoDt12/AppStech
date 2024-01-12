@@ -1,5 +1,6 @@
 package com.datn.shopsale.ui.dashboard.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,10 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.datn.shopsale.Interface.ApiService;
-import com.datn.shopsale.Interface.LatestMessageCallback;
+import com.datn.shopsale.Interface.IActionMessage;
 import com.datn.shopsale.R;
-import com.datn.shopsale.response.GetConversationResponse;
-import com.datn.shopsale.response.GetMessageResponse;
+import com.datn.shopsale.modelsv2.Conversation;
+import com.datn.shopsale.modelsv2.User;
+import com.datn.shopsale.responsev2.GetListConversationResponse;
+import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CheckLoginUtil;
@@ -27,6 +30,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import io.socket.client.IO;
@@ -36,7 +40,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConversationActivity extends AppCompatActivity {
+public class ConversationActivity extends AppCompatActivity implements IActionMessage {
     private static final String TAG = ConversationActivity.class.getSimpleName();
 
     private Toolbar toolbarConversation;
@@ -44,9 +48,8 @@ public class ConversationActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
 
     private ApiService apiService;
-    private ArrayList<GetConversationResponse.Conversation> dataConversation;
-    private ArrayList<GetMessageResponse.Message> dataMessage;
     private ConversationAdapter conversationAdapter;
+    private List<Conversation> dataConversation;
     private Socket mSocket;
 
     {
@@ -78,7 +81,7 @@ public class ConversationActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
         toolbarConversation.setNavigationOnClickListener(v -> onBackPressed());
 
-        getDataConversation(true);
+        getDataConversation();
 
     }
 
@@ -96,6 +99,7 @@ public class ConversationActivity extends AppCompatActivity {
         String message;
         try {
             message = data.getString("message");
+            Log.d(TAG, "onNewMessage: " + message);
         } catch (JSONException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
         }
@@ -103,105 +107,41 @@ public class ConversationActivity extends AppCompatActivity {
 
     private final Emitter.Listener onUserChat = args -> runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
-        try {
-            String idConversation = data.getString("conversation");
-            getDataConversation(false);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        Log.d(TAG, "onUserChat: " + data);
+        getDataConversation();
     });
 
-    private void displayConversation(@NonNull ArrayList<GetConversationResponse.Conversation> dataConversation, boolean isLoad) {
-
-        ArrayList<String> listIdConversation = new ArrayList<>();
-        for (GetConversationResponse.Conversation conversation : dataConversation) {
-            listIdConversation.add(conversation.get_id());
-        }
-        getDataLatestMessage(listIdConversation, isLoad, dataMessage -> {
-            conversationAdapter = new ConversationAdapter(ConversationActivity.this, dataConversation, dataMessage);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
-            rcvConversation.setLayoutManager(linearLayoutManager);
-            rcvConversation.setAdapter(conversationAdapter);
-        });
+    private void displayConversation(@NonNull List<Conversation> dataConversation) {
+        Log.d(TAG, "displayConversation: " + dataConversation.get(0).toString());
+        conversationAdapter = new ConversationAdapter(ConversationActivity.this, dataConversation, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
+        rcvConversation.setLayoutManager(linearLayoutManager);
+        rcvConversation.setAdapter(conversationAdapter);
 
     }
 
-    private void getDataLatestMessage(ArrayList<String> idConversation, boolean isLoad, LatestMessageCallback callback) {
-        if (isLoad) {
-            LoadingDialog.showProgressDialog(ConversationActivity.this, "Loading...");
-        }
 
-        dataMessage = new ArrayList<>();
-        String token = preferenceManager.getString("token");
-        String idUser = preferenceManager.getString("userId");
-        if (token.length() == 0 || idUser.length() == 0) {
-            AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "token or idUser null");
-        } else {
-            Call<GetMessageResponse.Root> call = apiService.getMessageLatest(token, idConversation);
-            call.enqueue(new Callback<GetMessageResponse.Root>() {
-                @Override
-                public void onResponse(@NonNull Call<GetMessageResponse.Root> call, @NonNull Response<GetMessageResponse.Root> response) {
-                    if (response.body() != null) {
-                        if (response.body().getCode() == 1) {
-                            runOnUiThread(() -> {
-                                dataMessage = response.body().getDataMessage();
-                                if (dataConversation.size() > 0) {
-                                    callback.onLatestMessageLoaded(dataMessage);
-                                } else {
-                                    callback.onLatestMessageLoaded(null);
-                                }
-
-                            });
-                        } else {
-                            runOnUiThread(() -> {
-                                if(response.body().getMessage().equals("wrong token")){
-                                    CheckLoginUtil.gotoLogin(ConversationActivity.this,response.body().getMessage());
-                                }else {
-                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
-                                }
-                            });
-                        }
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "error get data conversation");
-                    }
-                    LoadingDialog.dismissProgressDialog();
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<GetMessageResponse.Root> call, @NonNull Throwable t) {
-                    runOnUiThread(() -> {
-                        LoadingDialog.dismissProgressDialog();
-                        AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, t.getMessage());
-                    });
-                }
-            });
-        }
-    }
-
-    private void getDataConversation(boolean isLoad) {
-        if (isLoad) {
-            LoadingDialog.showProgressDialog(ConversationActivity.this, "Loading...");
-        }
+    private void getDataConversation() {
+        LoadingDialog.showProgressDialog(ConversationActivity.this, "Loading...");
         dataConversation = new ArrayList<>();
         String token = preferenceManager.getString("token");
         String idUser = preferenceManager.getString("userId");
         if (token.length() == 0 || idUser.length() == 0) {
             AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "token or idUser null");
         } else {
-            Call<GetConversationResponse.Root> call = apiService.getConversationByIDUser(token, idUser);
-            call.enqueue(new Callback<GetConversationResponse.Root>() {
+            Call<GetListConversationResponse> call = apiService.getConversationByIDUser(token, idUser);
+            call.enqueue(new Callback<GetListConversationResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<GetConversationResponse.Root> call, @NonNull Response<GetConversationResponse.Root> response) {
+                public void onResponse(@NonNull Call<GetListConversationResponse> call, @NonNull Response<GetListConversationResponse> response) {
                     if (response.body() != null) {
                         if (response.body().getCode() == 1) {
                             runOnUiThread(() -> {
-                                dataConversation = response.body().getConversation();
+                                dataConversation = response.body().getConversations();
                                 if (dataConversation.size() == 0) {
                                     AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, getResources().getString(R.string.chua_co_cuoc_hoi_thoai));
                                 } else {
-                                    displayConversation(dataConversation, isLoad);
+                                    displayConversation(dataConversation);
                                 }
-
                             });
                         } else {
                             runOnUiThread(() -> {
@@ -219,12 +159,11 @@ public class ConversationActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<GetConversationResponse.Root> call, @NonNull Throwable t) {
+                public void onFailure(@NonNull Call<GetListConversationResponse> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
                         AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, t.getMessage());
                     });
-
                 }
             });
         }
@@ -240,5 +179,71 @@ public class ConversationActivity extends AppCompatActivity {
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off("on-chat", onNewMessage);
 
+    }
+
+    private void doGoScreenChat(Conversation conversation) {
+        Intent i = new Intent(ConversationActivity.this, ChatActivity.class);
+        User user = new User();
+        user.set_id(conversation.getCreator_id());
+        user.setEmail(conversation.getEmail());
+        user.setAvatar(conversation.getAvatar());
+        user.setFull_name(conversation.getName());
+        user.setPhone_number(conversation.getPhone());
+        user.setStatus(conversation.getStatus());
+
+        i.putExtra("idConversation", conversation.getConversation_id());
+        i.putExtra("idMsg", conversation.getIdMsg());
+        i.putExtra("dataUser", user);
+        startActivity(i);
+    }
+
+    private void updateStatusMessage(String msgID, String status, Conversation conversation) {
+        if (msgID.length() == 0) {
+            doGoScreenChat(conversation);
+        } else {
+            LoadingDialog.showProgressDialog(ConversationActivity.this, "Loading...");
+            String token = preferenceManager.getString("token");
+            Call<MessageResponse> call = apiService.updateStatusMessage(token, msgID, status);
+            call.enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 1) {
+                            runOnUiThread(() -> {
+                                conversationAdapter.updateStatusMessage(conversation.getConversation_id());
+                                doGoScreenChat(conversation);
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(ConversationActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, response.body().getMessage());
+                                }
+                            });
+                        }
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, "error get data conversation");
+                    }
+                    LoadingDialog.dismissProgressDialog();
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        AlertDialogUtil.showAlertDialogWithOk(ConversationActivity.this, t.getMessage());
+                    });
+                }
+            });
+        }
+
+    }
+
+    @Override
+    public void doAction(String typeAction, String msgID, String status, Conversation conversation) {
+        if (typeAction.equals("UPDATE_STATUS")) {
+            updateStatusMessage(msgID, status, conversation);
+        }
     }
 }

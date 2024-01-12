@@ -1,31 +1,29 @@
 package com.datn.shopsale.ui.dashboard.chat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.datn.shopsale.Interface.IActionMessage;
 import com.datn.shopsale.R;
-import com.datn.shopsale.response.GetConversationResponse;
-import com.datn.shopsale.response.GetMessageResponse;
+import com.datn.shopsale.modelsv2.Conversation;
 import com.datn.shopsale.utils.Constants;
-import com.datn.shopsale.utils.GetImgIPAddress;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import org.jetbrains.annotations.Contract;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -35,13 +33,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ConversationViewHolder> {
     private final Context mContext;
-    private final ArrayList<GetConversationResponse.Conversation> conversations;
-    private final ArrayList<GetMessageResponse.Message> latestMessage;
+    private final List<Conversation> conversations;
+    private final IActionMessage iActionMessage;
 
-    public ConversationAdapter(Context mContext, ArrayList<GetConversationResponse.Conversation> conversations, ArrayList<GetMessageResponse.Message> dataLatestMessage) {
+    public ConversationAdapter(Context mContext, List<Conversation> conversations, IActionMessage iActionMessage) {
         this.mContext = mContext;
         this.conversations = conversations;
-        this.latestMessage = dataLatestMessage;
+        this.iActionMessage = iActionMessage;
+    }
+
+    public void updateStatusMessage(String idConversation) {
+        for (int i = 0; i < conversations.size(); i++) {
+            if (conversations.get(i).getConversation_id().equals(idConversation)) {
+                notifyItemChanged(i);
+            }
+        }
     }
 
     @NonNull
@@ -51,77 +57,53 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         return new ConversationViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
         PreferenceManager preferenceManager = new PreferenceManager(mContext);
-        GetConversationResponse.Conversation conversation = conversations.get(position);
-        String idUserLoged = preferenceManager.getString("userId");
-        String idOtherUser = "";
-        String imgOtherUser = "";
-        String name = "";
-        for (int i = 0; i < conversation.getUser().size(); i++) {
-            if (!conversation.getUser().get(i).get_id().equals(idUserLoged)) {
-                idOtherUser = conversation.getUser().get(i).get_id();
-                imgOtherUser = conversation.getUser().get(i).getAvatar();
-                name = conversation.getUser().get(i).getFull_name();
-            }
-        }
-
+        String idUserLogged = preferenceManager.getString("userId");
+        Conversation conversation = conversations.get(position);
         Glide.with(mContext)
-                .load(GetImgIPAddress.convertLocalhostToIpAddress(imgOtherUser))
+                .load(conversation.getAvatar())
                 .into(holder.imgAvt);
-
-        holder.tvNameUser.setText(name);
-        if (position < latestMessage.size()) {
-            GetMessageResponse.Message message = latestMessage.get(position);
-            if (message == null) return;
-            String idConversation = message.getConversation().get_id();
-            try {
-                if (idConversation.equals(conversation.get_id())) {
-                    if (message.getStatus().equals("unseen")) {
-                        holder.tvLastMessage.setTypeface(holder.tvLastMessage.getTypeface(), Typeface.BOLD);
-                        holder.tvTime.setTypeface(holder.tvTime.getTypeface(), Typeface.BOLD);
-                    }
-                    String encryptedMessage = message.getMessage();
-                    String decryptedMessage = decryptMessage(encryptedMessage);
-                    String text = "";
-                    if (message.getSenderId().equals(idUserLoged)) {
-                        if (decryptedMessage.trim().length() > 0) {
-                            text = "Bạn: " + decryptedMessage;
-                        } else {
-                            text = "Bạn đã gửi 1 ảnh";
-                        }
-                    } else {
-                        if (decryptedMessage.trim().length() > 0) {
-                            text = decryptedMessage;
-                        } else {
-                            text = "đã gửi 1 ảnh";
-                        }
-                    }
-                    Log.d("TAG", "onBindViewHolder: name: " + name + " - msg: " + text);
-                    holder.tvLastMessage.setText(text);
-                    String dataTime = message.getTimestamp();
-                    dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
-                    holder.tvTime.setText(dataTime);
-                }
-            } catch (Exception e) {
-                Log.d("Conversation adapter", "onBindViewHolder: " + e.getMessage());
+        holder.tvNameUser.setText(conversation.getName());
+        if (conversation.getStatus().equals("unseen")) {
+            holder.tvLastMessage.setTypeface(holder.tvLastMessage.getTypeface(), Typeface.BOLD);
+            holder.tvTime.setTypeface(holder.tvTime.getTypeface(), Typeface.BOLD);
+        }
+        String encryptedMessage = conversation.getMessage();
+        if (!conversation.getMsg_deleted_at().isEmpty()) {
+            holder.tvLastMessage.setTypeface(holder.tvLastMessage.getTypeface(), Typeface.ITALIC);
+            holder.tvLastMessage.setTextSize(14);
+            holder.tvLastMessage.setTextColor(Color.GRAY);
+            if (idUserLogged.equals(conversation.getSender_id())) {
+                holder.tvLastMessage.setText(R.string.y_message_removed);
+            } else {
+                holder.tvLastMessage.setText(R.string.message_removed);
             }
         } else {
-            int lenCon = conversations.size();
-            int lenChat = latestMessage.size();
-//            Log.d("TAG", "onBindViewHolder: " + position + " " + latestMessage.get(position).getMessage());
-
-
+            if (encryptedMessage.length() > 0) {
+                String decryptedMessage = null;
+                try {
+                    decryptedMessage = decryptMessage(encryptedMessage);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                if (idUserLogged.equals(conversation.getSender_id())) {
+                    holder.tvLastMessage.setText("Bạn: " + decryptedMessage);
+                } else {
+                    holder.tvLastMessage.setText(decryptedMessage);
+                }
+            } else {
+                holder.tvLastMessage.setText(encryptedMessage);
+            }
         }
-        String finalIdOtherUser = idOtherUser;
-        holder.itemView.setOnClickListener(view -> {
-            Intent i = new Intent(mContext, ChatActivity.class);
-            i.putExtra("idConversation", conversation.get_id());
-            i.putExtra("idUser", finalIdOtherUser);
-            mContext.startActivity(i);
-        });
+        String dataTime = conversation.getCreated_at();
+        dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
+        holder.tvTime.setText(dataTime);
 
+
+        holder.itemView.setOnClickListener(v -> iActionMessage.doAction("UPDATE_STATUS", conversation.getIdMsg(), conversation.getStatus(), conversation));
     }
 
     @Override
