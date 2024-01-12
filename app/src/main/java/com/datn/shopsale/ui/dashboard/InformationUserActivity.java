@@ -336,7 +336,6 @@ public class InformationUserActivity extends AppCompatActivity {
                 })
                 .addOnSuccessListener(imageUrl -> {
                     request.setAvatar(imageUrl);
-                    Log.d(TAG, "Image URL on Firebase: " + imageUrl);
                 })
                 .addOnFailureListener(exception -> Log.e(TAG, "Upload failed: " + exception.getMessage()));
     }

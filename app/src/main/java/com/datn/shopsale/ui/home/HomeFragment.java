@@ -131,9 +131,8 @@ public class HomeFragment extends Fragment {
         activity.setSupportActionBar(binding.toolbarHome);
         binding.lnlSearch.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), SearchActivity.class)));
         preferenceManager = new PreferenceManager(getActivity());
-        Log.d("token", "onCreateView: " + preferenceManager.getString("token"));
+        Log.d("token", preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
-        Log.d("TagList", "onCreateView: " + GetListBanner().size());
         timer = new Timer();
         if (binding != null && binding.vpgSlideImage.getAdapter() != null) {
             timer.scheduleAtFixedRate(new TimerTask() {
@@ -146,12 +145,12 @@ public class HomeFragment extends Fragment {
                             int nextItem = (currentItem + 1) % totalItems;
                             binding.vpgSlideImage.setCurrentItem(nextItem);
                         } catch (Exception exception) {
-                            Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
                         }
                     });
                 }
             }, 2000, 2000);
         }
+        GetListBanner();
         displayCategory();
         displayProduct();
     }
@@ -164,7 +163,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
                 assert null != response.body();
-                Log.d("check", "onResponse: 2");
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     if (response.body().getCode() == 1) {

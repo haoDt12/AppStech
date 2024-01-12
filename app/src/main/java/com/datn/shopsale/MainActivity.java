@@ -14,7 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.databinding.ActivityMainBinding;
-import com.datn.shopsale.response.GetNotificationResponse;
+import com.datn.shopsale.responsev2.GetNotificationResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.notifications.NotificationCount;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -29,7 +29,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+    private TextView cartBadgeTextView;
+    private ApiService apiService;
+    private PreferenceManager preferenceManager;
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -50,40 +54,51 @@ public class MainActivity extends AppCompatActivity {
                         mBottomNavigationMenuView, false);
         itemView.addView(cart_badge);
 
-        TextView cartBadgeTextView = cart_badge.findViewById(R.id.cart_badge);
-        ApiService apiService = RetrofitConnection.getApiService();
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        runOnUiThread(() -> {
-            Call<GetNotificationResponse.Root> call = apiService.getNotification(preferenceManager.getString("token"));
-            call.enqueue(new Callback<GetNotificationResponse.Root>() {
-                @Override
-                public void onResponse(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Response<GetNotificationResponse.Root> response) {
-                    if (response.body() != null) {
-                        if (response.body().code == 1) {
-                            int count = response.body().notification.size();
-                            NotificationCount.count = count;
-                            if (count > 0) {
-                                cartBadgeTextView.setVisibility(View.VISIBLE);
-                            } else {
-                                cartBadgeTextView.setVisibility(View.GONE);
-                            }
-                            cartBadgeTextView.setText(String.valueOf(NotificationCount.count));
+        cartBadgeTextView = cart_badge.findViewById(R.id.cart_badge);
+        apiService = RetrofitConnection.getApiService();
+        preferenceManager = new PreferenceManager(this);
+        getCountNotification();
+    }
+
+    private void getCountNotification() {
+        Call<GetNotificationResponse> call = apiService.getNotificationByUser(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetNotificationResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GetNotificationResponse> call, @NonNull Response<GetNotificationResponse> response) {
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        int count = response.body().getData().size();
+                        NotificationCount.count = count;
+                        if (count > 0) {
+                            cartBadgeTextView.setVisibility(View.VISIBLE);
                         } else {
-                            if (response.body().message.equals("wrong token")) {
-                                CheckLoginUtil.gotoLogin(MainActivity.this, response.body().message);
-                            } else {
-                                AlertDialogUtil.showAlertDialogWithOk(MainActivity.this, response.body().message);
-                            }
+                            cartBadgeTextView.setVisibility(View.GONE);
+                        }
+                        cartBadgeTextView.setText(String.valueOf(NotificationCount.count));
+                    } else {
+                        runOnUiThread(() -> {
+                        });
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(MainActivity.this, response.body().getMessage());
+                        } else {
+                            AlertDialogUtil.showAlertDialogWithOk(MainActivity.this, response.body().getMessage());
                         }
                     }
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
+            @Override
+            public void onFailure(@NonNull Call<GetNotificationResponse> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
                     AlertDialogUtil.showAlertDialogWithOk(MainActivity.this, t.getMessage());
-                }
-            });
-
+                });
+            }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCountNotification();
     }
 }

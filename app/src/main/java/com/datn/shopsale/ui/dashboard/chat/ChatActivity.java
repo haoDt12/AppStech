@@ -213,22 +213,13 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void addParticipantsLog(int numUsers) {
-        Log.d(TAG, "addParticipantsLog: " + numUsers);
-//        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
-    }
-
-
     private void addMessage(String message) {
-        Log.d(TAG, "addMessage: " + message);
 
         String token = preferenceManager.getString("token");
         RequestBody requestBodyConversation = RequestBody.create(MediaType.parse("text/plain"), conversationID);
         RequestBody requestBodySenderId = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
         RequestBody requestBodyReceiverId = RequestBody.create(MediaType.parse("text/plain"), idUserSelected);
         RequestBody requestBodyMessage = RequestBody.create(MediaType.parse("text/plain"), message);
-        Log.d(TAG, "addMessage: message " + requestBodyMessage);
-        Log.d(TAG, "addMessage: senderID " + requestBodySenderId);
         if (imageUri != null) {
             File file = new File(Objects.requireNonNull(imageUri.getPath()));
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
@@ -240,7 +231,6 @@ public class ChatActivity extends AppCompatActivity {
                     if (response.body() != null) {
                         if (response.body().getCode() == 1) {
                             runOnUiThread(() -> {
-                                Log.d(TAG, "onResponse: " + response.body().getDataMessage());
                                 mMessages = response.body().getDataMessage();
                                 JSONObject messageAdded = new JSONObject();
                                 try {
@@ -287,7 +277,6 @@ public class ChatActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure: " + t.getMessage());
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
                     });
                 }
@@ -351,7 +340,6 @@ public class ChatActivity extends AppCompatActivity {
                 public void onFailure(@NonNull Call<GetMessageResponse.ResponseMessage> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure add message: " + t.getMessage());
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
                     });
                 }
@@ -415,7 +403,6 @@ public class ChatActivity extends AppCompatActivity {
     };
     private final Emitter.Listener onNewMessage = args -> runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
-        Log.d(TAG, "run on new message: " + data);
         Toast.makeText(ChatActivity.this, "onNewMessage: ", Toast.LENGTH_SHORT).show();
         String username;
         String message;
@@ -438,7 +425,6 @@ public class ChatActivity extends AppCompatActivity {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
             return;
         }
-        addParticipantsLog(numUsers);
     });
 
     private final Emitter.Listener onUserLeft = args -> runOnUiThread(() -> {
@@ -450,9 +436,7 @@ public class ChatActivity extends AppCompatActivity {
             numUsers = data.getInt("numUsers");
         } catch (JSONException e) {
             Log.e(TAG, Objects.requireNonNull(e.getMessage()));
-            return;
         }
-        addParticipantsLog(numUsers);
     });
 
     private final Emitter.Listener onTyping = args -> runOnUiThread(() -> {
@@ -536,7 +520,6 @@ public class ChatActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<GetMessageResponse.Root> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
                     AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
                 });
             }
@@ -572,7 +555,6 @@ public class ChatActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<GetUserByIdResponse.Root> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
                     AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
                 });
             }

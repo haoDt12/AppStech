@@ -11,14 +11,15 @@ import com.datn.shopsale.request.CusVerifyLoginRequest;
 import com.datn.shopsale.request.DeleteAddressRequest;
 import com.datn.shopsale.request.EditAddressRequest;
 import com.datn.shopsale.request.EditCusRequest;
+import com.datn.shopsale.request.GetOrderByIdRequest;
 import com.datn.shopsale.request.GetOrderByStatusRequest;
 import com.datn.shopsale.request.GetProductByCateIdRequest;
+import com.datn.shopsale.request.GetVoucherByIdRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.request.SearchProductByNameRequest;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetConversationResponse;
 import com.datn.shopsale.response.GetMessageResponse;
-import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
@@ -39,8 +40,10 @@ import com.datn.shopsale.responsev2.GetCategoryResponse;
 import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
+import com.datn.shopsale.responsev2.GetNotificationResponse;
 import com.datn.shopsale.responsev2.GetOrderResponseV2;
 import com.datn.shopsale.responsev2.GetPriceZaloPayResponseV2;
+import com.datn.shopsale.responsev2.GetVoucherByIdResponse;
 import com.datn.shopsale.responsev2.GetVoucherResponse;
 import com.datn.shopsale.responsev2.ProductCartResponse;
 import com.datn.shopsale.responsev2.RegisterCustomerResponse;
@@ -84,17 +87,6 @@ public interface ApiService {
     @POST("/api/getListBanner")
     Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
     );
-
-    @POST("/api/getPublicNotification")
-    Call<GetNotificationResponse.Root> getNotification(@Header("Authorization") String token
-    );
-
-    @FormUrlEncoded
-    @POST("/api/getPrivateNotification")
-    Call<GetNotificationResponse.Root> getNotificationPrivate(@Header("Authorization") String token,
-                                                              @Field("userId") String id
-    );
-
     @GET("/api/p/")
     Call<List<AddressCDW.City>> getCities();
 
@@ -264,4 +256,10 @@ public interface ApiService {
 
     @POST("/apiv2/searchProductByName")
     Call<GetAllProductResponse> searchProductByName(@Header("Authorization") String token, @Body SearchProductByNameRequest request);
+    @POST("/apiv2/getNotificationByUser")
+    Call<GetNotificationResponse> getNotificationByUser(@Header("Authorization") String token);
+    @POST("/apiv2/getVoucherByVoucherId")
+    Call<GetVoucherByIdResponse> getVoucherByVoucherId(@Header("Authorization") String token, @Body GetVoucherByIdRequest request);
+    @POST("/apiv2/getOrderByOrderId")
+    Call<GetOrderResponseV2> getOrderByOrderId(@Header("Authorization") String token, @Body GetOrderByIdRequest request);
 }

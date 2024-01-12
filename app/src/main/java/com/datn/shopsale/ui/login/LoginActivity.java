@@ -159,7 +159,6 @@ public class LoginActivity extends AppCompatActivity {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "onSuccess: " + loginResult.toString());
                 accessToken = loginResult.getAccessToken();
                 updateUI();
             }
@@ -270,7 +269,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
                         runOnUiThread(() -> {
-                            Log.d(TAG, "onResponse: " + response.body().getUser().toString());
                             String token = response.body().getToken();
                             String userID = response.body().getUser().get_id();
                             FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
@@ -281,7 +279,6 @@ public class LoginActivity extends AppCompatActivity {
                                 preferenceManager.putString(Constants.KEY_EMAIL, email);
                                 preferenceManager.putBoolean(Constants.KEY_REMEMBER, true);
                                 addTokenFMC(token, userID, fcm);
-
                             });
                         });
                     } else {
@@ -297,7 +294,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<GetUserGoogleResponse.Root> call, @NonNull Throwable t) {
                 runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
                     AlertDialogUtil.showAlertDialogWithOk(LoginActivity.this, t.getMessage());
                 });
             }

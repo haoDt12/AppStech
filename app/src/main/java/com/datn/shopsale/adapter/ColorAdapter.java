@@ -42,13 +42,12 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         final String color = colorList.get(position).getTitle();
-//        Log.d("Zzzzz", "onBindViewHolder: " + colorList.get(position).getContent());
         holder.btnColor.setBackgroundColor(Color.parseColor(colorList.get(position).getContent()));
         holder.tvColor.setText(color);
         if (color.equals(selectedColor)) {
-            holder.btnColor.setStrokeColorResource(R.color.red); // Đặt màu viền khi màu được chọn
+            holder.btnColor.setStrokeColorResource(R.color.red);
         } else {
-            holder.btnColor.setStrokeColorResource(R.color.colorNormal); // Đặt viền trong suốt khi màu không được chọn
+            holder.btnColor.setStrokeColorResource(R.color.colorNormal);
         }
 
         holder.btnColor.setOnClickListener(v -> {

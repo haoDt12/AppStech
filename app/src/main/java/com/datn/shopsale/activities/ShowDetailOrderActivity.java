@@ -47,7 +47,6 @@ public class ShowDetailOrderActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(this);
         apiService = RetrofitConnection.getApiService();
         Bundle bundle = getIntent().getExtras();
-//        assert bundle != null;
         if (bundle != null) {
             listOrderDetail = (ListDetailOrder) bundle.getSerializable("detail_order");
             if (listOrderDetail != null) {

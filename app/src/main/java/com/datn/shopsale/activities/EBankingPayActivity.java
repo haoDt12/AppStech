@@ -76,7 +76,6 @@ public class EBankingPayActivity extends AppCompatActivity {
                                 return super.shouldOverrideUrlLoading(view, request);
                             }
                         });
-                        Log.d("url pay", "onResponse: " + response.body().getUrl());
                         webViewPay.loadUrl(response.body().getUrl());
                     });
                 } else {

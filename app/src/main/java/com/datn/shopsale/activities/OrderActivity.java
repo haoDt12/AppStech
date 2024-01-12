@@ -476,13 +476,11 @@ public class OrderActivity extends AppCompatActivity {
                 });
             } else {
                 LoadingDialog.dismissProgressDialog();
-                Log.d("zzzz", "createOrderZaloPay:");
                 AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             }
 
         } catch (Exception e) {
             LoadingDialog.dismissProgressDialog();
-            Log.d("zzzz", "createOrderZaloPay: " + e);
             AlertDialogUtil.showAlertDialogWithOk(OrderActivity.this, "Error Payment ZaloPay");
             e.printStackTrace();
         }

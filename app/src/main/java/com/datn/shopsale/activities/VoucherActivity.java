@@ -46,7 +46,6 @@ public class VoucherActivity extends AppCompatActivity {
         if(getIntent().hasExtra("action")){
             action = getIntent().getIntExtra("action",0);
         }
-        Log.d("zzz", "onCreate: " + action);
         setSupportActionBar(toolbarVoucher);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);

@@ -192,4 +192,6 @@
     <string name="xoa_thanh_cong">Xóa thành công</string>
     <string name="xem_them_1">Xem thêm</string>
     <string name="an_bot">Ẩn bớt</string>
+    <string name="voi_ma_giam_gia">với mã giảm giá</string>
+    <string name="voi_ma_don_hang">với mã đơn hàng</string>
 </resources>

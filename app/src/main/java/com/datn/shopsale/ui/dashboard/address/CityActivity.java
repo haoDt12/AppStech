@@ -80,10 +80,6 @@ public class CityActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, location -> {
                     if (location != null) {
                         String addressText = LocationUtils.getAddressFromLocation(CityActivity.this, location.getLatitude(), location.getLongitude());
-                        Log.d("TAG", "getCurrentLocation: " + addressText);
-                        Log.d("TAG", "getCurrentLocation1: " + location.getLatitude());
-                        Log.d("TAG", "getCurrentLocation2: " + location.getLongitude());
-
                         if (addressText != null) {
                             Intent resultIntent = new Intent();
                             resultIntent.putExtra("isCurrentLocationSelected", true);
@@ -97,10 +93,7 @@ public class CityActivity extends AppCompatActivity {
                         Toast.makeText(this, "Could not get current location", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(this, e -> {
-                    Log.e("CityActivity", "Error getting location", e);
-                    Toast.makeText(this, "Error getting current location", Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(this, e -> Toast.makeText(this, "Error getting current location", Toast.LENGTH_SHORT).show());
     }
 
     private void getCities() {
@@ -154,7 +147,6 @@ public class CityActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<DistrictRespone> call, @NonNull Throwable t) {
                 Toast.makeText(CityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                Log.d("TAG", "err: " + t.getMessage());
             }
         });
     }
@@ -179,7 +171,6 @@ public class CityActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call<WardsRespone> call, @NonNull Throwable t) {
                 Toast.makeText(CityActivity.this, "Network error", Toast.LENGTH_SHORT).show();
-                Log.d("TAG", "err: " + t.getMessage());
             }
         });
     }

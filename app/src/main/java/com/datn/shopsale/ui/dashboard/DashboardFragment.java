@@ -245,7 +245,6 @@ public class DashboardFragment extends Fragment {
     private void signOut() {
         mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity(), task -> {
             if (task.isSuccessful() && acct != null) {
-                Log.d(TAG, "signOutGoogle: " + task.getResult());
             }
         });
         startActivity(new Intent(getActivity(), LoginActivity.class));

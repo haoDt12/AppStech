@@ -16,8 +16,9 @@ import com.datn.shopsale.Interface.ApiService;
 import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.NotificationAdapter;
 import com.datn.shopsale.databinding.FragmentNotificationsBinding;
-import com.datn.shopsale.models.Notification;
-import com.datn.shopsale.response.GetNotificationResponse;
+import com.datn.shopsale.modelsv2.DataNotification;
+import com.datn.shopsale.modelsv2.Notification;
+import com.datn.shopsale.responsev2.GetNotificationResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CheckLoginUtil;
@@ -77,65 +78,33 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void GetNotification() {
-        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
+        LoadingDialog.showProgressDialog(requireActivity(), "Loading...");
         notificationList.clear();
-        String idUser = preferenceManager.getString("userId");
-        Call<GetNotificationResponse.Root> call = apiService.getNotification(preferenceManager.getString("token"));
-        call.enqueue(new Callback<GetNotificationResponse.Root>() {
+        Call<GetNotificationResponse> call = apiService.getNotificationByUser(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetNotificationResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Response<GetNotificationResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetNotificationResponse> call, @NonNull Response<GetNotificationResponse> response) {
                 requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
                 assert response.body() != null;
-                if (response.body().code == 1) {
-                    NotificationCount.count = response.body().notification.size();
-                    for (GetNotificationResponse.Notification item : response.body().notification) {
-                        Notification notification = new Notification();
-                        notification.set_id(item.get_id());
-                        notification.setTitle(item.getTitle());
-                        notification.setContent(item.getContent());
-                        notification.setDate(item.getDate());
-                        notification.setTypePrivatePublic("Public");
+                if (response.body().getCode() == 1) {
+                    NotificationCount.count = response.body().getData().size();
+                    for (DataNotification item : response.body().getData()) {
+                        Notification notification = item.getNotification_id();
                         notificationList.add(notification);
                     }
                     updateAdapter();
                 } else {
-                    if (response.body().message.equals("wrong token")) {
-                        CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
+                    if (response.body().getMessage().equals("wrong token")) {
+                        CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
                     } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     }
                 }
 
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
-                AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
-            }
-        });
-        LoadingDialog.showProgressDialog(requireActivity(),"Loading...");
-        Call<GetNotificationResponse.Root> callPrivate = apiService.getNotificationPrivate(preferenceManager.getString("token"), idUser);
-        callPrivate.enqueue(new Callback<GetNotificationResponse.Root>() {
-            @Override
-            public void onResponse(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Response<GetNotificationResponse.Root> response) {
-                requireActivity().runOnUiThread(LoadingDialog::dismissProgressDialog);
-                assert response.body() != null;
-                if (response.body().code == 1) {
-                    for (GetNotificationResponse.Notification item : response.body().notification) {
-                        notificationList.add(new Notification(item.get_id(), item.getTitle(), item.getDate(), item.getContent(), item.getImg(), item.getUserId(), "Private"));
-                    }
-                    updateAdapter();
-                } else {
-                    if (response.body().message.equals("wrong token")) {
-                        CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
-                    } else {
-                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<GetNotificationResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetNotificationResponse> call, @NonNull Throwable t) {
                 AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
             }
         });

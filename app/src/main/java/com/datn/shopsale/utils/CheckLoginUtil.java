@@ -17,6 +17,8 @@ public class CheckLoginUtil {
                     Intent intent = new Intent(context, LoginActivity.class);
                     context.startActivity(intent);
                     if (context instanceof Activity) {
+                        PreferenceManager preferenceManager = new PreferenceManager(context);
+                        preferenceManager.clear();
                         ((Activity) context).finish();
                     }
                 })
