@@ -192,4 +192,9 @@
     <string name="xoa_thanh_cong">Xóa thành công</string>
     <string name="xem_them_1">Xem thêm</string>
     <string name="an_bot">Ẩn bớt</string>
+    <string name="close">Đóng</string>
+    <string name="do_want_delete_msg">Bạn có muốn xoá tin nhắn này?</string>
+    <string name="delete_msg">Xoá</string>
+    <string name="message_removed">Đã gỡ 1 tin nhắn.</string>
+    <string name="y_message_removed">Bạn: Đã gỡ 1 tin nhắn.</string>
 </resources>
