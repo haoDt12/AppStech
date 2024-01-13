@@ -25,9 +25,10 @@ import com.datn.shopsale.adapter.CategoriesAdapter;
 import com.datn.shopsale.adapter.ProductAdapter;
 import com.datn.shopsale.adapter.SliderAdapter;
 import com.datn.shopsale.databinding.FragmentHomeBinding;
+import com.datn.shopsale.modelsv2.Banner;
 import com.datn.shopsale.modelsv2.Category;
 import com.datn.shopsale.modelsv2.Product;
-import com.datn.shopsale.response.GetBannerResponse;
+import com.datn.shopsale.responsev2.GetBannerResponse;
 import com.datn.shopsale.responsev2.GetAllProductResponse;
 import com.datn.shopsale.responsev2.GetCategoryResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
@@ -52,7 +53,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
 
     private List<Product> dataList = new ArrayList<>();
-    private final ArrayList<GetBannerResponse.Banner> listImg = new ArrayList<>();
+    private List<Banner> dataListBanner = new ArrayList<>();
     private ProductAdapter productAdapter;
     private CategoriesAdapter categoriesAdapter;
 
@@ -77,22 +78,21 @@ public class HomeFragment extends Fragment {
     }
 
     private List<String> GetListBanner() {
+
         LoadingDialog.showProgressDialog(getActivity(), "Loading...");
         List<String> list = new ArrayList<>();
-        listImg.clear();
-        Call<GetBannerResponse.Root> call = apiService.getListBanner(preferenceManager.getString("token"));
-        call.enqueue(new Callback<GetBannerResponse.Root>() {
+        dataListBanner.clear();
+        Call<GetBannerResponse> call = apiService.getListBanner(preferenceManager.getString("token"));
+        call.enqueue(new Callback<GetBannerResponse>() {
             @Override
-            public void onResponse(@NonNull Call<GetBannerResponse.Root> call, @NonNull Response<GetBannerResponse.Root> response) {
+            public void onResponse(@NonNull Call<GetBannerResponse> call, @NonNull Response<GetBannerResponse> response) {
                 assert response.body() != null;
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
-                    if (response.body().code == 1) {
-                        for (GetBannerResponse.Banner item : response.body().banner) {
-                            listImg.add(new GetBannerResponse.Banner(item._id, item.img));
-                        }
-                        for (int i = 0; i < listImg.size(); i++) {
-                            list.add(listImg.get(i).getImg());
+                    dataListBanner = response.body().getBanner();
+                    if (response.body().getCode() == 1) {
+                        for (int i = 0; i < dataListBanner.size(); i++) {
+                            list.add(dataListBanner.get(i).getImg());
                         }
                         SliderAdapter sliderAdapter = new SliderAdapter(getActivity(), list);
                         binding.vpgSlideImage.setAdapter(sliderAdapter);
@@ -100,20 +100,21 @@ public class HomeFragment extends Fragment {
                         sliderAdapter.registerDataSetObserver(binding.circleIndicator.getDataSetObserver());
 
                     } else {
-                        if (response.body().message.equals("wrong token")) {
-                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().message);
+                        if (response.body().getMessage().equals("wrong token")) {
+                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
                         } else {
-                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().message);
+                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                         }
                     }
                 });
             }
 
             @Override
-            public void onFailure(@NonNull Call<GetBannerResponse.Root> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<GetBannerResponse> call, @NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
                     AlertDialogUtil.showAlertDialogWithOk(requireActivity(), t.getMessage());
+
                 });
             }
 
@@ -131,8 +132,8 @@ public class HomeFragment extends Fragment {
         activity.setSupportActionBar(binding.toolbarHome);
         binding.lnlSearch.setOnClickListener(view1 -> startActivity(new Intent(getActivity(), SearchActivity.class)));
         preferenceManager = new PreferenceManager(getActivity());
-        Log.d("token", preferenceManager.getString("token"));
         apiService = RetrofitConnection.getApiService();
+        GetListBanner();
         timer = new Timer();
         if (binding != null && binding.vpgSlideImage.getAdapter() != null) {
             timer.scheduleAtFixedRate(new TimerTask() {
@@ -145,12 +146,13 @@ public class HomeFragment extends Fragment {
                             int nextItem = (currentItem + 1) % totalItems;
                             binding.vpgSlideImage.setCurrentItem(nextItem);
                         } catch (Exception exception) {
+                            Log.d("TAGzz: ", Objects.requireNonNull(exception.getMessage()));
                         }
                     });
                 }
             }, 2000, 2000);
         }
-        GetListBanner();
+
         displayCategory();
         displayProduct();
     }
@@ -163,8 +165,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<GetAllProductResponse> call, @NonNull Response<GetAllProductResponse> response) {
                 assert null != response.body();
+                Log.d("check", "onResponse: 2");
                 requireActivity().runOnUiThread(() -> {
                     LoadingDialog.dismissProgressDialog();
+
                     if (response.body().getCode() == 1) {
                         dataList = response.body().getProduct();
 
@@ -205,7 +209,7 @@ public class HomeFragment extends Fragment {
                         List<Category> dataCategory = response.body().getCategory();
 
                         if (dataCategory.size() > 12) {
-                            if (!dataCategory.get(11).getTitle().equals(getResources().getString(R.string.xem_them_1))) {
+                            if (!dataCategory.get(11).getName().equals(getResources().getString(R.string.xem_them_1))) {
                                 String temp = "https://cdn-icons-png.flaticon.com/512/10348/10348994.png";
                                 Category viewMore = new Category("-1", getResources().getString(R.string.xem_them_1), "---", temp);
                                 Category viewLess = new Category("-1", getResources().getString(R.string.an_bot), "---", temp);
@@ -230,11 +234,7 @@ public class HomeFragment extends Fragment {
                         binding.rcvListCategories.setLayoutManager(new GridLayoutManager(getActivity(), 4));
                         binding.rcvListCategories.setAdapter(categoriesAdapter);
                     } else {
-                        if (response.body().getMessage().equals("wrong token")) {
-                            CheckLoginUtil.gotoLogin(requireActivity(), response.body().getMessage());
-                        } else {
-                            AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
-                        }
+                        AlertDialogUtil.showAlertDialogWithOk(requireActivity(), response.body().getMessage());
                     }
                 });
             }

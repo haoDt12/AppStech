@@ -1,10 +1,6 @@
-package com.datn.shopsale.modelsv2;
+package com.datn.shopsale.request;
 
-public class Message {
-    public static final String TYPE_SEND_TEXT = "text";
-    public static final String TYPE_SEND_IMAGE = "image";
-    public static final String TYPE_SEND_VIDEO = "video";
-    private String _id;
+public class AddMessageRequest {
     private String conversation_id;
     private String sender_id;
     private String message;
@@ -12,14 +8,6 @@ public class Message {
     private String status;
     private String created_at;
     private String deleted_at;
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
-    }
 
     public String getConversation_id() {
         return conversation_id;
@@ -77,4 +65,3 @@ public class Message {
         this.deleted_at = deleted_at;
     }
 }
-

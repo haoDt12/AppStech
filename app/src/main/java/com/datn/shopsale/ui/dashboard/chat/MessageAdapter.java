@@ -1,31 +1,32 @@
 package com.datn.shopsale.ui.dashboard.chat;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.datn.shopsale.Interface.IActionMessage;
 import com.datn.shopsale.R;
-import com.datn.shopsale.response.GetMessageResponse;
-import com.datn.shopsale.utils.Constants;
-import com.datn.shopsale.utils.GetImgIPAddress;
+import com.datn.shopsale.modelsv2.Message;
+import com.datn.shopsale.modelsv2.User;
 
-import org.jetbrains.annotations.Contract;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -33,23 +34,29 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final int VIEW_TYPE_RECEIVED = 2;
     @SuppressLint("StaticFieldLeak")
     private static Context context;
-    private final ArrayList<GetMessageResponse.Message> mMessages;
-    private final String avatarURL;
-    private final String senderId;
+    private final List<Message> mMessages;
+    private final User userSelected;
+    private static IActionMessage iActionMessage;
 
-
-    public MessageAdapter(Context context, ArrayList<GetMessageResponse.Message> messages, String senderId, String avatarURL) {
+    public MessageAdapter(Context context, List<Message> messages, User userSelected, IActionMessage iActionMessage) {
         MessageAdapter.context = context;
         mMessages = messages;
-        this.senderId = senderId;
-        this.avatarURL = avatarURL;
+        this.userSelected = userSelected;
+        MessageAdapter.iActionMessage = iActionMessage;
     }
 
-    public void addMessage(GetMessageResponse.Message message) {
+    public void addMessage(Message message) {
         mMessages.add(message);
         notifyItemInserted(mMessages.size() - 1);
     }
 
+    public void updateMessage(String messageID) {
+        for (int i = 0; i < mMessages.size(); i++) {
+            if (mMessages.get(i).get_id().equals(messageID)) {
+                notifyItemChanged(i);
+            }
+        }
+    }
 
     @NonNull
     @Override
@@ -66,26 +73,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_SENT) {
-            try {
-                ((SentMessageViewHolder) holder).setData(mMessages.get(position));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            ((SentMessageViewHolder) holder).setData(mMessages.get(position));
         } else {
-            try {
-                ((ReceivedMessageViewHolder) holder).setData(mMessages.get(position), avatarURL);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            ((ReceivedMessageViewHolder) holder).setData(mMessages.get(position), userSelected.getAvatar());
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (mMessages.get(position).getSenderId().equals(senderId)) {
-            return VIEW_TYPE_SENT;
-        } else {
+        if (mMessages.get(position).getSender_id().equals(userSelected.get_id())) {
             return VIEW_TYPE_RECEIVED;
+        } else {
+            return VIEW_TYPE_SENT;
         }
     }
 
@@ -103,31 +102,59 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvMessage = itemView.findViewById(R.id.tvMessage);
             tvDateTime = itemView.findViewById(R.id.tvTime);
             imgMsg = itemView.findViewById(R.id.img_msg);
-
-            itemView.setOnClickListener(v -> {
-//                Toast.makeText(v.getContext(), "sent", Toast.LENGTH_SHORT).show();
-            });
         }
 
-        void setData(@NonNull GetMessageResponse.Message chat) throws Exception {
-            String encryptedMessage = chat.getMessage();
-            String decryptedMessage = decryptMessage(encryptedMessage);
-            if (decryptedMessage.length() > 0) {
+        void setData(@NonNull Message chat) {
+            String contentMsg = chat.getMessage();
+            if (chat.getMessage_type().equals(Message.TYPE_SEND_TEXT)) {
                 tvMessage.setVisibility(View.VISIBLE);
                 imgMsg.setVisibility(View.GONE);
-                tvMessage.setText(decryptedMessage);
-            } else {
+                if (!chat.getDeleted_at().isEmpty()) {
+                    tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
+                    tvMessage.setTextSize(14);
+                    tvMessage.setTextColor(Color.GRAY);
+                }
+                tvMessage.setText(contentMsg);
+            } else if (chat.getMessage_type().equals(Message.TYPE_SEND_IMAGE)) {
                 tvMessage.setVisibility(View.GONE);
                 imgMsg.setVisibility(View.VISIBLE);
                 Glide.with(context)
-                        .load(GetImgIPAddress.convertLocalhostToIpAddress(chat.getImages().get(0)))
+                        .load(contentMsg)
                         .into(imgMsg);
             }
 
-            String dataTime = chat.getTimestamp();
+            String dataTime = chat.getCreated_at();
             dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
             tvDateTime.setText(dataTime);
+
+            itemView.setOnLongClickListener(v -> {
+                doActionMessage(chat.get_id());
+                return false;
+            });
         }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private static void doActionMessage(String msgID) {
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_confirm_delete_msg);
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(context.getDrawable(R.drawable.dialog_bg));
+        window.getAttributes().windowAnimations = R.style.DialogAnimationOption;
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        window.setAttributes(windowAttributes);
+        windowAttributes.gravity = Gravity.BOTTOM;
+        ImageButton btnCancel = dialog.findViewById(R.id.btn_cancel);
+        Button btnConfirm = dialog.findViewById(R.id.btn_confirm);
+        btnCancel.setOnClickListener(view2 -> dialog.cancel());
+        btnConfirm.setOnClickListener(view2 -> {
+            dialog.dismiss();
+            iActionMessage.doAction("DELETE", msgID, "", null);
+        });
+
+        dialog.show();
     }
 
     static class ReceivedMessageViewHolder extends RecyclerView.ViewHolder {
@@ -141,67 +168,49 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvMessage = itemView.findViewById(R.id.tvMessage);
             imgMessage = itemView.findViewById(R.id.img_msg);
             tvDateTime = itemView.findViewById(R.id.tvTime);
-
-            itemView.setOnClickListener(v -> {
-//                Toast.makeText(v.getContext(), "received", Toast.LENGTH_SHORT).show();
-            });
         }
 
-        void setData(@NonNull GetMessageResponse.Message chat, String avatar) throws Exception {
-            String encryptedMessage = chat.getMessage();
-            String decryptedMessage = decryptMessage(encryptedMessage);
-            tvMessage.setText(decryptedMessage);
-            tvMessage.setVisibility(View.VISIBLE);
-            if (decryptedMessage.trim().length() > 0) {
-                tvMessage.setText(decryptedMessage);
-                imgMessage.setVisibility(View.GONE);
-                tvMessage.setVisibility(View.VISIBLE);
-            } else {
-                tvMessage.setVisibility(View.GONE);
-                imgMessage.setVisibility(View.VISIBLE);
-                Glide.with(context)
-                        .load(GetImgIPAddress.convertLocalhostToIpAddress(chat.getImages().get(0)))
-                        .into(imgMessage);
+        void setData(@NonNull Message chat, String avatar) {
+            String contentMsg = chat.getMessage();
+            switch (chat.getMessage_type()) {
+                case Message.TYPE_SEND_TEXT:
+                    if (!chat.getDeleted_at().isEmpty()) {
+                        tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
+                        tvMessage.setTextSize(14);
+                        tvMessage.setTextColor(Color.GRAY);
+                    }
+                    tvMessage.setText(contentMsg);
+                    imgMessage.setVisibility(View.GONE);
+                    tvMessage.setVisibility(View.VISIBLE);
+                    break;
+                case Message.TYPE_SEND_IMAGE:
+                    tvMessage.setVisibility(View.GONE);
+                    imgMessage.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(contentMsg)
+                            .into(imgMessage);
+                    break;
+                case Message.TYPE_SEND_VIDEO:
+                    tvMessage.setVisibility(View.VISIBLE); // ẩn text
+                    imgMessage.setVisibility(View.GONE); //ẩn ảnh
+                    //  video
+                    tvMessage.setText(R.string.sent_video);
+                    break;
             }
-            String dataTime = chat.getTimestamp();
+
+            String dataTime = chat.getCreated_at();
             dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
             tvDateTime.setText(dataTime);
             if (avatar != null) {
                 Glide.with(context)
-                        .load(GetImgIPAddress.convertLocalhostToIpAddress(avatar))
+                        .load(avatar)
                         .into(imgProfile);
             }
+
+            itemView.setOnLongClickListener(v -> {
+                Toast.makeText(context, contentMsg, Toast.LENGTH_SHORT).show();
+                return false;
+            });
         }
-
-    }
-
-    @NonNull
-    @Contract("_ -> new")
-    public static String decryptMessage(@NonNull String encryptedMessage) throws Exception {
-        String[] textParts = encryptedMessage.split(":");
-        byte[] iv = hexStringToByteArray(textParts[0]);
-        byte[] encryptedText = hexStringToByteArray(textParts[1]);
-
-        MessageDigest md = MessageDigest.getInstance(Constants.HASH_ALGORITHM);
-        byte[] keyBytes = md.digest(Constants.ENCRYPTION_KEY.getBytes(StandardCharsets.UTF_8));
-        byte[] keyBytes16 = new byte[16];
-        System.arraycopy(keyBytes, 0, keyBytes16, 0, 16);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes16, "AES");
-
-        Cipher cipher = Cipher.getInstance(Constants.ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
-
-        byte[] decryptedBytes = cipher.doFinal(encryptedText);
-        return new String(decryptedBytes, StandardCharsets.UTF_8);
-    }
-
-    private static byte[] hexStringToByteArray(String hexString) {
-        int len = hexString.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-                    + Character.digit(hexString.charAt(i + 1), 16));
-        }
-        return data;
     }
 }

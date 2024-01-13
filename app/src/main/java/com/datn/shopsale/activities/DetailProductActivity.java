@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,6 +34,8 @@ import com.datn.shopsale.models.ResApi;
 import com.datn.shopsale.modelsv2.DataListOrder;
 import com.datn.shopsale.modelsv2.FeedBack;
 import com.datn.shopsale.modelsv2.Img;
+import com.datn.shopsale.request.CreateConversationRequest;
+import com.datn.shopsale.responsev2.CreateConversationResponse;
 import com.datn.shopsale.responsev2.BaseResponse;
 import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
@@ -55,6 +58,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = DetailProductActivity.class.getSimpleName();
     private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
     private ContentAdapter contentAdapter;
@@ -76,6 +80,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     private float TBC;
     private float rating;
     private Button btnBuyNow;
+    private ImageButton btnChat;
     private String token;
     private String img_cover;
     private String quantity;
@@ -92,10 +97,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         init();
         getCmt();
         onclickByNow();
+        btnChat.setOnClickListener(v -> doCreateConversation());
     }
 
     private void getCmt() {
-        LoadingDialog.showProgressDialog(this,"Loading....");
+        LoadingDialog.showProgressDialog(this, "Loading....");
         listFb = new ArrayList<>();
         Call<FeedBackResponse> call = apiService.getFeedBack(preferenceManager.getString("token"), id);
         call.enqueue(new Callback<FeedBackResponse>() {
@@ -264,6 +270,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tvRam = findViewById(R.id.tv_dungLuong);
         tvRom = findViewById(R.id.tv_rom);
         btnBuyNow = findViewById(R.id.btn_buy_now);
+        btnChat = findViewById(R.id.btn_chat);
         setSupportActionBar(toolbarDetailPro);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.angle_left);
@@ -286,30 +293,28 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     private void doCreateConversation() {
         LoadingDialog.showProgressDialog(this, "Loading...");
-        ArrayList<String> listUserInConversation = new ArrayList<>();
-        listUserInConversation.add(Constants.idUserAdmin);
-        String idUser = preferenceManager.getString("userId");
         String token = preferenceManager.getString("token");
-        Call<ResApi> call = apiService.createConversation(token, "ChatBox", idUser, listUserInConversation);
-        call.enqueue(new Callback<ResApi>() {
-            @Override
-            public void onResponse(@NonNull Call<ResApi> call, @NonNull Response<ResApi> response) {
+        String userID = preferenceManager.getString("userId");
+        CreateConversationRequest request = new CreateConversationRequest();
+        request.setCreator_id(Constants.idUserAdmin);
+        request.setReceive_id(userID);
 
+        Call<CreateConversationResponse> call = apiService.createConversation(token, request);
+        call.enqueue(new Callback<CreateConversationResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<CreateConversationResponse> call, @NonNull Response<CreateConversationResponse> response) {
                 runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
-                    if (response.body().code == 1) {
+                    if (response.code() == 1) {
                         runOnUiThread(() -> {
-                            Intent i = new Intent(DetailProductActivity.this, ChatActivity.class);
-                            i.putExtra("idConversation", response.body().id);
-                            i.putExtra("idUser", listUserInConversation.get(0));
-                            startActivity(i);
+                            Log.d(TAG, "onResponse: " + response.body().getMessage());
                         });
                     } else {
                         runOnUiThread(() -> {
-                            if (response.body().message.equals("wrong token")) {
-                                CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().message);
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().getMessage());
                             } else {
-                                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().message);
+                                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
                             }
                         });
                     }
@@ -317,11 +322,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             }
 
             @Override
-            public void onFailure(@NonNull Call<ResApi> call, @NonNull Throwable t) {
-                runOnUiThread(() -> {
-                    LoadingDialog.dismissProgressDialog();
-                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
-                });
+            public void onFailure(@NonNull Call<CreateConversationResponse> call, @NonNull Throwable t) {
+                LoadingDialog.dismissProgressDialog();
+                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
             }
         });
     }
@@ -335,8 +338,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             startActivity(i);
         } else if (view.getId() == R.id.btn_add_to_cart) {
             AddToCart();
-        } else if (view.getId() == R.id.btn_chat) {
-            doCreateConversation();
         }
     }
 

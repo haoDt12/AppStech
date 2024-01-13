@@ -5,6 +5,7 @@ import com.datn.shopsale.request.AddAddressRequest;
 import com.datn.shopsale.request.AddFcmRequest;
 import com.datn.shopsale.request.CancelOrderRequest;
 import com.datn.shopsale.request.ChangPassRequest;
+import com.datn.shopsale.request.CreateConversationRequest;
 import com.datn.shopsale.request.CreateOrderRequest;
 import com.datn.shopsale.request.CusLoginRequest;
 import com.datn.shopsale.request.CusVerifyLoginRequest;
@@ -17,11 +18,15 @@ import com.datn.shopsale.request.GetProductByCateIdRequest;
 import com.datn.shopsale.request.GetVoucherByIdRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.request.SearchProductByNameRequest;
+import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.GetBannerResponse;
+import com.datn.shopsale.responsev2.MessageResponse;
+import com.datn.shopsale.responsev2.CreateConversationResponse;
+import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetConversationResponse;
 import com.datn.shopsale.response.GetMessageResponse;
 import com.datn.shopsale.response.GetPassResponse;
-import com.datn.shopsale.response.GetUserByIdResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
 import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.responsev2.AddAddressResponse;
@@ -41,6 +46,8 @@ import com.datn.shopsale.responsev2.GetCusInfoResponse;
 import com.datn.shopsale.responsev2.GetDeliveryAddressResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
 import com.datn.shopsale.responsev2.GetNotificationResponse;
+import com.datn.shopsale.responsev2.GetListConversationResponse;
+import com.datn.shopsale.responsev2.GetListMessageResponse;
 import com.datn.shopsale.responsev2.GetOrderResponseV2;
 import com.datn.shopsale.responsev2.GetPriceZaloPayResponseV2;
 import com.datn.shopsale.responsev2.GetVoucherByIdResponse;
@@ -51,7 +58,6 @@ import com.datn.shopsale.ui.dashboard.address.Address.AddressCDW;
 import com.datn.shopsale.ui.dashboard.address.Address.DistrictRespone;
 import com.datn.shopsale.ui.dashboard.address.Address.WardsRespone;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -84,8 +90,8 @@ public interface ApiService {
                                                      @Field("photoUrl") String photoUrl
     );
 
-    @POST("/api/getListBanner")
-    Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
+    @POST("/apiv2/getListBanner")
+    Call<GetBannerResponse> getListBanner(@Header("Authorization") String token
     );
     @GET("/api/p/")
     Call<List<AddressCDW.City>> getCities();
@@ -99,45 +105,6 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("/apiv2/getPassWord")
     Call<GetPassResponse> getPassWord(@Header("Authorization") String token, @Field("username") String username);
-
-    @FormUrlEncoded
-    @POST("/api/createConversation")
-    Call<ResApi> createConversation(@Header("Authorization") String token,
-                                    @Field("name") String name,
-                                    @Field("idUserLoged") String idUserLoged,
-                                    @Field("idUserSelected[]") ArrayList<String> idUserSelected);
-
-    @FormUrlEncoded
-    @POST("/api/getConversationByIDUser")
-    Call<GetConversationResponse.Root> getConversationByIDUser(@Header("Authorization") String token,
-                                                               @Field("idUser") String idUser);
-
-    @FormUrlEncoded
-    @POST("/api/getMessageLatest")
-    Call<GetMessageResponse.Root> getMessageLatest(@Header("Authorization") String token,
-                                                   @Field("conversationIDs[]") ArrayList<String> conversationIDs);
-
-    @FormUrlEncoded
-    @POST("/api/getAnyUserById")
-    Call<GetUserByIdResponse.Root> getAnyUserById(@Header("Authorization") String token,
-                                                  @Field("userId") String userId);
-
-    @Multipart
-    @POST("/api/addMessage")
-    Call<GetMessageResponse.ResponseMessage> addMessage(
-            @Header("Authorization") String token,
-            @Part("conversation") RequestBody conversation,
-            @Part("senderId") RequestBody senderId,
-            @Part("receiverId") RequestBody receiverId,
-            @Part("message") RequestBody message,
-            @Part MultipartBody.Part images,
-            @Part MultipartBody.Part video
-    );
-
-    @FormUrlEncoded
-    @POST("/api/getMessageByIDConversation")
-    Call<GetMessageResponse.Root> getMessageByIDConversation(@Header("Authorization") String token,
-                                                             @Field("conversationID") String conversationID);
 
     @POST("/apiv2/loginCustomer")
     Call<CusLoginResponse> loginCus(@Body CusLoginRequest request);
@@ -256,6 +223,44 @@ public interface ApiService {
 
     @POST("/apiv2/searchProductByName")
     Call<GetAllProductResponse> searchProductByName(@Header("Authorization") String token, @Body SearchProductByNameRequest request);
+
+    @POST("/apiv2/createConversation")
+    Call<CreateConversationResponse> createConversation(@Header("Authorization") String token,
+                                                        @Body CreateConversationRequest request);
+
+    @FormUrlEncoded
+    @POST("/apiv2/getConversationByIDUser")
+    Call<GetListConversationResponse> getConversationByIDUser(@Header("Authorization") String token,
+                                                              @Field("idUser") String idUser);
+
+    @FormUrlEncoded
+    @POST("/apiv2/getMessageByIDConversation")
+    Call<GetListMessageResponse> getMessageByIDConversation(@Header("Authorization") String token,
+                                                            @Field("conversationID") String conversationID);
+
+    @Multipart
+    @POST("/apiv2/addMessage")
+    Call<MessageResponse> addMessage(
+            @Header("Authorization") String token,
+            @Part("conversation_id") RequestBody conversation,
+            @Part("sender_id") RequestBody senderId,
+            @Part("message_type") RequestBody messageType,
+            @Part("message") RequestBody message,
+            @Part MultipartBody.Part images,
+            @Part MultipartBody.Part video
+    );
+
+    @FormUrlEncoded
+    @POST("/apiv2/updateStatusMessage")
+    Call<MessageResponse> updateStatusMessage(@Header("Authorization") String token,
+                                              @Field("msgID") String msgID,
+                                              @Field("status") String status);
+
+    @FormUrlEncoded
+    @POST("/apiv2/deleteMessage")
+    Call<BaseResponse> deleteMessage(@Header("Authorization") String token,
+                                     @Field("userLoggedID") String userLoggedID,
+                                     @Field("msgID") String msgID);
     @POST("/apiv2/getNotificationByUser")
     Call<GetNotificationResponse> getNotificationByUser(@Header("Authorization") String token);
     @POST("/apiv2/getVoucherByVoucherId")
