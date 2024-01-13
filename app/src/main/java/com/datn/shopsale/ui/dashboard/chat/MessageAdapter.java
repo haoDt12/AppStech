@@ -14,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,21 +25,8 @@ import com.datn.shopsale.Interface.IActionMessage;
 import com.datn.shopsale.R;
 import com.datn.shopsale.modelsv2.Message;
 import com.datn.shopsale.modelsv2.User;
-import com.datn.shopsale.response.GetMessageResponse;
-import com.datn.shopsale.utils.Constants;
-import com.datn.shopsale.utils.GetImgIPAddress;
-import com.github.dhaval2404.imagepicker.ImagePicker;
 
-import org.jetbrains.annotations.Contract;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -87,17 +73,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == VIEW_TYPE_SENT) {
-            try {
-                ((SentMessageViewHolder) holder).setData(mMessages.get(position));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            ((SentMessageViewHolder) holder).setData(mMessages.get(position));
         } else {
-            try {
-                ((ReceivedMessageViewHolder) holder).setData(mMessages.get(position), userSelected.getAvatar());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            ((ReceivedMessageViewHolder) holder).setData(mMessages.get(position), userSelected.getAvatar());
         }
     }
 
@@ -124,31 +102,25 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvMessage = itemView.findViewById(R.id.tvMessage);
             tvDateTime = itemView.findViewById(R.id.tvTime);
             imgMsg = itemView.findViewById(R.id.img_msg);
-
         }
 
-        void setData(@NonNull Message chat) throws Exception {
-            String encryptedMessage = chat.getMessage();
-            String decryptedMessage = decryptMessage(encryptedMessage);
-            if (decryptedMessage.length() > 0) {
+        void setData(@NonNull Message chat) {
+            String contentMsg = chat.getMessage();
+            if (chat.getMessage_type().equals(Message.TYPE_SEND_TEXT)) {
                 tvMessage.setVisibility(View.VISIBLE);
                 imgMsg.setVisibility(View.GONE);
                 if (!chat.getDeleted_at().isEmpty()) {
                     tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
                     tvMessage.setTextSize(14);
                     tvMessage.setTextColor(Color.GRAY);
-                    tvMessage.setText(R.string.message_removed);
-                } else {
-                    tvMessage.setText(decryptedMessage);
                 }
-
-            } else {
+                tvMessage.setText(contentMsg);
+            } else if (chat.getMessage_type().equals(Message.TYPE_SEND_IMAGE)) {
                 tvMessage.setVisibility(View.GONE);
                 imgMsg.setVisibility(View.VISIBLE);
-                // send image
-//                Glide.with(context)
-//                        .load(GetImgIPAddress.convertLocalhostToIpAddress(chat.getImages().get(0)))
-//                        .into(imgMsg);
+                Glide.with(context)
+                        .load(contentMsg)
+                        .into(imgMsg);
             }
 
             String dataTime = chat.getCreated_at();
@@ -156,15 +128,9 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvDateTime.setText(dataTime);
 
             itemView.setOnLongClickListener(v -> {
-                if (!chat.getDeleted_at().isEmpty()) {
-                    Toast.makeText(context, chat.getDeleted_at(), Toast.LENGTH_SHORT).show();
-                }
-
-//                Toast.makeText(context, chat.getDeleted_at().length() + "", Toast.LENGTH_SHORT).show();
                 doActionMessage(chat.get_id());
                 return false;
             });
-
         }
     }
 
@@ -204,75 +170,47 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             tvDateTime = itemView.findViewById(R.id.tvTime);
         }
 
-        void setData(@NonNull Message chat, String avatar) throws Exception {
-            String encryptedMessage = chat.getMessage();
-            String decryptedMessage = decryptMessage(encryptedMessage);
-            tvMessage.setText(decryptedMessage);
-            tvMessage.setVisibility(View.VISIBLE);
-
-            if (decryptedMessage.trim().length() > 0) {
-                if (!chat.getDeleted_at().isEmpty()) {
-                    tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
-                    tvMessage.setTextSize(14);
-                    tvMessage.setTextColor(Color.GRAY);
-                    tvMessage.setText(R.string.message_removed);
-                } else {
-                    tvMessage.setText(decryptedMessage);
-                }
-                imgMessage.setVisibility(View.GONE);
-                tvMessage.setVisibility(View.VISIBLE);
-            } else {
-                tvMessage.setVisibility(View.GONE);
-                imgMessage.setVisibility(View.VISIBLE);
-                // Send Image
-//                Glide.with(context)
-//                        .load(GetImgIPAddress.convertLocalhostToIpAddress(chat.getImages().get(0)))
-//                        .into(imgMessage);
+        void setData(@NonNull Message chat, String avatar) {
+            String contentMsg = chat.getMessage();
+            switch (chat.getMessage_type()) {
+                case Message.TYPE_SEND_TEXT:
+                    if (!chat.getDeleted_at().isEmpty()) {
+                        tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
+                        tvMessage.setTextSize(14);
+                        tvMessage.setTextColor(Color.GRAY);
+                    }
+                    tvMessage.setText(contentMsg);
+                    imgMessage.setVisibility(View.GONE);
+                    tvMessage.setVisibility(View.VISIBLE);
+                    break;
+                case Message.TYPE_SEND_IMAGE:
+                    tvMessage.setVisibility(View.GONE);
+                    imgMessage.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(contentMsg)
+                            .into(imgMessage);
+                    break;
+                case Message.TYPE_SEND_VIDEO:
+                    tvMessage.setVisibility(View.VISIBLE); // ẩn text
+                    imgMessage.setVisibility(View.GONE); //ẩn ảnh
+                    //  video
+                    tvMessage.setText(R.string.sent_video);
+                    break;
             }
+
             String dataTime = chat.getCreated_at();
             dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
             tvDateTime.setText(dataTime);
             if (avatar != null) {
                 Glide.with(context)
-                        .load(GetImgIPAddress.convertLocalhostToIpAddress(avatar))
+                        .load(avatar)
                         .into(imgProfile);
             }
 
             itemView.setOnLongClickListener(v -> {
-                Toast.makeText(context, decryptedMessage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, contentMsg, Toast.LENGTH_SHORT).show();
                 return false;
             });
         }
-
-    }
-
-    @NonNull
-    @Contract("_ -> new")
-    public static String decryptMessage(@NonNull String encryptedMessage) throws Exception {
-        String[] textParts = encryptedMessage.split(":");
-        byte[] iv = hexStringToByteArray(textParts[0]);
-        byte[] encryptedText = hexStringToByteArray(textParts[1]);
-
-        MessageDigest md = MessageDigest.getInstance(Constants.HASH_ALGORITHM);
-        byte[] keyBytes = md.digest(Constants.ENCRYPTION_KEY.getBytes(StandardCharsets.UTF_8));
-        byte[] keyBytes16 = new byte[16];
-        System.arraycopy(keyBytes, 0, keyBytes16, 0, 16);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes16, "AES");
-
-        Cipher cipher = Cipher.getInstance(Constants.ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
-
-        byte[] decryptedBytes = cipher.doFinal(encryptedText);
-        return new String(decryptedBytes, StandardCharsets.UTF_8);
-    }
-
-    private static byte[] hexStringToByteArray(String hexString) {
-        int len = hexString.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-                    + Character.digit(hexString.charAt(i + 1), 16));
-        }
-        return data;
     }
 }

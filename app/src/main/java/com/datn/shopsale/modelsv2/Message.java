@@ -1,6 +1,9 @@
 package com.datn.shopsale.modelsv2;
 
 public class Message {
+    public static final String TYPE_SEND_TEXT = "text";
+    public static final String TYPE_SEND_IMAGE = "image";
+    public static final String TYPE_SEND_VIDEO = "video";
     private String _id;
     private String conversation_id;
     private String sender_id;

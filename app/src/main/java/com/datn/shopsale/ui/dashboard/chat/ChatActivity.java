@@ -37,8 +37,8 @@ import com.datn.shopsale.modelsv2.Conversation;
 import com.datn.shopsale.modelsv2.Message;
 import com.datn.shopsale.modelsv2.User;
 import com.datn.shopsale.responsev2.BaseResponse;
-import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.responsev2.GetListMessageResponse;
+import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CheckLoginUtil;
@@ -47,12 +47,10 @@ import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-import org.checkerframework.checker.units.qual.C;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
@@ -81,8 +79,6 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
 
 
     private static final int TYPING_TIMER_LENGTH = 600;
-    private static final String MESSAGE_TYPE_TEXT = "text";
-    private static final String MESSAGE_TYPE_IMAGE = "image";
     private EditText inputMessage;
     private boolean isTyping = false;
 
@@ -91,7 +87,6 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
     private User mUserSelected;
     private String conversationID;
     private String idUserLog;
-    private String idUserSelected;
     private Uri imageUri;
 
     private Boolean isConnected = true;
@@ -132,7 +127,6 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         idUserLog = preferenceManager.getString("userId");
 
         conversationID = getIntent().getStringExtra("idConversation");
-        String idMsg = getIntent().getStringExtra("idMsg");
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -241,7 +235,6 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         String token = preferenceManager.getString("token");
         RequestBody rbConversationID = RequestBody.create(MediaType.parse("text/plain"), conversationID);
         RequestBody rbSenderID = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
-        RequestBody rbMessageType = RequestBody.create(MediaType.parse("text/plain"), MESSAGE_TYPE_TEXT);
         RequestBody rbMessage = RequestBody.create(MediaType.parse("text/plain"), message);
         Log.d(TAG, "addMessage: message " + rbMessage);
         Log.d(TAG, "addMessage: senderID " + rbSenderID);
@@ -249,19 +242,17 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         // Send Image
         if (imageUri != null) {
             File file = new File(Objects.requireNonNull(imageUri.getPath()));
+            RequestBody rbMessageType = RequestBody.create(MediaType.parse("text/plain"), Message.TYPE_SEND_IMAGE);
             RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), imageRequestBody);
-
-        }
-        // Send text
-        else {
-            Call<MessageResponse> call = apiService.addMessage(token, rbConversationID, rbSenderID, rbMessageType, rbMessage, null, null);
+            Call<MessageResponse> call = apiService.addMessage(token, rbConversationID, rbSenderID, rbMessageType, rbMessage, imagePart, null);
             call.enqueue(new Callback<MessageResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
                     if (response.body() != null) {
                         if (response.body().getCode() == 1) {
                             runOnUiThread(() -> {
+//                                Log.d(TAG, "onResponse: " + response.body().getMessages());
                                 mMessages = response.body().getMessages();
                                 JSONObject messageAdded = new JSONObject();
                                 try {
@@ -271,6 +262,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
                                     messageAdded.put("message", mMessages.getMessage());
                                     messageAdded.put("status", mMessages.getStatus());
                                     messageAdded.put("created_at", mMessages.getCreated_at());
+                                    messageAdded.put("deleted_at", mMessages.getDeleted_at());
                                     messageAdded.put("_id", mMessages.get_id());
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
@@ -304,7 +296,67 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
                 public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
                     runOnUiThread(() -> {
                         LoadingDialog.dismissProgressDialog();
-                        Log.d(TAG, "onFailure add message: " + t.getMessage());
+                        Log.d(TAG, "onFailure add message image: " + t.getMessage());
+                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
+                    });
+                }
+            });
+
+        }
+        // Send text
+        else {
+            RequestBody rbMessageType = RequestBody.create(MediaType.parse("text/plain"), Message.TYPE_SEND_TEXT);
+            Call<MessageResponse> call = apiService.addMessage(token, rbConversationID, rbSenderID, rbMessageType, rbMessage, null, null);
+            call.enqueue(new Callback<MessageResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<MessageResponse> call, @NonNull Response<MessageResponse> response) {
+                    if (response.body() != null) {
+                        if (response.body().getCode() == 1) {
+                            runOnUiThread(() -> {
+                                mMessages = response.body().getMessages();
+                                JSONObject messageAdded = new JSONObject();
+                                try {
+                                    messageAdded.put("conversation_id", mMessages.getConversation_id());
+                                    messageAdded.put("sender_id", mMessages.getSender_id());
+                                    messageAdded.put("message_type", mMessages.getMessage_type());
+                                    messageAdded.put("message", mMessages.getMessage());
+                                    messageAdded.put("status", mMessages.getStatus());
+                                    messageAdded.put("created_at", mMessages.getCreated_at());
+                                    messageAdded.put("deleted_at", mMessages.getDeleted_at());
+                                    messageAdded.put("_id", mMessages.get_id());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                JSONObject jsonMessage = new JSONObject();
+                                try {
+                                    jsonMessage.put("message", messageAdded);
+                                    mSocket.emit("on-chat", jsonMessage);
+                                    mSocket.emit("user-chat", mMessages.getMessage());
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                scrollToBottom();
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                if (response.body().getMessage().equals("wrong token")) {
+                                    CheckLoginUtil.gotoLogin(ChatActivity.this, response.body().getMessage());
+                                } else {
+                                    AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, response.body().getMessage());
+                                }
+                            });
+                        }
+                    } else {
+                        AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, "error get data message");
+                    }
+                    LoadingDialog.dismissProgressDialog();
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<MessageResponse> call, @NonNull Throwable t) {
+                    runOnUiThread(() -> {
+                        LoadingDialog.dismissProgressDialog();
+                        Log.d(TAG, "onFailure add message text: " + t.getMessage());
                         AlertDialogUtil.showAlertDialogWithOk(ChatActivity.this, t.getMessage());
                     });
                 }
@@ -341,8 +393,20 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
             runOnUiThread(() -> {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    String idConversation = data.getString("conversation_id");
-                    getDataMessage(idConversation, mUserSelected);
+                    Message newMessage = new Message();
+                    newMessage.setConversation_id(data.getString("conversation_id"));
+                    newMessage.setSender_id(data.getString("sender_id"));
+                    newMessage.setMessage(data.getString("message"));
+                    newMessage.setMessage_type(data.getString("message_type"));
+                    newMessage.setStatus(data.getString("status"));
+                    newMessage.setCreated_at(data.getString("created_at"));
+                    newMessage.setDeleted_at(data.getString("deleted_at"));
+                    newMessage.set_id(data.getString("_id"));
+
+
+                    mAdapter.addMessage(newMessage);
+                    scrollToBottom();
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -436,7 +500,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         }
     };
 
-    private void displayUserSelected(User dataUser) {
+    private void displayUserSelected(@NonNull User dataUser) {
         tvName.setText(dataUser.getFull_name());
         Glide.with(this)
                 .load(dataUser.getAvatar())
@@ -461,9 +525,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
             public void onResponse(@NonNull Call<GetListMessageResponse> call, @NonNull Response<GetListMessageResponse> response) {
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        runOnUiThread(() -> {
-                            displayMessage(response.body().getMessages(), dataUserSelected);
-                        });
+                        runOnUiThread(() -> displayMessage(response.body().getMessages(), dataUserSelected));
                     } else {
                         runOnUiThread(() -> {
                             if (response.body().getMessage().equals("wrong token")) {

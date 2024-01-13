@@ -107,6 +107,7 @@ public class ConversationActivity extends AppCompatActivity implements IActionMe
 
     private final Emitter.Listener onUserChat = args -> runOnUiThread(() -> {
         JSONObject data = (JSONObject) args[0];
+        // new message
         Log.d(TAG, "onUserChat: " + data);
         getDataConversation();
     });
@@ -117,7 +118,6 @@ public class ConversationActivity extends AppCompatActivity implements IActionMe
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ConversationActivity.this);
         rcvConversation.setLayoutManager(linearLayoutManager);
         rcvConversation.setAdapter(conversationAdapter);
-
     }
 
 
