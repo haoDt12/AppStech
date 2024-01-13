@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private List<String> GetListBanner() {
+    private void GetListBanner() {
 
         LoadingDialog.showProgressDialog(getActivity(), "Loading...");
         List<String> list = new ArrayList<>();
@@ -120,7 +120,6 @@ public class HomeFragment extends Fragment {
 
         });
 
-        return list;
     }
 
 
