@@ -17,9 +17,9 @@ import com.datn.shopsale.request.GetProductByCateIdRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.request.SearchProductByNameRequest;
 import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.GetBannerResponse;
 import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.responsev2.CreateConversationResponse;
-import com.datn.shopsale.response.GetBannerResponse;
 import com.datn.shopsale.response.GetNotificationResponse;
 import com.datn.shopsale.response.GetPassResponse;
 import com.datn.shopsale.response.GetUserGoogleResponse;
@@ -83,8 +83,8 @@ public interface ApiService {
                                                      @Field("photoUrl") String photoUrl
     );
 
-    @POST("/api/getListBanner")
-    Call<GetBannerResponse.Root> getListBanner(@Header("Authorization") String token
+    @POST("/apiv2/getListBanner")
+    Call<GetBannerResponse> getListBanner(@Header("Authorization") String token
     );
 
     @POST("/api/getPublicNotification")
