@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,8 +61,10 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ConversationViewHolder holder, int position) {
+
         PreferenceManager preferenceManager = new PreferenceManager(mContext);
         String idUserLogged = preferenceManager.getString("userId");
+
         Conversation conversation = conversations.get(position);
         Glide.with(mContext)
                 .load(conversation.getAvatar())
@@ -71,37 +74,24 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
             holder.tvLastMessage.setTypeface(holder.tvLastMessage.getTypeface(), Typeface.BOLD);
             holder.tvTime.setTypeface(holder.tvTime.getTypeface(), Typeface.BOLD);
         }
-        String encryptedMessage = conversation.getMessage();
+        String contentMsg = conversation.getMessage();
         if (!conversation.getMsg_deleted_at().isEmpty()) {
             holder.tvLastMessage.setTypeface(holder.tvLastMessage.getTypeface(), Typeface.ITALIC);
             holder.tvLastMessage.setTextSize(14);
             holder.tvLastMessage.setTextColor(Color.GRAY);
-            if (idUserLogged.equals(conversation.getSender_id())) {
-                holder.tvLastMessage.setText(R.string.y_message_removed);
-            } else {
-                holder.tvLastMessage.setText(R.string.message_removed);
-            }
-        } else {
-            if (encryptedMessage.length() > 0) {
-                String decryptedMessage = null;
-                try {
-                    decryptedMessage = decryptMessage(encryptedMessage);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                if (idUserLogged.equals(conversation.getSender_id())) {
-                    holder.tvLastMessage.setText("Bạn: " + decryptedMessage);
-                } else {
-                    holder.tvLastMessage.setText(decryptedMessage);
-                }
-            } else {
-                holder.tvLastMessage.setText(encryptedMessage);
-            }
         }
-        String dataTime = conversation.getCreated_at();
-        dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
-        holder.tvTime.setText(dataTime);
+        if (idUserLogged.equals(conversation.getSender_id())) {
+            holder.tvLastMessage.setText("Bạn: " + contentMsg);
+        } else {
+            holder.tvLastMessage.setText(contentMsg);
+        }
 
+        if (contentMsg.length() > 0) {
+            holder.layoutMsg.setVisibility(View.VISIBLE);
+            String dataTime = conversation.getCreated_at();
+            dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);
+            holder.tvTime.setText(dataTime);
+        }
 
         holder.itemView.setOnClickListener(v -> iActionMessage.doAction("UPDATE_STATUS", conversation.getIdMsg(), conversation.getStatus(), conversation));
     }
@@ -113,48 +103,17 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     static class ConversationViewHolder extends RecyclerView.ViewHolder {
         CircleImageView imgAvt;
-        TextView tvNameUser;
-        TextView tvLastMessage;
-        TextView tvTime;
+        RelativeLayout layoutMsg;
+        TextView tvNameUser, tvLastMessage, tvTime;
 
         public ConversationViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgAvt = (CircleImageView) itemView.findViewById(R.id.img_avt);
             tvNameUser = (TextView) itemView.findViewById(R.id.tv_nameUser);
+            layoutMsg = (RelativeLayout) itemView.findViewById(R.id.layout_msg);
             tvLastMessage = (TextView) itemView.findViewById(R.id.tv_lastMessage);
             tvTime = (TextView) itemView.findViewById(R.id.tv_time);
-
         }
-    }
-
-    @NonNull
-    @Contract("_ -> new")
-    public static String decryptMessage(@NonNull String encryptedMessage) throws Exception {
-        String[] textParts = encryptedMessage.split(":");
-        byte[] iv = hexStringToByteArray(textParts[0]);
-        byte[] encryptedText = hexStringToByteArray(textParts[1]);
-
-        MessageDigest md = MessageDigest.getInstance(Constants.HASH_ALGORITHM);
-        byte[] keyBytes = md.digest(Constants.ENCRYPTION_KEY.getBytes(StandardCharsets.UTF_8));
-        byte[] keyBytes16 = new byte[16];
-        System.arraycopy(keyBytes, 0, keyBytes16, 0, 16);
-        SecretKeySpec secretKeySpec = new SecretKeySpec(keyBytes16, "AES");
-
-        Cipher cipher = Cipher.getInstance(Constants.ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
-
-        byte[] decryptedBytes = cipher.doFinal(encryptedText);
-        return new String(decryptedBytes, StandardCharsets.UTF_8);
-    }
-
-    private static byte[] hexStringToByteArray(String hexString) {
-        int len = hexString.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-                    + Character.digit(hexString.charAt(i + 1), 16));
-        }
-        return data;
     }
 }
