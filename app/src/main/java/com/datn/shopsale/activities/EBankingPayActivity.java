@@ -5,12 +5,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +20,7 @@ import com.datn.shopsale.response.VnPayResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.utils.AlertDialogUtil;
 import com.datn.shopsale.utils.CheckLoginUtil;
+import com.datn.shopsale.utils.LoadingDialog;
 import com.datn.shopsale.utils.PreferenceManager;
 
 import retrofit2.Call;
@@ -33,6 +32,7 @@ public class EBankingPayActivity extends AppCompatActivity {
     private PreferenceManager preferenceManager;
     private CreateOrderRequest request;
     private ApiService apiService;
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +52,15 @@ public class EBankingPayActivity extends AppCompatActivity {
     }
 
     private void onCallApiPay() {
+        LoadingDialog.showProgressDialog(this, "Loading...");
         Call<VnPayResponse> call = apiService.createOrderVnPayV2(preferenceManager.getString("token"), request);
         call.enqueue(new Callback<VnPayResponse>() {
             @Override
             public void onResponse(@NonNull Call<VnPayResponse> call, @NonNull Response<VnPayResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
                     runOnUiThread(() -> {
-                        Toast.makeText(EBankingPayActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         webViewPay.setWebViewClient(new WebViewClient() {
                             @Override
                             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -89,7 +90,10 @@ public class EBankingPayActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(@NonNull Call<VnPayResponse> call, @NonNull Throwable t) {
-                runOnUiThread(() -> AlertDialogUtil.showAlertDialogWithOk(EBankingPayActivity.this, t.getMessage()));
+                runOnUiThread(() -> {
+                    AlertDialogUtil.showAlertDialogWithOk(EBankingPayActivity.this, t.getMessage());
+                    LoadingDialog.dismissProgressDialog();
+                });
             }
         });
     }

@@ -245,7 +245,7 @@ public interface ApiService {
     @POST("/apiv2/createOrderZaloPay")
     Call<CreateOrderResponse> createOrderZaloPay(@Header("Authorization") String token, @Body CreateOrderRequest request);
 
-    @POST("/api/createPaymentUrl")
+    @POST("/apiv2/createPaymentUrl")
     Call<VnPayResponse> createOrderVnPayV2(@Header("Authorization") String token, @Body CreateOrderRequest request);
 
     @POST("/apiv2/sendOtpEditPass")
