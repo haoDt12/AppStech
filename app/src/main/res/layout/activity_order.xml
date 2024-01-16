@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/mauve"
     tools:context=".activities.OrderActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_oder"
         app:title="@string/order"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
     <ScrollView
@@ -340,7 +342,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:text="@string/abate"
-                        android:backgroundTint="#B15B5B"
+                        android:backgroundTint="@color/right_msg"
                         android:textColor="@color/white"
                         android:textSize="10sp"
                         android:textStyle="bold"

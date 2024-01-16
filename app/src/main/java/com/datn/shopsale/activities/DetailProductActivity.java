@@ -361,7 +361,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         TextView tv_name;
         ImageButton imgDecrease;
         ImageButton imgIncrease;
-        Button btnHuy;
+        ImageButton btnHuy;
         Button btnThem;
         EditText ed_quantity;
         ed_quantity = view.findViewById(R.id.ed_quantity_cart);
@@ -371,8 +371,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         tv_name = view.findViewById(R.id.tv_name);
         imgDecrease = view.findViewById(R.id.img_decrease);
         imgIncrease = view.findViewById(R.id.img_increase);
-        btnHuy = view.findViewById(R.id.btn_huy);
-        btnThem = view.findViewById(R.id.btn_them);
+        btnHuy = view.findViewById(R.id.btn_cancel);
+        btnThem = view.findViewById(R.id.btn_buy);
         Glide.with(this).load(img_cover).into(imgProduct);
         tv_kho.setText(String.format("Kho: %s", quantity));
         tv_name.setText(product.getName());
@@ -455,7 +455,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             TextView title;
             ImageButton imgDecrease;
             ImageButton imgIncrease;
-            Button btnHuy;
+            ImageButton btnHuy;
             Button btnThem;
             EditText ed_quantity;
             ed_quantity = view.findViewById(R.id.ed_quantity_cart);
@@ -466,8 +466,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             title = view.findViewById(R.id.title);
             imgDecrease = view.findViewById(R.id.img_decrease);
             imgIncrease = view.findViewById(R.id.img_increase);
-            btnHuy = view.findViewById(R.id.btn_huy);
-            btnThem = view.findViewById(R.id.btn_them);
+            btnHuy = view.findViewById(R.id.btn_cancel);
+            btnThem = view.findViewById(R.id.btn_buy);
             Glide.with(this).load(img_cover).into(imgProduct);
             title.setText(getResources().getText(R.string.mua_ngay));
             tv_kho.setText(String.format("Kho: %s", quantity));

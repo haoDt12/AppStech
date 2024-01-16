@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.AddReviewActivity"
-    android:background="@color/white">
+    android:background="@color/mauve">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_feedback"
         app:title="@string/feedback_product"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
 
@@ -23,13 +24,18 @@
             android:textSize="14sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_above="@+id/lnl_star"
+        android:background="@color/white"/>
     <RelativeLayout
         android:id="@+id/layout_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar_feedback"
-        android:layout_margin="10dp">
+        android:layout_marginVertical="30dp"
+        android:layout_marginHorizontal="10dp">
 
         <ImageView
             android:id="@+id/img_product"
@@ -90,6 +96,7 @@
             android:layout_gravity="center_horizontal"
             android:numStars="5"
             android:rating="0"
+            android:progressDrawable="@drawable/rating_bar_shadow"
             android:stepSize="1" />
         <TextView
             android:id="@+id/tv_rating"
@@ -99,7 +106,8 @@
             android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
             android:textSize="10sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"
+            tools:ignore="SmallSp" />
     </LinearLayout>
 
 

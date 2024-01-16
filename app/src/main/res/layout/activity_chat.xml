@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mauve"
     tools:context=".ui.dashboard.chat.ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_chat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:layout_alignParentTop="true">
 
         <de.hdodenhof.circleimageview.CircleImageView

@@ -52,11 +52,12 @@
                 android:gravity="center"
                 android:paddingVertical="15dp"
                 android:text="@string/delete_msg"
+                android:backgroundTint="@color/right_msg"
                 android:textAllCaps="false"
                 android:textColor="@color/mauve"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                app:cornerRadius="20dp" />
+                app:cornerRadius="30dp" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

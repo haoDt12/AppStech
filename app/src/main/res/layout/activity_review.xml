@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/mauve"
     tools:context=".activities.ReviewActivity">
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_review"
         app:title="@string/review"
+        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
     <LinearLayout

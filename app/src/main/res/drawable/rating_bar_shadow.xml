@@ -1,0 +1,34 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Hình nền chứa bóng -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#E0E0E0" /> <!-- Màu nền -->
+            <corners android:radius="5dp" /> <!-- Bo góc -->
+        </shape>
+    </item>
+    <!-- Hình nền chứa đánh giá -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Màu nền -->
+            <corners android:radius="5dp" /> <!-- Bo góc -->
+        </shape>
+    </item>
+    <!-- Hình nền chứa bóng đánh giá -->
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#E0E0E0" /> <!-- Màu bóng -->
+                <corners android:radius="5dp" /> <!-- Bo góc -->
+            </shape>
+        </clip>
+    </item>
+    <!-- Hình nền chứa đánh giá đã chọn -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="#FFC107" /> <!-- Màu đánh giá -->
+                <corners android:radius="5dp" /> <!-- Bo góc -->
+            </shape>
+        </clip>
+    </item>
+</layer-list>

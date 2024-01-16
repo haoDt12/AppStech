@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mauve"
     tools:context=".ui.notifications.NotificationsFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_notifications"
         app:title="@string/notifications"
         app:titleMarginStart="50dp"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +22,6 @@
         android:id="@+id/rcv_notification"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:background="@color/color_app"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
