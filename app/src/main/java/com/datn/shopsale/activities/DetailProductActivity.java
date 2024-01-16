@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,15 +29,17 @@ import com.datn.shopsale.R;
 import com.datn.shopsale.adapter.ContentAdapter;
 import com.datn.shopsale.adapter.ReviewAdapter;
 import com.datn.shopsale.models.Product;
-import com.datn.shopsale.models.ResApi;
+import com.datn.shopsale.modelsv2.Conversation;
 import com.datn.shopsale.modelsv2.DataListOrder;
 import com.datn.shopsale.modelsv2.FeedBack;
 import com.datn.shopsale.modelsv2.Img;
+import com.datn.shopsale.modelsv2.User;
 import com.datn.shopsale.request.CreateConversationRequest;
-import com.datn.shopsale.responsev2.CreateConversationResponse;
 import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.CreateConversationResponse;
 import com.datn.shopsale.responsev2.FeedBackResponse;
 import com.datn.shopsale.responsev2.GetDetailProductResponse;
+import com.datn.shopsale.responsev2.GetInfoUserResponse;
 import com.datn.shopsale.retrofit.RetrofitConnection;
 import com.datn.shopsale.ui.dashboard.chat.ChatActivity;
 import com.datn.shopsale.utils.AlertDialogUtil;
@@ -58,7 +59,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = DetailProductActivity.class.getSimpleName();
     private TextView tvNameProduct, tvRam, tvColor, tvRom;
     private TextView tvPriceProduct;
     private ContentAdapter contentAdapter;
@@ -291,6 +291,47 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         btnAddToCart.setOnClickListener(this);
     }
 
+    private void getDataUser(Conversation conversation, String id) {
+        LoadingDialog.showProgressDialog(this, "Loading...");
+        String token = preferenceManager.getString("token");
+        Call<GetInfoUserResponse> call = apiService.getAnyUserById(token, id);
+        call.enqueue(new Callback<GetInfoUserResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<GetInfoUserResponse> call, @NonNull Response<GetInfoUserResponse> response) {
+                runOnUiThread(LoadingDialog::dismissProgressDialog);
+                if (response.body() != null) {
+                    if (response.body().getCode() == 1) {
+                        User user = response.body().getUser();
+                        doGoScreenChat(conversation, user);
+                    } else {
+                        runOnUiThread(() -> {
+                            if (response.body().getMessage().equals("wrong token")) {
+                                CheckLoginUtil.gotoLogin(DetailProductActivity.this, response.body().getMessage());
+                            } else {
+                                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, response.body().getMessage());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GetInfoUserResponse> call, @NonNull Throwable t) {
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                });
+            }
+        });
+    }
+
+    private void doGoScreenChat(@NonNull Conversation conversation, User user) {
+        Intent i = new Intent(DetailProductActivity.this, ChatActivity.class);
+        i.putExtra("idConversation", conversation.getConversation_id());
+        i.putExtra("dataUser", user);
+        startActivity(i);
+    }
+
     private void doCreateConversation() {
         LoadingDialog.showProgressDialog(this, "Loading...");
         String token = preferenceManager.getString("token");
@@ -305,10 +346,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             public void onResponse(@NonNull Call<CreateConversationResponse> call, @NonNull Response<CreateConversationResponse> response) {
                 runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
-                    if (response.code() == 1) {
-                        runOnUiThread(() -> {
-                            Log.d(TAG, "onResponse: " + response.body().getMessage());
-                        });
+                    if (response.body().getCode() == 1) {
+                        Conversation conversation = response.body().getConversation();
+                        getDataUser(conversation, conversation.getCreator_id());
                     } else {
                         runOnUiThread(() -> {
                             if (response.body().getMessage().equals("wrong token")) {
@@ -323,8 +363,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
             @Override
             public void onFailure(@NonNull Call<CreateConversationResponse> call, @NonNull Throwable t) {
-                LoadingDialog.dismissProgressDialog();
-                AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                runOnUiThread(() -> {
+                    LoadingDialog.dismissProgressDialog();
+                    AlertDialogUtil.showAlertDialogWithOk(DetailProductActivity.this, t.getMessage());
+                });
             }
         });
     }

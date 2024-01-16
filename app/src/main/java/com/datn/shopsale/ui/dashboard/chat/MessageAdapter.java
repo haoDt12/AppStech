@@ -106,22 +106,35 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         void setData(@NonNull Message chat) {
             String contentMsg = chat.getMessage();
-            if (chat.getMessage_type().equals(Message.TYPE_SEND_TEXT)) {
+            switch (chat.getMessage_type()) {
+                case Message.TYPE_SEND_TEXT:
+                    tvMessage.setVisibility(View.VISIBLE);
+                    imgMsg.setVisibility(View.GONE);
+                    tvMessage.setText(contentMsg);
+                    break;
+                case Message.TYPE_SEND_IMAGE:
+                    tvMessage.setVisibility(View.GONE);
+                    imgMsg.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(contentMsg)
+                            .into(imgMsg);
+                    break;
+                case Message.TYPE_SEND_VIDEO:
+                    tvMessage.setVisibility(View.VISIBLE); // ẩn text
+                    imgMsg.setVisibility(View.GONE);
+                    tvMessage.setText(R.string.sent_video);
+                    break;
+            }
+
+            if (!chat.getDeleted_at().isEmpty()) {
                 tvMessage.setVisibility(View.VISIBLE);
                 imgMsg.setVisibility(View.GONE);
-                if (!chat.getDeleted_at().isEmpty()) {
-                    tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
-                    tvMessage.setTextSize(14);
-                    tvMessage.setTextColor(Color.GRAY);
-                }
+                tvMessage.setTypeface(tvMessage.getTypeface(), Typeface.ITALIC);
+                tvMessage.setTextSize(14);
+                tvMessage.setTextColor(Color.GRAY);
                 tvMessage.setText(contentMsg);
-            } else if (chat.getMessage_type().equals(Message.TYPE_SEND_IMAGE)) {
-                tvMessage.setVisibility(View.GONE);
-                imgMsg.setVisibility(View.VISIBLE);
-                Glide.with(context)
-                        .load(contentMsg)
-                        .into(imgMsg);
             }
+
 
             String dataTime = chat.getCreated_at();
             dataTime = dataTime.substring(dataTime.length() - 8, dataTime.length() - 3);

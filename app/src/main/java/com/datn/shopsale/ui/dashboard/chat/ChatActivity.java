@@ -120,6 +120,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         mSocket.on("user left", onUserLeft);
         mSocket.on("typing", onTyping);
         mSocket.on("stop typing", onStopTyping);
+//        mSocket.on("user-update-chat", updateChat);
         mSocket.connect();
 
         apiService = RetrofitConnection.getApiService();
@@ -231,13 +232,10 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
 
 
     private void addMessage(String message) {
-        Log.d(TAG, "addMessage: " + message);
         String token = preferenceManager.getString("token");
         RequestBody rbConversationID = RequestBody.create(MediaType.parse("text/plain"), conversationID);
         RequestBody rbSenderID = RequestBody.create(MediaType.parse("text/plain"), idUserLog);
         RequestBody rbMessage = RequestBody.create(MediaType.parse("text/plain"), message);
-        Log.d(TAG, "addMessage: message " + rbMessage);
-        Log.d(TAG, "addMessage: senderID " + rbSenderID);
 
         // Send Image
         if (imageUri != null) {
@@ -269,6 +267,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
                                 }
                                 JSONObject jsonMessage = new JSONObject();
                                 try {
+                                    imageUri = null;
                                     jsonMessage.put("message", messageAdded);
                                     mSocket.emit("on-chat", jsonMessage);
                                     mSocket.emit("user-chat", mMessages.getMessage());
@@ -387,6 +386,17 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
         recyclerViewChat.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
+    private final Emitter.Listener updateChat = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(() -> {
+                JSONObject data = (JSONObject) args[0];
+                Log.d(TAG, "call: " + data);
+            });
+
+        }
+    };
+
     private final Emitter.Listener onUserChat = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -403,10 +413,8 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
                     newMessage.setDeleted_at(data.getString("deleted_at"));
                     newMessage.set_id(data.getString("_id"));
 
-
                     mAdapter.addMessage(newMessage);
                     scrollToBottom();
-
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -592,6 +600,7 @@ public class ChatActivity extends AppCompatActivity implements IActionMessage {
                         runOnUiThread(() -> {
                             // re-render message deleted
                             mAdapter.updateMessage(response.body().getMessage());
+//                            mSocket.emit("user-update-chat", mMessages.getMessage());
                             getDataMessage(conversationID, mUserSelected);
                         });
                     } else {

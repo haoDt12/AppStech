@@ -17,6 +17,7 @@ import com.datn.shopsale.request.GetProductByCateIdRequest;
 import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.request.SearchProductByNameRequest;
 import com.datn.shopsale.responsev2.BaseResponse;
+import com.datn.shopsale.responsev2.GetInfoUserResponse;
 import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.responsev2.CreateConversationResponse;
 import com.datn.shopsale.response.GetBannerResponse;
@@ -265,4 +266,9 @@ public interface ApiService {
     Call<BaseResponse> deleteMessage(@Header("Authorization") String token,
                                      @Field("userLoggedID") String userLoggedID,
                                      @Field("msgID") String msgID);
+
+    @FormUrlEncoded
+    @POST("/apiv2/getAnyUserById")
+    Call<GetInfoUserResponse> getAnyUserById(@Header("Authorization") String token,
+                                             @Field("userId") String userId);
 }
