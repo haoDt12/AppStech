@@ -164,21 +164,23 @@ public class OrderActivity extends AppCompatActivity {
                 runOnUiThread(LoadingDialog::dismissProgressDialog);
                 if (response.body() != null) {
                     if (response.body().getCode() == 1) {
-                        runOnUiThread(new TimerTask() {
-                            @Override
-                            public void run() {
-                                address = response.body().getAddress().get(0).get_id();
-                                tvName.setVisibility(View.VISIBLE);
-                                tvPhone.setVisibility(View.VISIBLE);
-                                tvCity.setVisibility(View.VISIBLE);
-                                tvStreet.setVisibility(View.VISIBLE);
+                        if (response.body().getAddress().size() != 0){
+                            runOnUiThread(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    address = response.body().getAddress().get(0).get_id();
+                                    tvName.setVisibility(View.VISIBLE);
+                                    tvPhone.setVisibility(View.VISIBLE);
+                                    tvCity.setVisibility(View.VISIBLE);
+                                    tvStreet.setVisibility(View.VISIBLE);
 
-                                tvName.setText(response.body().getAddress().get(0).getName());
-                                tvPhone.setText(response.body().getAddress().get(0).getPhone());
-                                tvCity.setText(response.body().getAddress().get(0).getCity());
-                                tvStreet.setText(response.body().getAddress().get(0).getStreet());
-                            }
-                        });
+                                    tvName.setText(response.body().getAddress().get(0).getName());
+                                    tvPhone.setText(response.body().getAddress().get(0).getPhone());
+                                    tvCity.setText(response.body().getAddress().get(0).getCity());
+                                    tvStreet.setText(response.body().getAddress().get(0).getStreet());
+                                }
+                            });
+                        }
                     } else {
                         runOnUiThread(() -> {
                             if (response.body().getMessage().equals("wrong token")) {
