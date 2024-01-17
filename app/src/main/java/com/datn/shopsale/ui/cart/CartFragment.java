@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +51,8 @@ public class CartFragment extends Fragment {
     private List<ProductCart> cartList;
     private CartAdapter cartAdapter;
     private RecyclerView rcvCart;
+    private ImageView imgEmptyCart;
+    private RelativeLayout linnerCheckout;
     private Button btnCheckout;
     PreferenceManager preferenceManager;
     private ApiService apiService;
@@ -94,7 +98,7 @@ public class CartFragment extends Fragment {
         getDataCart();
         onFragmentResult();
         btnCheckout.setOnClickListener(v -> {
-            if (dataListOrder != null) {
+            if (dataListOrder != null && dataListOrder.getList() != null && dataListOrder.getList().size() != 0) {
                 Intent intent = new Intent(getActivity(), OrderActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("listOrder", dataListOrder);
@@ -107,6 +111,8 @@ public class CartFragment extends Fragment {
     }
 
     private void initView(@NonNull View view) {
+        imgEmptyCart = (ImageView) view.findViewById(R.id.img_empty_cart);
+        linnerCheckout = (RelativeLayout) view.findViewById(R.id.linner_checkout);
         rcvCart = view.findViewById(R.id.rcv_cart);
         btnCheckout = view.findViewById(R.id.btn_checkout);
         Tvsum = view.findViewById(R.id.sum);
@@ -127,14 +133,23 @@ public class CartFragment extends Fragment {
             public void onResponse(@NonNull Call<ProductCartResponse> call, @NonNull Response<ProductCartResponse> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
-                    for (ProductCart item : response.body().getProductCart()) {
-                        ProductCart objCart = new ProductCart();
-                        objCart.set_id(item.get_id());
-                        objCart.setProductCart(item.getProductCart());
-                        objCart.setCustomer_id(item.getCustomer_id());
-                        objCart.setCreate_time(item.getCreate_time());
-                        objCart.setQuantity(item.getQuantity());
-                        cartList.add(objCart);
+                    if (response.body().getProductCart().size() == 0){
+                        imgEmptyCart.setVisibility(View.VISIBLE);
+                        rcvCart.setVisibility(View.GONE);
+                        linnerCheckout.setVisibility(View.GONE);
+                    }else{
+                        imgEmptyCart.setVisibility(View.GONE);
+                        rcvCart.setVisibility(View.VISIBLE);
+                        linnerCheckout.setVisibility(View.VISIBLE);
+                        for (ProductCart item : response.body().getProductCart()) {
+                            ProductCart objCart = new ProductCart();
+                            objCart.set_id(item.get_id());
+                            objCart.setProductCart(item.getProductCart());
+                            objCart.setCustomer_id(item.getCustomer_id());
+                            objCart.setCreate_time(item.getCreate_time());
+                            objCart.setQuantity(item.getQuantity());
+                            cartList.add(objCart);
+                        }
                     }
                     requireActivity().runOnUiThread(() -> {
                         Tvsum.setText(CurrencyUtils.formatCurrency(String.valueOf(tong)));
