@@ -149,6 +149,7 @@ public class Conversation {
         this.phone = phone;
     }
 
+
     @NonNull
     @Override
     public String toString() {

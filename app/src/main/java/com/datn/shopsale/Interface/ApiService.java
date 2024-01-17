@@ -20,6 +20,7 @@ import com.datn.shopsale.request.RegisterCusRequest;
 import com.datn.shopsale.request.SearchProductByNameRequest;
 import com.datn.shopsale.responsev2.BaseResponse;
 import com.datn.shopsale.responsev2.GetBannerResponse;
+import com.datn.shopsale.responsev2.GetInfoUserResponse;
 import com.datn.shopsale.responsev2.MessageResponse;
 import com.datn.shopsale.responsev2.CreateConversationResponse;
 import com.datn.shopsale.responsev2.GetNotificationResponse;
@@ -263,4 +264,9 @@ public interface ApiService {
     Call<GetVoucherByIdResponse> getVoucherByVoucherId(@Header("Authorization") String token, @Body GetVoucherByIdRequest request);
     @POST("/apiv2/getOrderByOrderId")
     Call<GetOrderResponseV2> getOrderByOrderId(@Header("Authorization") String token, @Body GetOrderByIdRequest request);
+
+    @FormUrlEncoded
+    @POST("/apiv2/getAnyUserById")
+    Call<GetInfoUserResponse> getAnyUserById(@Header("Authorization") String token,
+                                             @Field("userId") String userId);
 }
