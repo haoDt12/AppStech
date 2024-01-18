@@ -95,6 +95,8 @@ public class CartFragment extends Fragment {
         apiService = RetrofitConnection.getApiService();
         initView(view);
         preferenceManager = new PreferenceManager(requireActivity());
+        dataListOrder = new DataListOrder();
+        dataListOrder.setList(new ArrayList<>());
         getDataCart();
         onFragmentResult();
         btnCheckout.setOnClickListener(v -> {
@@ -133,11 +135,11 @@ public class CartFragment extends Fragment {
             public void onResponse(@NonNull Call<ProductCartResponse> call, @NonNull Response<ProductCartResponse> response) {
                 assert response.body() != null;
                 if (response.body().getCode() == 1) {
-                    if (response.body().getProductCart().size() == 0){
+                    if (response.body().getProductCart().size() == 0) {
                         imgEmptyCart.setVisibility(View.VISIBLE);
                         rcvCart.setVisibility(View.GONE);
                         linnerCheckout.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         imgEmptyCart.setVisibility(View.GONE);
                         rcvCart.setVisibility(View.VISIBLE);
                         linnerCheckout.setVisibility(View.VISIBLE);
@@ -182,7 +184,7 @@ public class CartFragment extends Fragment {
                                 if (chk_selectAll.isChecked()) {
                                     chk_selectAll.setChecked(false);
                                 }
-                                dataListOrder.getList().remove(index);
+                                dataListOrder.getList().remove(objCart.getProductCart());
                             }
                         });
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
