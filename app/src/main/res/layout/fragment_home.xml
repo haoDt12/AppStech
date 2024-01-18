@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30sp"
-                android:text="Top sản phẩm bán chạy"
+                android:text="@string/tat_ca_san_pham"
                 android:textColor="#000000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
